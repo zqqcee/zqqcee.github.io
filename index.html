@@ -71,48 +71,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-a-test" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/07/19/a-test/" class="article-date">
-  <time class="dt-published" datetime="2022-07-19T08:03:52.000Z" itemprop="datePublished">2022-07-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/07/19/a-test/">a test</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/07/19/a-test/" data-id="cl65v2r640000mrwi8ids6k4a" data-title="a test" class="article-share-link">分享</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-【解题笔记】leetcode寻找两个正序数组的中位数" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2022/07/19/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/" class="article-date">
-  <time class="dt-published" datetime="2022-07-19T05:55:14.809Z" itemprop="datePublished">2022-07-19</time>
+    <a href="/2022/07/29/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/" class="article-date">
+  <time class="dt-published" datetime="2022-07-29T02:50:19.502Z" itemprop="datePublished">2022-07-29</time>
 </a>
     
   </div>
@@ -142,7 +104,7 @@
 <li><p>根据第二个条件，我们只需要比较<code>nums1[i-1]</code>与<code>nums2[j]</code>的大小关系即可。如果前者大，说明分割线太靠右了；反之，继续向右寻找看还有没有满足条件的。<br>如下图：此时<code>i</code>指向元素2，<code>j</code>指向元素4。<code>1&lt;4</code>，因此<code>nums1</code>的分割线右移。由<code>j=totalLeft-i</code>得，<code>nums2</code>的分割线左移。</p>
 </li>
 </ul>
-<p><img src="http://gitee.com/zqqcee/pic-go/raw/master/uPic/b4957edb9e7f81e741409d81c620c0d3-20220719140240539.png"><br>用<strong>二分查找法</strong>编码：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/5f5cb439549892ea54bf440cbeb5e4f2.png" alt="image-20220319101709876"><br>用<strong>二分查找法</strong>编码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一步：将长度最短的数组设置为nums1</span></span><br><span class="line"><span class="keyword">if</span> (nums2.length &lt; nums1.length) &#123;</span><br><span class="line">  <span class="type">int</span>[] temp = nums1;</span><br><span class="line">  nums1 = nums2;</span><br><span class="line">  nums2 = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//第二步：设置分割线左边元素的个数</span></span><br><span class="line"><span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> nums1.length;</span><br><span class="line"><span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> nums2.length;</span><br><span class="line"><span class="type">int</span> <span class="variable">totalLeft</span> <span class="operator">=</span> (m + n + <span class="number">1</span>) / <span class="number">2</span>; <span class="comment">//合并奇数和偶数的情况</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//第三步，设置left与right，代表nums1分割线的查找区间。注：right需要设置为nums1.length，因为i可以为nums1.length,此时分割线就在nums1的最右边</span></span><br><span class="line"><span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> nums1.length;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*两个条件：</span></span><br><span class="line"><span class="comment">        1. 分隔线左边的元素个数等于分隔线右边的元素个素</span></span><br><span class="line"><span class="comment">        2. 分隔线左边的所有元素均小于分隔线右边的元素个素</span></span><br><span class="line"><span class="comment">        即nums1[i-1] &lt;= nums2[j] &amp;&amp; nums2[j-1] &lt;= num1[i]</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        注：i是nums1分割线右边的第一个元素，它的下标 = 分隔线左边元素的个数；</span></span><br><span class="line"><span class="comment">        j同理，因此: i + j = totalLeft，可以根据该表达式，由i确定j。</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"><span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> left + (right - left + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">  <span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> totalLeft - i;</span><br><span class="line">  <span class="keyword">if</span> (nums1[i - <span class="number">1</span>] &gt; nums2[j]) &#123;</span><br><span class="line">    <span class="comment">//说明nums1的分隔线太靠右了，需要在[left,i-1处继续寻找]</span></span><br><span class="line">    right = i - <span class="number">1</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">//需要在[i,right]处继续寻找</span></span><br><span class="line">    left = i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//第四步：分割线划分完毕，确定两个数组分割线右边的位置i，j。此时left所指向的元素是nums1分割线右边的元素</span></span><br><span class="line"><span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> left;</span><br><span class="line"><span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> totalLeft - i;</span><br></pre></td></tr></table></figure>
 <h3 id="极端情况："><a href="#极端情况：" class="headerlink" title="极端情况："></a>极端情况：</h3><p>下面讨论四种分割线划分的极端情况，仅以两种情况举例说明</p>
 <ul>
@@ -152,7 +114,7 @@
 <li>此时要把<code>nums1[i-1]</code>设置为无限小的值，使得最后选择左边元素最大值的时候不要选中它。</li>
 </ul>
 </li>
-<li><p><code>nums1</code>的分割线在数组最右边<br>  <img src="https://img-blog.csdnimg.cn/img_convert/e8db0a47c978096643b032c559afaff1.png" alt="image-20220319110136556"></p>
+<li><p><code>nums1</code>的分割线在数组最右边<br><img src="https://img-blog.csdnimg.cn/img_convert/e8db0a47c978096643b032c559afaff1.png" alt="image-20220319110136556"></p>
 <ul>
 <li>因为<code>nums1</code>分隔线右边没有元素，因此可以得出两个数组分割线右边的最小值肯定在<code>nums2</code>中。</li>
 <li>此时要把<code>nums1[i]</code>设置为无限大的值，使得最后选择右边元素最小值的时候不要选中它。</li>
@@ -175,7 +137,45 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/07/19/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/" data-id="cl65v2r660001mrwiekeq4zb6" data-title="" class="article-share-link">分享</a>
+      <a data-url="http://example.com/2022/07/29/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/" data-id="cl65vbsv40000qlwigmf78gfj" data-title="" class="article-share-link">分享</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-a-test" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/07/19/a-test/" class="article-date">
+  <time class="dt-published" datetime="2022-07-19T08:03:52.000Z" itemprop="datePublished">2022-07-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/07/19/a-test/">a test</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/19/a-test/" data-id="cl65vbsv70001qlwi8yr834qu" data-title="a test" class="article-share-link">分享</a>
       
       
       
@@ -218,11 +218,11 @@
       <ul>
         
           <li>
-            <a href="/2022/07/19/a-test/">a test</a>
+            <a href="/2022/07/29/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2022/07/19/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/">(no title)</a>
+            <a href="/2022/07/19/a-test/">a test</a>
           </li>
         
       </ul>
