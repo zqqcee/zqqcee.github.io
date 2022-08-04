@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="总结了机器学习中分类与聚类的方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习——分类与聚类">
+<meta property="og:url" content="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="总结了机器学习中分类与聚类的方法">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210623145633761.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210623145649257.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210623145713476.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021062314574071.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210623145804138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/ebbf6f850a63742a7805369cb53154df.png">
+<meta property="article:published_time" content="2022-08-03T09:53:52.393Z">
+<meta property="article:modified_time" content="2022-08-03T10:04:51.073Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210623145633761.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>机器学习——分类与聚类 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习——分类与聚类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-03 17:53:52 / Modified: 18:04:51" itemprop="dateCreated datePublished" datetime="2022-08-03T17:53:52+08:00">2022-08-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/machine-learning/" itemprop="url" rel="index"><span itemprop="name">machine learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">总结了机器学习中分类与聚类的方法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><h2 id="KNN-K近邻算法"><a href="#KNN-K近邻算法" class="headerlink" title="KNN - K近邻算法"></a>KNN - K近邻算法</h2><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p><img src="https://img-blog.csdnimg.cn/20210623145633761.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>一个样本与数据集中的k个样本最相似， 如果这k个样本中的大多数属于某一个类别， 则该样本也属于这个类别。也就是说，该方法在确定分类决策上只依据最邻近的一个或者几个样本的类别来决定待分样本所属的类别。KNN方法在类别决策时，只与极少量的相邻样本有关。</p>
+<p>KNN算法最简单粗暴的就是将预测点与所有点距离（这里未知实例与所有已知实例的距离使用欧氏距离进行计算）进行计算，然后保存并排序，选出前面K个值看看哪些类别比较多。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210623145649257.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="过拟合与欠拟合"><a href="#过拟合与欠拟合" class="headerlink" title="过拟合与欠拟合"></a>过拟合与欠拟合</h2><p>K越小越容易过拟合，当K=1时，这时只根据单个近邻进行预测，如果离目标点最近的一个点是噪声，就会出错，此时模型复杂度高，稳健性低，决策边界崎岖。</p>
+<p>但是如果K取的过大，这时与目标点较远的样本点也会对预测起作用，就会导致欠拟合，此时模型变得简单，决策边界变平滑。</p>
+<p>如果K=N的时候，那么就是取全部的样本点，这样预测新点时，最终结果都是取所有样本点中某分类下最多的点，分类模型就完全失效了！</p>
+<hr>
+<h1 id="聚类"><a href="#聚类" class="headerlink" title="聚类"></a>聚类</h1><h2 id="K-MEANS"><a href="#K-MEANS" class="headerlink" title="K-MEANS"></a>K-MEANS</h2><h3 id="KMEANS代价函数"><a href="#KMEANS代价函数" class="headerlink" title="KMEANS代价函数"></a>KMEANS代价函数</h3><ul>
+<li>能够帮助我们调试学习算法，确保k均值聚类算法是在正确运行中；</li>
+<li>能够运用代价函数帮助k-均值找到更好的簇，并且避免局部最优解</li>
+</ul>
+<p>聚类的过程为减小代价函数的过程，代价函数为：</p>
+<script type="math/tex; mode=display">
+J =\min（[c(1),c(2)...c(k)],[\mu_1,\mu_2...\mu_k]）\\
+其中，c(k)表示第k类聚类的索引。\mu_k表示第k类聚类的聚类中心\\
+循环分为两次，第一次为减小J[c(1),c(2)...c(k)]，第二次为减小J[\mu_1,\mu_2...\mu_k]</script><p>即第一次循环为固定聚类中心点不变，减小每个样本点到聚类中心的距离引起的代价，即给样本点分类</p>
+<p>第二次循环为固定样本点的类别不变，减小聚类中心引起的代价，即重新确定聚类中心。</p>
+<p>在迭代的过程中，每一次的代价函数应该都在减小或者保持不变，如果出现代价函数增大的情况，则说明实现的过程可能存在错误。</p>
+<h4 id="局部最小值问题"><a href="#局部最小值问题" class="headerlink" title="局部最小值问题"></a>局部最小值问题</h4><p>K-均值聚类会存在一个问题，也就是最终聚类的结果会停留在一个局部最小值处，这取决于初始化的情况。</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><p>为了解决这个问题，我们通常采用多次运行k-均值聚类算法，每一次都重新进行随机初始化，最后比较多次运行k-均值的结果，选择代价函数最小的结果。但是上述这种方法，对于聚类中心数目K较小时（2-10）可行，但是当K较大时，这么做也可能不会有明显的改善。</p>
+<h4 id="聚类数如何选择？"><a href="#聚类数如何选择？" class="headerlink" title="聚类数如何选择？"></a>聚类数如何选择？</h4><p>没有最好的选择聚类数的方法，人们一般都是根据不同的问题进行手动选择。在进行选择的时候我们可以从k-均值聚类算法的动机是什么出发，选择出最好的适应于该动机的聚类数。<br>例如，我们搜集了一些人的身高和体重，想借助身高和体重两个特征进行衣服尺码的划分，例如厂家想生产三种类型的尺码（S、M、L），以此可以获得更好的收益，这是我们的聚类数目会选择K=3；例如厂家想生产五种类型的尺码（XS、S、M、L、XL），以此可以获得更好的收益，这是我们的聚类数目会选择K=5；所以这时候的聚类数目的选择是根据制造的衣服是否能较好的适应我们的客户。</p>
+<h4 id="目前采用的选择聚类数的方法：肘部法则"><a href="#目前采用的选择聚类数的方法：肘部法则" class="headerlink" title="目前采用的选择聚类数的方法：肘部法则"></a>目前采用的选择聚类数的方法：肘部法则</h4><p>我们分别计算在各种K值情况下，聚类算法最终的损失函数，绘制出随着K值变化损失函数变化的曲线：<br><img src="https://img-blog.csdnimg.cn/20210623145713476.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>左图为存在肘部的情况，选择肘部点对应的K值作为模型的聚类数。<br>右图为不存在肘部的情况，根据业务需求确定K值</p>
+<h2 id="KMEANS存在的问题"><a href="#KMEANS存在的问题" class="headerlink" title="KMEANS存在的问题"></a>KMEANS存在的问题</h2><p>我们知道,kmeans聚类算法只能处理球形的簇，也就是一个聚成实心的团（这是因为算法本身计算平均距离的局限）。但往往现实中还会有各种形状，比如下面两张图，环形和不规则形，这个时候，那些传统的聚类算法显然就悲剧了。<br><img src="https://img-blog.csdnimg.cn/2021062314574071.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>于是就思考，样本密度大的成一类呗。这就是DBSCAN聚类算法。</p>
+<h2 id="DBSCAN"><a href="#DBSCAN" class="headerlink" title="DBSCAN"></a>DBSCAN</h2><p>算法将具有足够高密度的区域划分为簇，并可以发现任何形状的聚类。</p>
+<h3 id="定义解释"><a href="#定义解释" class="headerlink" title="定义解释"></a>定义解释</h3><p><img src="https://img-blog.csdnimg.cn/20210623145804138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h3><p>直接密度可达：</p>
+<script type="math/tex; mode=display">
+如果x_i是核心对象，且x_j位于x_i的\varepsilon 邻域内，则x_j由x_i密度可达</script><p>密度可达：</p>
+<script type="math/tex; mode=display">
+x_i与x_j之间有一串序列p_1p_2...p_t，且p_{n+1}由p_n密度直达，则x_i与x_j密度相连</script><p>密度相连：</p>
+<script type="math/tex; mode=display">
+对于x_i与x_j如果他们两个点之间存在核心对象样本x_k，使得x_i与x_j均由x_k密度可达，则称x_i和x_j密度相连</script><p>三种关系中，只有密度相连是满足对称性的。</p>
+<h3 id="密度可达与密度相连的直观解释"><a href="#密度可达与密度相连的直观解释" class="headerlink" title="密度可达与密度相连的直观解释"></a>密度可达与密度相连的直观解释</h3><p><img src="https://img-blog.csdnimg.cn/img_convert/ebbf6f850a63742a7805369cb53154df.png" alt="img"></p>
+<p>从上图可以很容易看出理解上述定义，图中MinPts=5，红色的点都是核心对象，因为其ϵ-邻域至少有5个样本。黑色的样本是非核心对象。所有核心对象密度直达的样本在以红色核心对象为中心的超球体内，如果不在超球体内，则不能密度直达。图中用绿色箭头连起来的核心对象组成了密度可达的样本序列。在这些密度可达的样本序列的ϵ-邻域内所有的样本相互都是密度相连的。</p>
+<p>​    由密度可达关系导出的最大密度相连的样本集合，即为我们最终聚类的一个类别，或者说一个簇。这个DBSCAN的簇里面可以有一个或者多个核心对象。如果只有一个核心对象，则簇里其他的非核心对象样本都在这个核心对象的ϵ-邻域里；如果有多个核心对象，则簇里的任意一个核心对象的ϵ-邻域中一定有一个其他的核心对象，否则这两个核心对象无法密度可达。这些核心对象的ϵ-邻域里所有的样本的集合组成的一个DBSCAN聚类簇。</p>
+<h3 id="DBSCAN发现簇的过程（即算法过程）"><a href="#DBSCAN发现簇的过程（即算法过程）" class="headerlink" title="DBSCAN发现簇的过程（即算法过程）"></a>DBSCAN发现簇的过程（即算法过程）</h3><p>​     初始，给定数据集D中所有对象都被标记为“unvisited”，DBSCAN随机选择一个未访问的对象p，标记p为“visited”，并检查p的<strong>ϵ-</strong>领域是否至少包含MinPts个对象。如果不是，则p被标记为噪声点。否则为p创建一个新的簇C，并且把p的<strong>ϵ-</strong>领域中所有对象都放在候选集合N中。DBSCAN迭代地把N中不属于其他簇的对象添加到C中。在此过程中，对应N中标记为“unvisited”的对象 P’ ,DBSCAN把它标记为“visited”，并且检查它的<strong>ϵ-</strong>领域，如果 P’ 的<strong>ϵ-</strong>领域至少包含MinPts个对象，则P’ 的<strong>ϵ-</strong>领域中的对象都被添加到N中。DBSCAN继续添加对象到C，直到C不能扩展，即直到N为空。此时簇C完成生成，输出。</p>
+<p>   为了找到下一个簇，DBSCAN从剩下的对象中随机选择一个未访问过的对象。聚类过程继续，直到所有对象都被访问。</p>
+<h3 id="DBSCAN的三个问题"><a href="#DBSCAN的三个问题" class="headerlink" title="DBSCAN的三个问题"></a>DBSCAN的三个问题</h3><ul>
+<li><p>噪音样本点</p>
+<p>一些异常样本点或者说少量游离于簇外的样本点，这些点不在任何一个核心对象在周围，在DBSCAN中，我们一般将这些样本点标记为噪音点。DBSCAN算法很容易检测异常点。</p>
+</li>
+<li><p>距离的度量（即如何计算某样本和核心对象样本的距离）</p>
+<p>在DBSCAN中，一般采用最近邻思想，采用某一种距离度量来衡量样本距离，比如欧式距离。这和KNN分类算法的最近邻思想完全相同。对应少量的样本，寻找最近邻可以直接去计算所有样本的距离，如果样本量较大，则一般采用KD树或者球树来快速的搜索最近邻。</p>
+</li>
+<li><p>DBSCAN不稳定性</p>
+<p>某些样本可能到两个核心对象的距离都小于ϵ，但是这两个核心对象由于不是密度直达，又不属于同一个聚类簇，那么如果界定这个样本的类别呢？一般来说，此时DBSCAN采用先来后到，先进行聚类的类别簇会标记这个样本为它的类别。也就是说BDSCAN的算法不是完全稳定的算法。</p>
+</li>
+</ul>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p><strong>优点：</strong></p>
+<ul>
+<li><p>和传统的K-Means算法相比，DBSCAN最大的不同就是不需要输入类别数k，当然它最大的优势是可以发现任意形状的聚类簇，而不是像K-Means，一般仅仅使用于凸的样本集聚类。</p>
+</li>
+<li><p>同时它在聚类的同时还可以找出异常点，对数据集中的异常点不敏感。一般来说，如果数据集是稠密的，并且数据集不是凸的，那么用DBSCAN会比K-Means聚类效果好很多。如果数据集不是稠密的，则不推荐用DBSCAN来聚类。</p>
+</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><p>如果样本集的密度不均匀、聚类间距差相差很大时，聚类质量较差，这时用DBSCAN聚类一般不适合。</p>
+</li>
+<li><p>调参相对于传统的K-Means之类的聚类算法稍复杂，主要需要对距离阈值ϵ，邻域样本数阈值MinPoints联合调参，不同的参数组合对最后的聚类效果有较大影响。一般这两个参数的确定靠经验值。如果觉得经验值聚类的结果不满意，可以适当调整ϵ和MinPoints的值，经过多次迭代计算对比，选择最合适的参数值。</p>
+<p>如果MinPoints不变，ϵ取得值过大，会导致大多数点都聚到同一个簇中，ϵ过小，会导致一个簇的分裂；如果ϵ不变，MinPoints的值取得过大，会导致同一个簇中点被标记为离群点，ϵ过小，会导致发现大量的核心点。</p>
+</li>
+<li><p>不适合高维数据，可以先进行降维操作</p>
+</li>
+<li><p>Sklearn中效率很慢，可以先执行数据削减策略</p>
+</li>
+</ul>
+<hr>
+<p>参考：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d2eddc733c4d">https://www.jianshu.com/p/d2eddc733c4d</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/pinard/p/6208966.html">https://www.cnblogs.com/pinard/p/6208966.html</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86/" rel="prev" title="机器学习——贝叶斯定理">
+      <i class="fa fa-chevron-left"></i> 机器学习——贝叶斯定理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%86%B3%E7%AD%96%E6%A0%91/" rel="next" title="机器学习——决策树">
+      机器学习——决策树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#KNN-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">KNN - K近邻算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%8B%9F%E5%90%88%E4%B8%8E%E6%AC%A0%E6%8B%9F%E5%90%88"><span class="nav-number">1.3.</span> <span class="nav-text">过拟合与欠拟合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">聚类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#K-MEANS"><span class="nav-number">2.1.</span> <span class="nav-text">K-MEANS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#KMEANS%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.1.</span> <span class="nav-text">KMEANS代价函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E6%9C%80%E5%B0%8F%E5%80%BC%E9%97%AE%E9%A2%98"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">局部最小值问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">解决方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB%E6%95%B0%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%EF%BC%9F"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">聚类数如何选择？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%AE%E5%89%8D%E9%87%87%E7%94%A8%E7%9A%84%E9%80%89%E6%8B%A9%E8%81%9A%E7%B1%BB%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9A%E8%82%98%E9%83%A8%E6%B3%95%E5%88%99"><span class="nav-number">2.1.1.4.</span> <span class="nav-text">目前采用的选择聚类数的方法：肘部法则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KMEANS%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.2.</span> <span class="nav-text">KMEANS存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DBSCAN"><span class="nav-number">2.3.</span> <span class="nav-text">DBSCAN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E8%A7%A3%E9%87%8A"><span class="nav-number">2.3.1.</span> <span class="nav-text">定义解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%86%E5%BA%A6%E5%8F%AF%E8%BE%BE%E4%B8%8E%E5%AF%86%E5%BA%A6%E7%9B%B8%E8%BF%9E%E7%9A%84%E7%9B%B4%E8%A7%82%E8%A7%A3%E9%87%8A"><span class="nav-number">2.3.3.</span> <span class="nav-text">密度可达与密度相连的直观解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DBSCAN%E5%8F%91%E7%8E%B0%E7%B0%87%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%88%E5%8D%B3%E7%AE%97%E6%B3%95%E8%BF%87%E7%A8%8B%EF%BC%89"><span class="nav-number">2.3.4.</span> <span class="nav-text">DBSCAN发现簇的过程（即算法过程）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DBSCAN%E7%9A%84%E4%B8%89%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-number">2.3.5.</span> <span class="nav-text">DBSCAN的三个问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">2.3.6.</span> <span class="nav-text">优缺点</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

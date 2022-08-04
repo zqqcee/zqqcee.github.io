@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="我们之前学习的模型都是单一的，独立的。对于整体表现比较差点数据可能在某一方面超过“最好”的模型表现。因此提出将数据进行组合，集成学习以提升训练精度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习——集成学习">
+<meta property="og:url" content="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="我们之前学习的模型都是单一的，独立的。对于整体表现比较差点数据可能在某一方面超过“最好”的模型表现。因此提出将数据进行组合，集成学习以提升训练精度。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210623150239166.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2022-08-03T09:54:03.639Z">
+<meta property="article:modified_time" content="2022-08-03T10:05:14.799Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210623150239166.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>机器学习——集成学习 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习——集成学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-03 17:54:03 / Modified: 18:05:14" itemprop="dateCreated datePublished" datetime="2022-08-03T17:54:03+08:00">2022-08-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/machine-learning/" itemprop="url" rel="index"><span itemprop="name">machine learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">我们之前学习的模型都是单一的，独立的。对于整体表现比较差点数据可能在某一方面超过“最好”的模型表现。因此提出将数据进行组合，集成学习以提升训练精度。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="集成学习"><a href="#集成学习" class="headerlink" title="集成学习"></a>集成学习</h1><p>我们之前学习的模型都是单一的，独立的。对于整体表现比较差点数据可能在某一方面超过“最好”的模型表现。因此提出将数据进行组合，集成学习以提升训练精度。</p>
+<h2 id="袋装模型-Bagging"><a href="#袋装模型-Bagging" class="headerlink" title="袋装模型 Bagging"></a>袋装模型 Bagging</h2><p>从一个数据集，产生需对随机的数据子集。在做预测时，对这些数据子集都投入到模型中进行预测，在进行组合投票。</p>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>样本随机：用Bagging的方式随机选择N个样本。<br>特征随机：从所有属性d中选择k个属性，然后从K个属性中选择最佳分割属性作为节点建立CART决策树(Gini系数)</p>
+<p>随机森林建立的是树模型，重复以上两个步骤m次，建立m棵决策树。最后，对这m棵CART决策树的结果进行投票，将<strong>投票次数</strong>最多的类别指定为最终的输出。</p>
+<h3 id="随机森林的特点"><a href="#随机森林的特点" class="headerlink" title="随机森林的特点"></a>随机森林的特点</h3><ul>
+<li>在当前所有算法中，具有极好的准确率/It is unexcelled in accuracy among current algorithms；</li>
+<li>能够有效地运行在大数据集上/It runs efficiently on large data bases；</li>
+<li>能够处理具有高维特征的输入样本，而且不需要降维/It can handle thousands of input variables without variable deletion；</li>
+<li>能够评估各个特征在分类问题上的重要性/It gives estimates of what variables are important in the classification；</li>
+<li>在生成过程中，能够获取到内部生成误差的一种无偏估计/It generates an internal unbiased estimate of the generalization error as the forest building progresses；</li>
+</ul>
+<h2 id="Adaboost-—-Adaptive-Boosting（自适应增强）"><a href="#Adaboost-—-Adaptive-Boosting（自适应增强）" class="headerlink" title="Adaboost —-Adaptive Boosting（自适应增强）"></a>Adaboost —-Adaptive Boosting（自适应增强）</h2><p>也是由多个基分类器构成的组合模型，但是基分类器不是同时生成的。 前一个基分类器被错误分类的样本的权值会增大，而正确分类的样本权值会减小，并再次用来训练下一个分类器。  即某一个样本被一个基分类器分类错误了,那么他在下一个基分类器抽样时，被抽中的概率会增大。</p>
+<p>eg： 第一次：【1，2，3，4】 —— 4号样本被分类错了</p>
+<p>第二次：【4，1，2，4】 ——-4号样本被抽中的概率增大了</p>
+<p><strong>操作流程</strong>:</p>
+<ul>
+<li>首先，初始化训练数据的权值分布，一开始权值均匀分布。即如果有N个样本，所有样本具有相同的权值： 1/N</li>
+<li>最后，将各个弱分类器组合成一个强分类器。<br>组合方法:各个弱分类器分类结束后，<br>加大分类误差较低的分类器的权重，使其在组合分类器中占据主导地位。<br>降低分类误差加大的分类器的权重，使其在组合分类器中的作用降低。</li>
+</ul>
+<p><strong>核心思想</strong>：在抽样时，各个数据的权重不同； 在预测时，各个弱分类器的权重不同。</p>
+<h2 id="Stacking-—-先训练，再拼接结果"><a href="#Stacking-—-先训练，再拼接结果" class="headerlink" title="Stacking — 先训练，再拼接结果"></a>Stacking — 先训练，再拼接结果</h2><p>可以使用不同的分类器（如KNN，决策树，神经网络，逻辑回归等）对数据进行预测，并把预测得到的结果作为一个次级分类器的输入。次级分类器的输出是整个模型的预测结果。</p>
+<p><strong>操作步骤</strong>：</p>
+<ul>
+<li>假设有n个训练集，分类模型为4个（KNN，决策树，神经网络，逻辑回归）</li>
+<li>分别用n个训练集 训练四个模型，并生成四个训练结果 ：p1，p2，p3，p4 (均为<strong>n行1列</strong>)<br>这一步在代码上体现为<strong>双重循环</strong>，外层循环是四个分类器，内层循环是n个训练集</li>
+<li>将p1，p2，p3，p4  以及初始样本的标签<strong>合并在一起</strong>作为<strong>第二层分类器</strong> (Meta-Classifier) 的训练集</li>
+<li>训练最后的Meta - Classifier并预测最后的结果</li>
+</ul>
+<p><strong>图解</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210623150239166.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<hr>
+<p>参考:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yangyin007/article/details/82385967">https://blog.csdn.net/yangyin007/article/details/82385967</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%86%B3%E7%AD%96%E6%A0%91/" rel="prev" title="机器学习——决策树">
+      <i class="fa fa-chevron-left"></i> 机器学习——决策树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94%20SVG%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%EF%BC%8C%E4%BD%BF%E7%94%A8D3%E7%BB%98%E5%88%B6%E5%9F%BA%E6%9C%AC%E5%9B%BE%E5%BD%A2/" rel="next" title="【D3.js 学习记录】—— SVG入门知识，使用D3绘制基本图形">
+      【D3.js 学习记录】—— SVG入门知识，使用D3绘制基本图形 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.</span> <span class="nav-text">集成学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A2%8B%E8%A3%85%E6%A8%A1%E5%9E%8B-Bagging"><span class="nav-number">1.1.</span> <span class="nav-text">袋装模型 Bagging</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97"><span class="nav-number">1.2.</span> <span class="nav-text">随机森林</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.2.1.</span> <span class="nav-text">随机森林的特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adaboost-%E2%80%94-Adaptive-Boosting%EF%BC%88%E8%87%AA%E9%80%82%E5%BA%94%E5%A2%9E%E5%BC%BA%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">Adaboost —-Adaptive Boosting（自适应增强）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stacking-%E2%80%94-%E5%85%88%E8%AE%AD%E7%BB%83%EF%BC%8C%E5%86%8D%E6%8B%BC%E6%8E%A5%E7%BB%93%E6%9E%9C"><span class="nav-number">1.4.</span> <span class="nav-text">Stacking — 先训练，再拼接结果</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

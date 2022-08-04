@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="d3学习记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【D3.js 学习记录】——icicle冰锥图，sunburst光晕图数据可视化">
+<meta property="og:url" content="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94icicle%E5%86%B0%E9%94%A5%E5%9B%BE%EF%BC%8Csunburst%E5%85%89%E6%99%95%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="d3学习记录">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/febc00dc1cd94c758ba36055b679f93b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/175fd273980c417fb26ae8bc2047d92f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2b09e87269d5441db6c15ff583461441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/5d3103f57a844bdcab8f5ec802b263ae.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/60af480f98a94d02a72d3a9f4a08634a.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2022-08-03T09:55:05.111Z">
+<meta property="article:modified_time" content="2022-08-04T01:47:17.941Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/febc00dc1cd94c758ba36055b679f93b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94icicle%E5%86%B0%E9%94%A5%E5%9B%BE%EF%BC%8Csunburst%E5%85%89%E6%99%95%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【D3.js 学习记录】——icicle冰锥图，sunburst光晕图数据可视化 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94icicle%E5%86%B0%E9%94%A5%E5%9B%BE%EF%BC%8Csunburst%E5%85%89%E6%99%95%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【D3.js 学习记录】——icicle冰锥图，sunburst光晕图数据可视化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-03 17:55:05" itemprop="dateCreated datePublished" datetime="2022-08-03T17:55:05+08:00">2022-08-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-08-04 09:47:17" itemprop="dateModified" datetime="2022-08-04T09:47:17+08:00">2022-08-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/visualization/" itemprop="url" rel="index"><span itemprop="name">visualization</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">d3学习记录</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="冰锥图可视化"><a href="#冰锥图可视化" class="headerlink" title="冰锥图可视化"></a>冰锥图可视化</h1><h2 id="矩形冰锥图"><a href="#矩形冰锥图" class="headerlink" title="矩形冰锥图"></a>矩形冰锥图</h2><h3 id="d3-partition-官方文档"><a href="#d3-partition-官方文档" class="headerlink" title="d3.partition()官方文档"></a><code>d3.partition()</code>官方文档</h3><p>用来生成邻接图：<strong>一个节点链接树图的空间填充变体</strong>。与使用连线链接节点与父节点不同，<strong>在这个布局中节点会被绘制为一个区域(可以是弧也可以是矩形)</strong>，并且其位置反应了其在层次结构中的相对位置。节点的尺寸被编码为一个可度量的维度，这个在节点-链接图中很难表示。</p>
+<h3 id="d3-partition-size"><a href="#d3-partition-size" class="headerlink" title="d3.partition().size()"></a>d3.partition().size()</h3><p>返回一个函数，会把传入函数的数据划分成一个个区域，一般情况下使用方法为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">json</span>(<span class="string">&#x27;./data/games.json&#x27;</span>).<span class="title function_">then</span>( <span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    root = d3.<span class="title function_">partition</span>().<span class="title function_">size</span>([height,width])(</span><br><span class="line">        d3.<span class="title function_">hierarchy</span>(data).<span class="title function_">sum</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">popularity</span>)</span><br><span class="line">        .<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>) =&gt;</span> &#123;<span class="keyword">return</span> b.<span class="property">popularity</span> - a.<span class="property">popularity</span>&#125;)</span><br><span class="line">    );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="代码理解"><a href="#代码理解" class="headerlink" title="代码理解"></a>代码理解</h4><ul>
+<li>sum：每个节点的高度都由它的子节点的高度求和决定的。那么如何求和是由我们来告诉d3.js的。如：给非叶子结点的树形赋值为子节点</li>
+</ul>
+<h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><p><img src="https://img-blog.csdnimg.cn/febc00dc1cd94c758ba36055b679f93b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>做data join的时候，直接用 红框内的数据即可，绘制矩形和文本的时候都需要</p>
+<ul>
+<li>x0，y0 ： 矩形左上角的点</li>
+<li>x1，y1 ： 矩形右下角的点</li>
+</ul>
+<h3 id="绘制区域代码"><a href="#绘制区域代码" class="headerlink" title="绘制区域代码"></a>绘制区域代码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//绘制矩形区域代码</span></span><br><span class="line">g.<span class="title function_">selectAll</span>(<span class="string">&#x27;datarect&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>()).<span class="title function_">join</span>(<span class="string">&#x27;rect&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;datarect&#x27;</span> )</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>, fill )</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y0</span> )</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x0</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x1</span> - d.<span class="property">x0</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>,  <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y1</span> -d.<span class="property">y0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//绘制文本代码</span></span><br><span class="line">g.<span class="title function_">selectAll</span>(<span class="string">&#x27;.datatext&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>()).<span class="title function_">join</span>(<span class="string">&#x27;text&#x27;</span>) </span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;datatext&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> (d.<span class="property">y0</span> + d.<span class="property">y1</span>)/<span class="number">2</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> (d.<span class="property">x0</span> + d.<span class="property">x1</span>)/<span class="number">2</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;text-anchor&#x27;</span>, <span class="string">&#x27;middle&#x27;</span>)</span><br><span class="line">    .<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">data</span>.<span class="property">name</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h3><p><img src="https://img-blog.csdnimg.cn/175fd273980c417fb26ae8bc2047d92f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>这种类型的冰锥图需要滑动网页查看，非常不方便，因此考虑将冰锥图掰成一圈，<strong>更加方便查看</strong><br><img src="https://img-blog.csdnimg.cn/2b09e87269d5441db6c15ff583461441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<hr>
+<h2 id="Sunburst（光晕图）"><a href="#Sunburst（光晕图）" class="headerlink" title="Sunburst（光晕图）"></a>Sunburst（光晕图）</h2><h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><ul>
+<li>和冰锥图一样，依然是使用<code>partition()</code>这个接口，但是size应该要改变一下。</li>
+<li>画path时，设置d属性使用<code>d3.arc()</code>由于要画出环状的冰锥图，他用的是<strong>极坐标</strong>，需要注意的是，d3中默认的极坐标系0度是竖直向上的</li>
+<li>Size放入的数组中包含两个元素，<strong>一个是角度 θ，一个是长度ρ</strong></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">json</span>(<span class="string">&#x27;./data/games.json&#x27;</span>).<span class="title function_">then</span>( <span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    root = d3.<span class="title function_">partition</span>().<span class="title function_">size</span>([<span class="number">2</span> * <span class="title class_">Math</span>.<span class="property">PI</span>, height / <span class="number">1.6</span>])</span><br><span class="line">    (d3.<span class="title function_">hierarchy</span>(data).<span class="title function_">sum</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">popularity</span>)</span><br><span class="line">     .<span class="title function_">sort</span>(<span class="function">(<span class="params">a, b</span>) =&gt;</span> b.<span class="property">popularity</span> - a.<span class="property">popularity</span>));</span><br></pre></td></tr></table></figure>
+<p>size为布局指定大小</p>
+<ul>
+<li>若是直角坐标系就传入width和height；</li>
+<li>若是极坐标系就传入θ和ρ的最大值;（<strong>注意，这里的θ用的是弧长，不是角度</strong>）</li>
+</ul>
+<h3 id="绘制path（扇形区域）"><a href="#绘制path（扇形区域）" class="headerlink" title="绘制path（扇形区域）"></a>绘制path（扇形区域）</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arc = d3.<span class="title function_">arc</span>()</span><br><span class="line">.<span class="title function_">startAngle</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x0</span>)</span><br><span class="line">.<span class="title function_">endAngle</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x1</span>)</span><br><span class="line">.<span class="title function_">innerRadius</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y0</span>)</span><br><span class="line">.<span class="title function_">outerRadius</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y1</span>)</span><br><span class="line"><span class="comment">// .padAngle()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//startAngle：起始角度</span></span><br><span class="line"><span class="comment">//endAngle： 终止角度</span></span><br><span class="line"><span class="comment">//innerRadius：起始半径</span></span><br><span class="line"><span class="comment">//outerRadius：终止半径</span></span><br><span class="line"></span><br><span class="line">color = d3.<span class="title function_">scaleOrdinal</span>(d3.<span class="property">schemeCategory10</span>)</span><br><span class="line">g.<span class="title function_">selectAll</span>(<span class="string">&#x27;.datapath&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>().<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">depth</span>&gt;<span class="number">0</span>)).<span class="title function_">join</span>(<span class="string">&#x27;path&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;calss&#x27;</span>, <span class="string">&#x27;datapath&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;d&#x27;</span>, arc )</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>,fill )</span><br></pre></td></tr></table></figure>
+<h3 id="绘制文本"><a href="#绘制文本" class="headerlink" title="绘制文本"></a>绘制文本</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">g.<span class="title function_">selectAll</span>(<span class="string">&#x27;.datatext&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>().<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">depth</span>&gt;<span class="number">0</span>))</span><br><span class="line">    .<span class="title function_">join</span>(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;datatext&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;transform&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> x = (d.<span class="property">x0</span> + d.<span class="property">x1</span>) / <span class="number">2</span> * <span class="number">180</span> /<span class="title class_">Math</span>.<span class="property">PI</span>; </span><br><span class="line">    <span class="keyword">let</span> y = (d.<span class="property">y0</span> + d.<span class="property">y1</span>) / <span class="number">2</span> ;</span><br><span class="line">    <span class="comment">//data中使用的是弧度制(x,y表示弧度)，但是rotate()使用的是角度制，因此这里需要人为进行一步转换(*180/Math.PI)</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">`rotate(<span class="subst">$&#123;x-<span class="number">90</span>&#125;</span>) translate(<span class="subst">$&#123;y&#125;</span>,0) rotate(<span class="subst">$&#123;x &lt; <span class="number">180</span> ? <span class="number">0</span> : <span class="number">180</span>&#125;</span>)`</span>          </span><br><span class="line">&#125;)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;text-anchor&#x27;</span>, <span class="string">&#x27;middle&#x27;</span>)</span><br><span class="line">    .<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">data</span>.<span class="property">name</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意：translate里面的函数执行时绝对有序的，rotate旋转的时候会连带着坐标轴一起旋转</li>
+<li>text默认的0度是水平向右的，而d3中默认的0度是水平向上的,因此在rotate里面还是要减去90</li>
+<li>左半边的文本需要再转一下，让文字变正,因此在translate里面还要加上一个rotate，让左半边的文字旋转180度变正</li>
+</ul>
+<h3 id="矩形冰锥图icicle-可视化代码"><a href="#矩形冰锥图icicle-可视化代码" class="headerlink" title="矩形冰锥图icicle 可视化代码"></a>矩形冰锥图icicle 可视化代码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">&lt;!<span class="variable constant_">DOCTYPE</span> html&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Icicle<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./js/d3.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">svg</span> <span class="attr">width</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">height</span>=<span class="string">&quot;3000&quot;</span> <span class="attr">id</span>=<span class="string">&quot;mainsvg&quot;</span> <span class="attr">class</span>=<span class="string">&quot;svgs&quot;</span> </span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">style</span>=<span class="string">&quot;display: block; margin: auto;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> svg = d3.<span class="title function_">select</span>(<span class="string">&#x27;#mainsvg&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> width = +svg.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> height = +svg.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> g = svg.<span class="title function_">append</span>(<span class="string">&#x27;g&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="comment">//.attr(&#x27;transform&#x27;, `translate($&#123;width/2&#125;, $&#123;height/2&#125;)`);</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">let</span> root;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> <span class="title function_">fill</span> = d =&gt; &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">if</span>( d.<span class="property">depth</span> == <span class="number">0</span> )&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">//根节点</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">return</span> <span class="title function_">color</span>(d.<span class="property">data</span>.<span class="property">name</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">while</span> (d.<span class="property">depth</span> &gt;<span class="number">1</span> )&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">//不是第二层</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          d = d.<span class="property">parent</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">return</span> <span class="title function_">color</span>(d.<span class="property">data</span>.<span class="property">name</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> render = <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        color = d3.<span class="title function_">scaleOrdinal</span>(d3.<span class="property">schemeCategory10</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        g.<span class="title function_">selectAll</span>(<span class="string">&#x27;datarect&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>()).<span class="title function_">join</span>(<span class="string">&#x27;rect&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;datarect&#x27;</span> )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>, fill )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y0</span> )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x0</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x1</span> - d.<span class="property">x0</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>,  <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y1</span> -d.<span class="property">y0</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        g.<span class="title function_">selectAll</span>(<span class="string">&#x27;.datatext&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>()).<span class="title function_">join</span>(<span class="string">&#x27;text&#x27;</span>)   </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;datatext&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> (d.<span class="property">y0</span> + d.<span class="property">y1</span>)/<span class="number">2</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> (d.<span class="property">x0</span> + d.<span class="property">x1</span>)/<span class="number">2</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;text-anchor&#x27;</span>, <span class="string">&#x27;middle&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">data</span>.<span class="property">name</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      d3.<span class="title function_">json</span>(<span class="string">&#x27;./data/games.json&#x27;</span>).<span class="title function_">then</span>( <span class="function"><span class="params">data</span> =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        root = d3.<span class="title function_">partition</span>().<span class="title function_">size</span>([height,width])(</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            d3.<span class="title function_">hierarchy</span>(data).<span class="title function_">sum</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">popularity</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            .<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>) =&gt;</span> &#123;<span class="keyword">return</span> b.<span class="property">popularity</span> - a.<span class="property">popularity</span>&#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          );</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="title function_">render</span>(root)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"> </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="可视化效果"><a href="#可视化效果" class="headerlink" title="可视化效果"></a>可视化效果</h3><p><img src="https://img-blog.csdnimg.cn/5d3103f57a844bdcab8f5ec802b263ae.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="光晕图Sunburst可视化代码-用到了极坐标轴"><a href="#光晕图Sunburst可视化代码-用到了极坐标轴" class="headerlink" title="光晕图Sunburst可视化代码(用到了极坐标轴)"></a>光晕图Sunburst可视化代码(用到了极坐标轴)</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">&lt;!<span class="variable constant_">DOCTYPE</span> html&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>SunBurst<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./js/d3.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">svg</span> <span class="attr">width</span>=<span class="string">&quot;1600&quot;</span> <span class="attr">height</span>=<span class="string">&quot;940&quot;</span> <span class="attr">id</span>=<span class="string">&quot;mainsvg&quot;</span> <span class="attr">class</span>=<span class="string">&quot;svgs&quot;</span> </span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">style</span>=<span class="string">&quot;display: block; margin: auto;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> svg = d3.<span class="title function_">select</span>(<span class="string">&#x27;#mainsvg&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> width = +svg.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> height = +svg.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      svg.<span class="title function_">attr</span>(<span class="string">&quot;viewBox&quot;</span>, [<span class="number">0</span>, <span class="number">0</span>, width, height]);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> g = svg.<span class="title function_">append</span>(<span class="string">&#x27;g&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      .<span class="title function_">attr</span>(<span class="string">&#x27;transform&#x27;</span>, <span class="string">`translate(<span class="subst">$&#123;width/<span class="number">2</span>&#125;</span>, <span class="subst">$&#123;height/<span class="number">2</span>&#125;</span>)`</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">let</span> root;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> arc = d3.<span class="title function_">arc</span>()</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      .<span class="title function_">startAngle</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x0</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      .<span class="title function_">endAngle</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">x1</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      .<span class="title function_">innerRadius</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y0</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      .<span class="title function_">outerRadius</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">y1</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="comment">// .padAngle()</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">const</span> <span class="title function_">fill</span> = d =&gt; &#123; </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">while</span> (d.<span class="property">depth</span> &gt; <span class="number">1</span>) </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            d = d.<span class="property">parent</span>; </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">return</span> <span class="title function_">color</span>(d.<span class="property">data</span>.<span class="property">name</span>); </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> render = <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        color = d3.<span class="title function_">scaleOrdinal</span>(d3.<span class="property">schemeCategory10</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        g.<span class="title function_">selectAll</span>(<span class="string">&#x27;.datapath&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>().<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">depth</span>&gt;<span class="number">0</span>)).<span class="title function_">join</span>(<span class="string">&#x27;path&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;calss&#x27;</span>, <span class="string">&#x27;datapath&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;d&#x27;</span>, arc )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>,fill )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        g.<span class="title function_">selectAll</span>(<span class="string">&#x27;.datatext&#x27;</span>).<span class="title function_">data</span>(data.<span class="title function_">descendants</span>().<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">depth</span>&gt;<span class="number">0</span>))</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">join</span>(<span class="string">&#x27;text&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;datatext&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;transform&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span>&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">let</span> x = (d.<span class="property">x0</span> + d.<span class="property">x1</span>) / <span class="number">2</span> * <span class="number">180</span> /<span class="title class_">Math</span>.<span class="property">PI</span>; </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">let</span> y = (d.<span class="property">y0</span> + d.<span class="property">y1</span>) / <span class="number">2</span> ;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"><span class="comment">//data中使用的是弧度制(x,y表示弧度)，但是rotate()使用的是角度制，因此这里需要人为进行一步转换(*180/Math.PI)</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            <span class="keyword">return</span> <span class="string">`rotate(<span class="subst">$&#123;x-<span class="number">90</span>&#125;</span>) translate(<span class="subst">$&#123;y&#125;</span>,0) rotate(<span class="subst">$&#123;x &lt; <span class="number">180</span> ? <span class="number">0</span> : <span class="number">180</span>&#125;</span>)`</span>          </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;text-anchor&#x27;</span>, <span class="string">&#x27;middle&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">data</span>.<span class="property">name</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//注意：translate里面的函数执行时绝对有序的，rotate旋转的时候会连带着坐标轴一起旋转</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//text默认的0度是水平向右的，而d3中默认的0度是水平向上的,因此在rotate里面还是要减去90</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//左半边的文本需要再转一下，让文字变正,因此在translate里面还要加上一个rotate，让左半边的文字旋转180度变正</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"> </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      d3.<span class="title function_">json</span>(<span class="string">&#x27;./data/games.json&#x27;</span>).<span class="title function_">then</span>( <span class="function"><span class="params">data</span> =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        root = d3.<span class="title function_">partition</span>().<span class="title function_">size</span>([<span class="number">2</span> * <span class="title class_">Math</span>.<span class="property">PI</span>, height / <span class="number">1.6</span>])</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        (d3.<span class="title function_">hierarchy</span>(data).<span class="title function_">sum</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">popularity</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">sort</span>(<span class="function">(<span class="params">a, b</span>) =&gt;</span> b.<span class="property">popularity</span> - a.<span class="property">popularity</span>));</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="variable language_">console</span>.<span class="title function_">log</span>(root);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="title function_">render</span>(root);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="可视化效果-1"><a href="#可视化效果-1" class="headerlink" title="可视化效果"></a>可视化效果</h3><p><img src="https://img-blog.csdnimg.cn/60af480f98a94d02a72d3a9f4a08634a.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94%E6%A0%91%E5%BD%A2%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="prev" title="【D3.js 学习记录】——树形数据可视化">
+      <i class="fa fa-chevron-left"></i> 【D3.js 学习记录】——树形数据可视化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94Force%20%E5%8A%9B%E5%AF%BC%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="next" title="【D3.js 学习记录】——Force 力导图数据可视化">
+      【D3.js 学习记录】——Force 力导图数据可视化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%B0%E9%94%A5%E5%9B%BE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">冰锥图可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E5%BD%A2%E5%86%B0%E9%94%A5%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">矩形冰锥图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#d3-partition-%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3"><span class="nav-number">1.1.1.</span> <span class="nav-text">d3.partition()官方文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d3-partition-size"><span class="nav-number">1.1.2.</span> <span class="nav-text">d3.partition().size()</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%90%86%E8%A7%A3"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">代码理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E5%8C%BA%E5%9F%9F%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.3.</span> <span class="nav-text">绘制区域代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C-1"><span class="nav-number">1.1.4.</span> <span class="nav-text">结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.5.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sunburst%EF%BC%88%E5%85%89%E6%99%95%E5%9B%BE%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">Sunburst（光晕图）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">数据预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6path%EF%BC%88%E6%89%87%E5%BD%A2%E5%8C%BA%E5%9F%9F%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">绘制path（扇形区域）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E6%96%87%E6%9C%AC"><span class="nav-number">1.2.3.</span> <span class="nav-text">绘制文本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A9%E5%BD%A2%E5%86%B0%E9%94%A5%E5%9B%BEicicle-%E5%8F%AF%E8%A7%86%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.4.</span> <span class="nav-text">矩形冰锥图icicle 可视化代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%95%88%E6%9E%9C"><span class="nav-number">1.2.5.</span> <span class="nav-text">可视化效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E6%99%95%E5%9B%BESunburst%E5%8F%AF%E8%A7%86%E5%8C%96%E4%BB%A3%E7%A0%81-%E7%94%A8%E5%88%B0%E4%BA%86%E6%9E%81%E5%9D%90%E6%A0%87%E8%BD%B4"><span class="nav-number">1.2.6.</span> <span class="nav-text">光晕图Sunburst可视化代码(用到了极坐标轴)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%95%88%E6%9E%9C-1"><span class="nav-number">1.2.7.</span> <span class="nav-text">可视化效果</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

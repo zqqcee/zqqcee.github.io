@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="原来计算预测值，线性计算结果如果小于零，预测值为0；如果原来计算预测值为1，预测值就为1。结果只有0和1两种取值，但是这样如果样本错误分类，误差为1，如果样本正确分类，误差为0。这种误差计算方式太为武断，且无法反映误差大小。引入逻辑回归">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习——逻辑回归，岭回归与LASSO，模型评价指标学习笔记">
+<meta property="og:url" content="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%EF%BC%8C%E5%B2%AD%E5%9B%9E%E5%BD%92%E4%B8%8ELASSO%EF%BC%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="原来计算预测值，线性计算结果如果小于零，预测值为0；如果原来计算预测值为1，预测值就为1。结果只有0和1两种取值，但是这样如果样本错误分类，误差为1，如果样本正确分类，误差为0。这种误差计算方式太为武断，且无法反映误差大小。引入逻辑回归">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210519193700354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210519193726178.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210519193758284.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210519193823628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/202105191938475.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210519193911995.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210519193940701.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2022-08-03T09:53:28.169Z">
+<meta property="article:modified_time" content="2022-08-03T10:06:37.377Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210519193700354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%EF%BC%8C%E5%B2%AD%E5%9B%9E%E5%BD%92%E4%B8%8ELASSO%EF%BC%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>机器学习——逻辑回归，岭回归与LASSO，模型评价指标学习笔记 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%EF%BC%8C%E5%B2%AD%E5%9B%9E%E5%BD%92%E4%B8%8ELASSO%EF%BC%8C%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习——逻辑回归，岭回归与LASSO，模型评价指标学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-03 17:53:28 / Modified: 18:06:37" itemprop="dateCreated datePublished" datetime="2022-08-03T17:53:28+08:00">2022-08-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/machine-learning/" itemprop="url" rel="index"><span itemprop="name">machine learning</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">原来计算预测值，线性计算结果如果小于零，预测值为0；如果原来计算预测值为1，预测值就为1。结果只有0和1两种取值，但是这样如果样本错误分类，误差为1，如果样本正确分类，误差为0。这种误差计算方式太为武断，且无法反映误差大小。引入逻辑回归</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="逻辑回归-——-用于解决分类问题"><a href="#逻辑回归-——-用于解决分类问题" class="headerlink" title="逻辑回归 —— 用于解决分类问题"></a>逻辑回归 —— 用于解决分类问题</h1><h2 id="误差计算"><a href="#误差计算" class="headerlink" title="误差计算"></a>误差计算</h2><p>​    原来计算预测值，线性计算结果如果小于零，预测值为0；如果原来计算预测值为1，预测值就为1。结果只有0和1两种取值，但是这样如果样本错误分类，误差为1，如果样本正确分类，误差为0。这种误差计算方式太为武断，且无法反映误差大小。如下：</p>
+<script type="math/tex; mode=display">
+h(x) = \begin{cases}
+0 &&  \theta^Tx<0\\
+1 &&  \theta^Tx>0\\
+\end{cases}</script><p>​    因此将原本分类前的预测值用sigmoid函数散列到零和一之间的数，来表示它有多大的概率分类结果为0/1。代入sigmiod函数</p>
+<script type="math/tex; mode=display">
+g(x) =\frac{1}{1+e^{-x}}\\
+所以，h(x)=g(\theta^TX)</script><p><img src="https://img-blog.csdnimg.cn/20210519193700354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p> 将预测值散列到 0-1之间。计算代价函数就不会出现只有两个值的情况了，也更能反映估计值与真实值的偏差</p>
+<h3 id="训练误差"><a href="#训练误差" class="headerlink" title="训练误差"></a>训练误差</h3><p>根据训练数据，训练出来一个训练模型。将训练数据带入模型中，得出训练数据的预测值。 该预测值与训练数据（真实值）的误差叫做训练误差。<br>在工程中，一般会将拿到的数据集做切分，百分之八十做训练数据，百分之二十做</p>
+<h3 id="预测误差"><a href="#预测误差" class="headerlink" title="预测误差"></a>预测误差</h3><p>测试数据与真实值的误差，一般可以将预测误差当作泛化误差。</p>
+<h3 id="泛化误差"><a href="#泛化误差" class="headerlink" title="泛化误差"></a>泛化误差</h3><p>模型将来会用来去预测未知的样本，若用到未知的样本上，产生的误差叫做泛化误差。</p>
+<h2 id="代价函数"><a href="#代价函数" class="headerlink" title="代价函数"></a>代价函数</h2><p><img src="https://img-blog.csdnimg.cn/20210519193726178.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>在c=1时，预测错误的代价可以直接用x，θ计算出来的sigmoid值来表示条件概率，即在给出预测值的条件下，c=1发生的概率<br>在c=0时，越接近0概率越小，但是我们希望当c=0时，预测错误的代价是大的，因此用1-h_θ(x)来表示</p>
+<p><img src="https://img-blog.csdnimg.cn/20210519193758284.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt=""></p>
+<p>代价函数求对数的原因:</p>
+<ul>
+<li>连乘变为连加</li>
+<li>求对数后的单调性和函数本身一致</li>
+</ul>
+<h2 id="岭回归"><a href="#岭回归" class="headerlink" title="岭回归"></a>岭回归</h2><p>岭回归的代价函数实际上就是对 θ的L(2)正则化</p>
+<p>岭系数就是正则化参数，而岭回归就由于正则化（对每个参数增加了惩罚因子），而避免了过拟合问题</p>
+<h2 id="LASSO回归——稀疏化"><a href="#LASSO回归——稀疏化" class="headerlink" title="LASSO回归——稀疏化"></a>LASSO回归——稀疏化</h2><p>​    高维数据指数据的维度很高，甚至远大于样本量的个数。高维数据的明显的表现是：在空间中数据是非常稀疏的，与空间的维数相比样本量总是显得非常少。<br>​    在分析高维数据过程中碰到最大的问题就是维数的膨胀，也就是通常所说的“维数灾难”问题。研究表明，随着维数的增长，分析所需的空间样本数会呈指数增长。<br>​    Lasso是另一种数据降维方法，该方法不仅适用于线性情况，也适用于非线性情况。Lasso是基于惩罚方法对样本数据进行变量选择，通过对原本的系数进行压缩，将原本很小的系数直接压缩至0，从而将这部分系数所对应的变量视为非显著性变量，将不显著的变量直接舍弃（系数变为0）。</p>
+<p>LASSO回归之所以会带来稀疏化的效果，是因为他是L1正则化项，因此代价函数等值线更容易切到阴影部分的顶点，切到顶点就必然会有某些权重很小或几乎为0，这就是LASSO稀疏化得原因。</p>
+<h3 id="LASSO与岭回归"><a href="#LASSO与岭回归" class="headerlink" title="LASSO与岭回归"></a>LASSO与岭回归</h3><p><img src="https://img-blog.csdnimg.cn/20210519193823628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt=""></p>
+<script type="math/tex; mode=display">
+\beta = \arg min\{\sum_{i=1}^N(y_i-h(x_i))^2+\lambda\sum_{j=1}^p\beta^2\}\\
+等价于\\
+\beta = \arg min\{\sum_{i=1}^N(y_i-h(x_i))^2\}\\
+s.t.\sum_{j=1}^p\beta_j^2\le t</script><p>岭回归:<br>    多重线性回归要求各个自变量之间相互独立，不存在多重共线性。所谓多重共线性，是指自变量之间存在某种相关或者高度相关的关系，其中某个自变量可以被其他自变量组成的线性组合来解释。<br>    医学研究中常见的生理资料，如收缩压和舒张压、总胆固醇和低密度脂蛋白胆固醇等，这些变量之间本身在人体中就存在一定的关联性。如果在构建多重线性回归模型时，把具有多重共线性的变量一同放在模型中进行拟合，就会出现方程估计的偏回归系数明显与常识不相符，甚至出现符号方向相反的情况，对模型的拟合带来严重的影响。</p>
+<hr>
+<h2 id="模型评价指标"><a href="#模型评价指标" class="headerlink" title="模型评价指标"></a>模型评价指标</h2><ul>
+<li>准确率：在所有识别的样本中，能正确分类（识别结果准确）的样本在总识别样本数中的占比</li>
+<li>正确率：在所有预测为正的样本中，结果确实为正的样本的占比</li>
+<li>召回率：在所有实际为正的样本中，被预测出来为正的样本的占比</li>
+</ul>
+<h2 id="ROC与AUC"><a href="#ROC与AUC" class="headerlink" title="ROC与AUC"></a>ROC与AUC</h2><p>在逻辑回归分类中，二维平面上，纵坐标表示真实类别，横坐标表示预测函数计算结果（因为预测结果是x被分为某类的概率值，因此图中为“ 概率 ”）。据此，可以给定一个阈值， 将预测函数计算出来的结果根据阈值进行二分类。</p>
+<p><img src="https://img-blog.csdnimg.cn/202105191938475.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt=""></p>
+<h3 id="ROC"><a href="#ROC" class="headerlink" title="ROC"></a>ROC</h3><p>将混淆矩阵映射到二维空间中：横轴：FPR,纵轴：TPR。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210519193911995.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="绘制步骤："><a href="#绘制步骤：" class="headerlink" title="绘制步骤："></a>绘制步骤：</h4><p><img src="https://img-blog.csdnimg.cn/20210519193940701.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="理解："><a href="#理解：" class="headerlink" title="理解："></a>理解：</h4><p>可以将ROC的横轴理解为代价，纵轴理解为收获</p>
+<h4 id="AUC"><a href="#AUC" class="headerlink" title="AUC"></a>AUC</h4><p>AUC为ROC与横轴的面积</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E8%A7%A3%E5%86%B3nginx%E8%AE%BF%E9%97%AE%E5%8A%A8%E6%80%81%E6%8E%A5%E5%8F%A3%E6%8A%A5%E9%94%99404Not%20Found%E9%97%AE%E9%A2%98/" rel="prev" title="解决nginx访问动态接口报错404Not Found问题">
+      <i class="fa fa-chevron-left"></i> 解决nginx访问动态接口报错404Not Found问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E8%B7%AF/" rel="next" title="机器学习——人工神经网路">
+      机器学习——人工神经网路 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92-%E2%80%94%E2%80%94-%E7%94%A8%E4%BA%8E%E8%A7%A3%E5%86%B3%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">逻辑回归 —— 用于解决分类问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E8%AE%A1%E7%AE%97"><span class="nav-number">1.1.</span> <span class="nav-text">误差计算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E8%AF%AF%E5%B7%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">训练误差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E6%B5%8B%E8%AF%AF%E5%B7%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text">预测误差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%9B%E5%8C%96%E8%AF%AF%E5%B7%AE"><span class="nav-number">1.1.3.</span> <span class="nav-text">泛化误差</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">代价函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92"><span class="nav-number">1.3.</span> <span class="nav-text">岭回归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LASSO%E5%9B%9E%E5%BD%92%E2%80%94%E2%80%94%E7%A8%80%E7%96%8F%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">LASSO回归——稀疏化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LASSO%E4%B8%8E%E5%B2%AD%E5%9B%9E%E5%BD%92"><span class="nav-number">1.4.1.</span> <span class="nav-text">LASSO与岭回归</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">1.5.</span> <span class="nav-text">模型评价指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ROC%E4%B8%8EAUC"><span class="nav-number">1.6.</span> <span class="nav-text">ROC与AUC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC"><span class="nav-number">1.6.1.</span> <span class="nav-text">ROC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">绘制步骤：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%90%86%E8%A7%A3%EF%BC%9A"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">理解：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AUC"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">AUC</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

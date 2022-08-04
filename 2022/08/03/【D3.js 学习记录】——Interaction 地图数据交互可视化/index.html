@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="d3学习记录 Interaction 地图数据交互可视化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【D3.js 学习记录】——Interaction 地图数据交互可视化">
+<meta property="og:url" content="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94Interaction%20%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E5%8F%AF%E8%A7%86%E5%8C%96/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="d3学习记录 Interaction 地图数据交互可视化">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/8cc8b4efd5324a7599594c3634f54793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/fa4ef09ce89744f9bdf34466b73da5b0.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2022-08-03T09:54:44.224Z">
+<meta property="article:modified_time" content="2022-08-03T10:00:33.450Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/8cc8b4efd5324a7599594c3634f54793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94Interaction%20%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E5%8F%AF%E8%A7%86%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【D3.js 学习记录】——Interaction 地图数据交互可视化 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94Interaction%20%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E5%8F%AF%E8%A7%86%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【D3.js 学习记录】——Interaction 地图数据交互可视化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-03 17:54:44 / Modified: 18:00:33" itemprop="dateCreated datePublished" datetime="2022-08-03T17:54:44+08:00">2022-08-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/visualization/" itemprop="url" rel="index"><span itemprop="name">visualization</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">d3学习记录 Interaction 地图数据交互可视化</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Interaction-—-地图数据可视化"><a href="#Interaction-—-地图数据可视化" class="headerlink" title="Interaction — 地图数据可视化"></a>Interaction — 地图数据可视化</h2><h3 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h3><p>JavaScript Object Notation</p>
+<ul>
+<li><p>本质上（从数据格式上）是JS的对象</p>
+</li>
+<li><p>保存后是文本</p>
+</li>
+<li><p>文本与JS的对象是可以对等转换的</p>
+<p>这点与csv不同，js 读取 csv 的时候会转化成数组<br>但是js 读取JSON文件时 ，是什么数据就会读出什么数据</p>
+</li>
+</ul>
+<h3 id="地图数据的表达-—-TopoJson，-GeoJson"><a href="#地图数据的表达-—-TopoJson，-GeoJson" class="headerlink" title="地图数据的表达 — TopoJson， GeoJson"></a>地图数据的表达 — TopoJson， GeoJson</h3><h4 id="TopoJson"><a href="#TopoJson" class="headerlink" title="TopoJson"></a>TopoJson</h4><ul>
+<li>本质上是Json</li>
+<li>处理了GeoJson的数据冗余缺点，节约了存储空间</li>
+<li>由D3的作者 Mike Bostock 制定</li>
+</ul>
+<p>TopoJson数据格式：<br><img src="https://img-blog.csdnimg.cn/8cc8b4efd5324a7599594c3634f54793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="GeoJson"><a href="#GeoJson" class="headerlink" title="GeoJson"></a>GeoJson</h4><ul>
+<li>本质上是Json</li>
+<li><strong>D3.js 的geoPath 使用了GeoJson格式的地图数据</strong></li>
+</ul>
+<p>TopoJSON与GeoJSON的转换</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> geoJson = topojson.<span class="title function_">feature</span>(data, data.<span class="property">objects</span>.<span class="property">countries</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="Json数据的读取"><a href="#Json数据的读取" class="headerlink" title="Json数据的读取"></a>Json数据的读取</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//与读取csv的函数格式类似</span></span><br><span class="line">d3.<span class="title function_">json</span>(filepath).<span class="title function_">then</span>(<span class="keyword">function</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="编程（内含一些可能会遇见的坑）"><a href="#编程（内含一些可能会遇见的坑）" class="headerlink" title="编程（内含一些可能会遇见的坑）"></a>编程（内含一些可能会遇见的坑）</h3><h4 id="geoPath"><a href="#geoPath" class="headerlink" title="geoPath"></a>geoPath</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> projection = d3.<span class="title function_">geoNaturalEarth1</span>() <span class="comment">//geoNaturalEarth1是一种常用的映射方式</span></span><br><span class="line"><span class="keyword">const</span> geo = d3.<span class="title function_">geoPath</span>().<span class="title function_">projection</span>(projection); <span class="comment">// project:定义了数据如何投影到地图上</span></span><br><span class="line"><span class="comment">//geo通常用于设计path的d属性</span></span><br><span class="line">.<span class="title function_">join</span>(<span class="string">&#x27;path&#x27;</span>).<span class="title function_">attr</span>(<span class="string">&#x27;d&#x27;</span>,geo)</span><br></pre></td></tr></table></figure>
+<h4 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h4><p>需要注意的是，<strong>data绑定的不是geoJSON数据，而是features字段</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g.<span class="title function_">selectAll</span>(<span class="string">&#x27;path&#x27;</span>).<span class="title function_">data</span>(geoJSON.<span class="property">features</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="比例尺（如何让地图平铺整个svg）"><a href="#比例尺（如何让地图平铺整个svg）" class="headerlink" title="比例尺（如何让地图平铺整个svg）"></a>比例尺（如何让地图平铺整个svg）</h4><p>projection调用函数即可</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">projection.<span class="title function_">fitSize</span>([innerWidth,innerHeight], geoJson); </span><br></pre></td></tr></table></figure>
+<h3 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h3><p>设置三要素： 我要为<strong>哪些图元</strong> 的 哪些事件 设计<strong>什么触发动作</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">select</span>().<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>,<span class="keyword">function</span>(<span class="params"></span>)&#123;...&#125;);</span><br></pre></td></tr></table></figure>
+<p>新的选择方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">select</span>().<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>,<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    d3.<span class="title function_">select</span>(<span class="variable language_">this</span>) <span class="comment">// this代表了当前触发click事件的“主角”，即返回值为触发了click的事件</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>但是需要注意的是，<strong>如果要用this，就不能用 () =&gt; {} 箭头函数进行编程了</strong>,使用箭头函数不会对this进行映射</p>
+<p><strong>Notable：</strong>.on() 函数返回的还是图元，因此on() 函数后面还可以调用on</p>
+<h3 id="D3之外的库"><a href="#D3之外的库" class="headerlink" title="D3之外的库"></a>D3之外的库</h3><h4 id="D3-Tip"><a href="#D3-Tip" class="headerlink" title="D3-Tip"></a>D3-Tip</h4><p>这个不作为D3的本体，这是D3社区的一些编程爱好者为了辅助D3使用开发的库</p>
+<p>Demo4-map中使用Tip为地图 添加地区名称</p>
+<hr>
+<h3 id="demo4-Map-地图数据可视化-html"><a href="#demo4-Map-地图数据可视化-html" class="headerlink" title="demo4-Map 地图数据可视化.html"></a>demo4-Map 地图数据可视化.html</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">&lt;!<span class="variable constant_">DOCTYPE</span> html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Render the Earth&lt;/title&gt;</span><br><span class="line">    &lt;!-- &lt;link rel=&quot;stylesheet&quot; href=&quot;./css/earth.css&quot;&gt; --&gt;</span><br><span class="line">    &lt;script src=&quot;./js/d3.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script src=&quot;./js/topojson.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script src=&quot;./js/library/d3-tip.js&quot;&gt;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">    &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./css/earth.css&quot;&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./css/d3tip.css&quot;&gt;</span><br><span class="line"></span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;svg width=&quot;1600&quot; height=&quot;800&quot; id=&quot;mainsvg&quot; class=&quot;svgs&quot;&gt;&lt;/svg&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line"></span><br><span class="line">    let svg = d3.select(&#x27;svg&#x27;);</span><br><span class="line">    const width = +svg.attr(&#x27;width&#x27;);</span><br><span class="line">    const height = +svg.attr(&#x27;height&#x27;);</span><br><span class="line">    const margin = &#123;top: 60, right: 60, bottom: 10, left: 60&#125;;</span><br><span class="line">    const innerWidth = width - margin.left - margin.right;</span><br><span class="line">    const innerHeight = height - margin.top - margin.bottom;</span><br><span class="line">    const g = svg.append(&#x27;g&#x27;).attr(&#x27;id&#x27;, &#x27;maingroup&#x27;)</span><br><span class="line">    .attr(&#x27;transform&#x27;, `translate($&#123;margin.left&#125;, $&#123;margin.top&#125;)`);</span><br><span class="line"></span><br><span class="line">    const projection = d3.geoNaturalEarth1();</span><br><span class="line"></span><br><span class="line">    const geo = d3.geoPath()</span><br><span class="line">    .projection(projection);</span><br><span class="line">    // project:数据如何投影到地图上</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    d3.json(&#x27;./data/countries-110m.json&#x27;).then(data =&gt; &#123;</span><br><span class="line"></span><br><span class="line">      //要用d3画地图，必须要将topoJson，转换成geoJson</span><br><span class="line">      let worldmeta = topojson.feature(data, data.objects.countries);</span><br><span class="line">      console.log(data)</span><br><span class="line">      </span><br><span class="line">      console.log(worldmeta);</span><br><span class="line"></span><br><span class="line">      projection.fitSize([innerWidth,innerHeight], worldmeta); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      const tip = d3.tip()</span><br><span class="line">      .attr(&#x27;class&#x27;, &#x27;d3-tip&#x27;)</span><br><span class="line">      .html(function(d)&#123;</span><br><span class="line">        return d.properties.name;</span><br><span class="line">      &#125;);</span><br><span class="line">      svg.call(tip); //有点类似于 tip(svg) 即把定义好的tip扔给svg</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      //绑定的是</span><br><span class="line">      g.selectAll(&#x27;path&#x27;).data(worldmeta.features)</span><br><span class="line">      .join(&#x27;path&#x27;)</span><br><span class="line">      .attr(&#x27;d&#x27;, geo)</span><br><span class="line">      .attr(&#x27;stroke&#x27;,&#x27;black&#x27;)</span><br><span class="line">      .attr(&#x27;stroke-width&#x27;, 1)</span><br><span class="line">      .on(&#x27;mouseover&#x27;,function()&#123;</span><br><span class="line">        d3.select(this)</span><br><span class="line">        .attr(&#x27;opacity&#x27;,0.5 )</span><br><span class="line">        .attr(&#x27;stroke&#x27;, &#x27;white&#x27;)</span><br><span class="line">        .attr(&#x27;stroke-width&#x27;, 6)</span><br><span class="line">      &#125;)</span><br><span class="line">      .on(&#x27;mouseout&#x27; , function()&#123;</span><br><span class="line">          d3.select(this)</span><br><span class="line">          .attr(&#x27;opacity&#x27;,1 )</span><br><span class="line">          .attr(&#x27;stroke&#x27;, &#x27;black&#x27;)</span><br><span class="line">          .attr(&#x27;stroke-width&#x27;, 1)</span><br><span class="line">      &#125;)</span><br><span class="line">      .on(&#x27;click&#x27; , function(d) &#123;</span><br><span class="line">        tip.show(d)</span><br><span class="line">        .attr(&#x27;font-color&#x27;, &#x27;white&#x27;)</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      //  .html直接设置html标签</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="可视化效果（鼠标移到某区域上会高亮，点击某区域会显示名字）"><a href="#可视化效果（鼠标移到某区域上会高亮，点击某区域会显示名字）" class="headerlink" title="可视化效果（鼠标移到某区域上会高亮，点击某区域会显示名字）"></a>可视化效果（鼠标移到某区域上会高亮，点击某区域会显示名字）</h3><p><img src="https://img-blog.csdnimg.cn/fa4ef09ce89744f9bdf34466b73da5b0.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94D3.js%20%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF/" rel="prev" title="【D3.js 学习记录】——D3.js 数据绑定的基本思路">
+      <i class="fa fa-chevron-left"></i> 【D3.js 学习记录】——D3.js 数据绑定的基本思路
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94Stack%20%E5%A0%86%E5%8F%A0%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="next" title="【D3.js 学习记录】——Stack 堆叠数据可视化">
+      【D3.js 学习记录】——Stack 堆叠数据可视化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Interaction-%E2%80%94-%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">Interaction — 地图数据可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON"><span class="nav-number">1.1.</span> <span class="nav-text">JSON</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E8%BE%BE-%E2%80%94-TopoJson%EF%BC%8C-GeoJson"><span class="nav-number">1.2.</span> <span class="nav-text">地图数据的表达 — TopoJson， GeoJson</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TopoJson"><span class="nav-number">1.2.1.</span> <span class="nav-text">TopoJson</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GeoJson"><span class="nav-number">1.2.2.</span> <span class="nav-text">GeoJson</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Json%E6%95%B0%E6%8D%AE%E7%9A%84%E8%AF%BB%E5%8F%96"><span class="nav-number">1.3.</span> <span class="nav-text">Json数据的读取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B%EF%BC%88%E5%86%85%E5%90%AB%E4%B8%80%E4%BA%9B%E5%8F%AF%E8%83%BD%E4%BC%9A%E9%81%87%E8%A7%81%E7%9A%84%E5%9D%91%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">编程（内含一些可能会遇见的坑）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#geoPath"><span class="nav-number">1.4.1.</span> <span class="nav-text">geoPath</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A"><span class="nav-number">1.4.2.</span> <span class="nav-text">数据绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%94%E4%BE%8B%E5%B0%BA%EF%BC%88%E5%A6%82%E4%BD%95%E8%AE%A9%E5%9C%B0%E5%9B%BE%E5%B9%B3%E9%93%BA%E6%95%B4%E4%B8%AAsvg%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">比例尺（如何让地图平铺整个svg）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text">事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#D3%E4%B9%8B%E5%A4%96%E7%9A%84%E5%BA%93"><span class="nav-number">1.6.</span> <span class="nav-text">D3之外的库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#D3-Tip"><span class="nav-number">1.6.1.</span> <span class="nav-text">D3-Tip</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demo4-Map-%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-html"><span class="nav-number">1.7.</span> <span class="nav-text">demo4-Map 地图数据可视化.html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%95%88%E6%9E%9C%EF%BC%88%E9%BC%A0%E6%A0%87%E7%A7%BB%E5%88%B0%E6%9F%90%E5%8C%BA%E5%9F%9F%E4%B8%8A%E4%BC%9A%E9%AB%98%E4%BA%AE%EF%BC%8C%E7%82%B9%E5%87%BB%E6%9F%90%E5%8C%BA%E5%9F%9F%E4%BC%9A%E6%98%BE%E7%A4%BA%E5%90%8D%E5%AD%97%EF%BC%89"><span class="nav-number">1.8.</span> <span class="nav-text">可视化效果（鼠标移到某区域上会高亮，点击某区域会显示名字）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

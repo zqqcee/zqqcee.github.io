@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="d3学习记录 数据绑定的基本思路">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【D3.js 学习记录】——D3.js 数据绑定的基本思路">
+<meta property="og:url" content="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94D3.js%20%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="d3学习记录 数据绑定的基本思路">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/acb9a80f35e04ddcb5e86861538bd557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/a420189607ff4c868564461b9666af4e.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/7fd27f98649c4665a3d43d046e490e2b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2022-08-03T09:54:37.122Z">
+<meta property="article:modified_time" content="2022-08-03T09:58:38.027Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/acb9a80f35e04ddcb5e86861538bd557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94D3.js%20%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【D3.js 学习记录】——D3.js 数据绑定的基本思路 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94D3.js%20%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【D3.js 学习记录】——D3.js 数据绑定的基本思路
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-03 17:54:37 / Modified: 17:58:38" itemprop="dateCreated datePublished" datetime="2022-08-03T17:54:37+08:00">2022-08-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/visualization/" itemprop="url" rel="index"><span itemprop="name">visualization</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">d3学习记录 数据绑定的基本思路</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h2><h3 id="DataJoin"><a href="#DataJoin" class="headerlink" title="DataJoin"></a>DataJoin</h3><p><strong>本质</strong>： 数据与图元进行绑定，即绑定后，每个图元就有了自己的语义。<br>如demo2中，将数据中地区字段与图元绑定，那么图元就代表了地区</p>
+<p>Eg:</p>
+<ul>
+<li>每个国家的人数绑定到矩形的长度</li>
+<li>疫情感染的人数比例绑定到圆的半径</li>
+</ul>
+<p><strong>目的</strong></p>
+<ul>
+<li>使用Data-Join可以省区大量根据数据设置图元属性的代码量</li>
+<li>为数据动态更新提供统一接口</li>
+</ul>
+<p><strong>问题</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//错误的绑定方式</span></span><br><span class="line">d3.<span class="title function_">selectAll</span>(<span class="string">&#x27;rect&#x27;</span>).<span class="title function_">data</span>(data).<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span>=&gt;</span><span class="title function_">xScale</span>(d.<span class="property">value</span>))</span><br></pre></td></tr></table></figure>
+<p>但是上述绑定会出现一些问题，因为<strong>如果data() 不指定key的话，会默认按照索引进行绑定</strong>，因此若数据集改变了索引，如  [ {name: A , value: 20} ,{name : B , value : 60} ]  改成了 [ {name : B , value : 60} , {name: A , value: 20}] ,绑定的时候不指定key就会出问题</p>
+<p>解决方式  -&gt; 实现数据绑定的绑定函数为<strong>data（data, keyFunction）</strong>，使用keyFuntion 为数据绑定key。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//正确绑定方式</span></span><br><span class="line">d3.<span class="title function_">selectAll</span>(<span class="string">&#x27;rect&#x27;</span>).<span class="title function_">data</span>(data, <span class="function"><span class="params">d</span>=&gt;</span> d.<span class="property">name</span>).<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span>=&gt;</span> d.<span class="property">value</span>)</span><br></pre></td></tr></table></figure>
+<p>通过keyFunciont绑定的数据，重复数据也只会绑定为一个图元</p>
+<p><strong>注意！</strong></p>
+<p>但是这里的keyFunction有一个注意事项，如果是第一次绑定，必须是根据索引进行绑定的。因此如果第一次绑定就指定keyFunction，就会报错。</p>
+<h3 id="D3-js绑定数据的三个状态："><a href="#D3-js绑定数据的三个状态：" class="headerlink" title="D3.js绑定数据的三个状态："></a>D3.js绑定数据的三个状态：</h3><p><img src="https://img-blog.csdnimg.cn/acb9a80f35e04ddcb5e86861538bd557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li><p>Update</p>
+<p>图元和数据条目相同，即上文中介绍的均为单纯的update</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> update = d3.<span class="title function_">select</span>().<span class="title function_">data</span>(dataset)  <span class="comment">//该语句获得update 状态的 selection</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>Enter</p>
+<p>数据的条目多于图元，甚至没有图元，<strong>常用于第一次数据绑定</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> enter = update.<span class="title function_">enter</span>()	<span class="comment">//获得enter状态的selection</span></span><br><span class="line"><span class="keyword">var</span> enterSel = enter.<span class="title function_">append</span>(<span class="string">&#x27;circle&#x27;</span>) <span class="comment">// 绑定图元</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Exit</p>
+<p>数据的条目少于图元，<strong>常用于结束可视化</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> exit = update.<span class="title function_">exit</span>() <span class="comment">//获取exit 状态的图元</span></span><br><span class="line">exit.<span class="title function_">remove</span>()	<span class="comment">//删除exit状态的图元</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="Enter"><a href="#Enter" class="headerlink" title="Enter"></a>Enter</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> p = maingroup.<span class="title function_">selectAll</span>(<span class="string">&#x27;.class&#x27;</span>).<span class="title function_">data</span>(data).<span class="title function_">enter</span>().<span class="title function_">append</span>(<span class="string">&#x27;&#x27;</span>).<span class="title function_">attr</span>(<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>enter() 方法</strong>：</p>
+<ul>
+<li>给不存在的数据绑定的图元提供一个占位符<br>相当于在selectAll（）方法选择的时候，没有选择到图元。那么设置一个占位符，设置完毕后，.append()方法可以为数据添加一个图元，如append(‘rect’)。</li>
+</ul>
+<p><strong>append() 方法</strong>：</p>
+<ul>
+<li>事实上，调用了append之后，data-join 就会从Enter模式切换为Update模式</li>
+</ul>
+<p><strong>总结</strong></p>
+<ul>
+<li><p>enter() 方法本质上是生成了一个指向父节点的指针，而append()操作相当于在父节点后面添加指针数量的图元并将其与多出的数据绑定</p>
+</li>
+<li><p>:warning: 一般在Enter时，data() 是不需要指定keyFunction的。因为这是第一次绑定，必须是根据索引进行绑定的。</p>
+</li>
+</ul>
+<h4 id="Update"><a href="#Update" class="headerlink" title="Update"></a>Update</h4><ul>
+<li>Update是可视化任务中最常用的状态</li>
+<li>用D3实现动画时，是基于Update 状态的</li>
+</ul>
+<h4 id="Exit"><a href="#Exit" class="headerlink" title="Exit"></a>Exit</h4><ul>
+<li>有图元没有数据了，就需要Exit()</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> p = maingroup.<span class="title function_">selectAll</span>(<span class="string">&#x27;.class&#x27;</span>).<span class="title function_">data</span>(data).<span class="title function_">exit</span>().<span class="title function_">remove</span>() <span class="comment">//&#123;..后面的和前两种状态是一样的，可以设置属性，动画等&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="data-join"><a href="#data-join" class="headerlink" title="data.join"></a>data.join</h4><h5 id="【老方法】"><a href="#【老方法】" class="headerlink" title="【老方法】"></a>【老方法】</h5><p>因为一般的数据绑定流程为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.  先绑定，并获取update部分：var ele = svg.selectAll().data()。</span><br><span class="line">2. 然后再删除exit()部分： ele.exit().remove()</span><br><span class="line">3. 最后再添加enter()部分 ele = ele.enter().append()</span><br></pre></td></tr></table></figure></p>
+<p>注意： 调用enter后，会生成一个新的图元集合 others。这里可以用merge把 enter()部分和update部分合并，即：<br> <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ele = ele.<span class="title function_">enter</span>().<span class="title function_">append</span>().<span class="title function_">merge</span>(ele)</span><br></pre></td></tr></table></figure><br> 以达到一次性更新所有存在画布上的图元<strong>（enter部分，update 部分）</strong>的属性</p>
+<h5 id="【新方法】"><a href="#【新方法】" class="headerlink" title="【新方法】"></a>【新方法】</h5><p>还有一种比较简洁的方法，d3.js Version4+ 提供了join()方法，直接省去了merge那步<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">selectAll</span>().<span class="title function_">data</span>(dataset).<span class="title function_">join</span>()</span><br></pre></td></tr></table></figure><br>等价于<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">selectAll</span>().<span class="title function_">data</span>(dataset).<span class="title function_">enter</span>().<span class="title function_">append</span>(<span class="string">&#x27;图元&#x27;</span>).<span class="title function_">merge</span>(update)</span><br></pre></td></tr></table></figure><br>非常方便</p>
+<h3 id="D3-实现动画"><a href="#D3-实现动画" class="headerlink" title="D3 实现动画"></a>D3 实现动画</h3><p>示例代码:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">selectAll</span>(<span class="string">&#x27;rect&#x27;</span>).<span class="title function_">data</span>(data,<span class="function"><span class="params">d</span>=&gt;</span>d.<span class="property">name</span>).<span class="title function_">transition</span>().<span class="title function_">duration</span>(<span class="number">1000</span>).<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>,<span class="function"><span class="params">d</span>=&gt;</span><span class="title function_">xScale</span>(d.<span class="property">value</span>))</span><br></pre></td></tr></table></figure>
+<p>解释:</p>
+<ul>
+<li>transition()  表示后面设置属性 attr() 均采用动画的形式进行</li>
+<li>duration()  表示动画持续时间，单位为ms</li>
+</ul>
+<h3 id="D3-数据读取"><a href="#D3-数据读取" class="headerlink" title="D3 数据读取"></a>D3 数据读取</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d3.<span class="title function_">csv</span>(<span class="string">&#x27;host/dictionary/fileName&#x27;</span>).<span class="title function_">then</span>(<span class="function"><span class="params">data</span> =&gt;</span> &#123;&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>d3.csv() 函数的返回值是一个JS的Promise对象，该对象用于执行异步操作</li>
+<li>.then()的参数为一个函数，其参数为.csv() 的返回值</li>
+<li>也就是说，d3.csv() 会正常向服务器请求数据，在请求并处理好之后，将结果扔给then()中的回调函数。</li>
+</ul>
+<p><strong>但这也会引发跨域问题:  CORS</strong></p>
+<ul>
+<li>如果d3.csv读取的是主机本地的路径，那么会报跨域错误，这就是为什么d3编程需要一台服务器</li>
+</ul>
+<h3 id="基本编程思路"><a href="#基本编程思路" class="headerlink" title="基本编程思路"></a>基本编程思路</h3><ul>
+<li>将默认加载的元素封装为一个函数renderInit()</li>
+<li>将需要动态加载的元素封装成一个函数</li>
+</ul>
+<hr>
+<h3 id="本节课示例代码-demo2-动态散点图-html"><a href="#本节课示例代码-demo2-动态散点图-html" class="headerlink" title="本节课示例代码 (demo2-动态散点图.html)"></a>本节课示例代码 (demo2-动态散点图.html)</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br></pre></td><td class="code"><pre><span class="line">&lt;!<span class="variable constant_">DOCTYPE</span> html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Scatter-Simple&lt;/title&gt;</span><br><span class="line">    &lt;script src=&quot;./js/d3.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body style=&quot;text-align: center&quot;&gt;</span><br><span class="line">    &lt;svg width=&quot;1500&quot; height=&quot;600&quot; id=&quot;mainsvg&quot; class=&quot;svgs&quot; style=&quot;background-color: #ffffff;&quot;&gt;&lt;/svg&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        // get main SVG and its attributes &amp; setting hyper-parameters; </span><br><span class="line">        const svg = d3.select(&#x27;#mainsvg&#x27;);</span><br><span class="line">        const width = +svg.attr(&#x27;width&#x27;);</span><br><span class="line">        const height = +svg.attr(&#x27;height&#x27;);</span><br><span class="line">        const margin = &#123;top: 100, right: 120, bottom: 100, left: 90&#125;;</span><br><span class="line">        const innerWidth = width - margin.left - margin.right;</span><br><span class="line">        const innerHeight = height - margin.top - margin.bottom;</span><br><span class="line">        let xScale, yScale;</span><br><span class="line">        const xAxisLabel = &#x27;累计确诊人数（对数）&#x27;;</span><br><span class="line">        const yAxisLabel = &#x27;新增人数（对数）&#x27;;</span><br><span class="line">        let alldates;</span><br><span class="line">        let sequantial;</span><br><span class="line"></span><br><span class="line">        //提升代码的可拓展性</span><br><span class="line">        //因为是要把d和图元进行绑定，如果每次想要取得d中每个特定属性值的时候</span><br><span class="line">        //可以将取值函数定义在最前面，之后如果相对某个属性进行取值得时候，可以把xValue和yValue作为回调函数丢进去就可以了。</span><br><span class="line">        //且如果改横纵坐标值，改这个地方就可以了，就不用大段更改代码</span><br><span class="line"></span><br><span class="line">        //实际上是先将数据转换为对数值，再去映射</span><br><span class="line">        let xValue = d =&gt; Math.log(d[&#x27;确诊人数&#x27;]+1);</span><br><span class="line">        let yValue = d =&gt; Math.log(d[&#x27;新增确诊&#x27;]+1);</span><br><span class="line">        let rValue = d =&gt; Math.sqrt(d[&#x27;扩散指数&#x27;]*500)*0.8;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        var color = &#123;</span><br><span class="line">            &quot;武汉&quot;:&quot;#ff1c12&quot;,</span><br><span class="line">            &quot;黄石&quot;: &quot;#de5991&quot;,</span><br><span class="line">            &quot;十堰&quot;: &quot;#759AA0&quot;,</span><br><span class="line">            &quot;荆州&quot;: &quot;#E69D87&quot;,</span><br><span class="line">            &quot;宜昌&quot;: &quot;#be3259&quot;,</span><br><span class="line">            &quot;襄阳&quot;: &quot;#EA7E53&quot;,</span><br><span class="line">            &quot;鄂州&quot;: &quot;#EEDD78&quot;,</span><br><span class="line">            &quot;荆门&quot;: &quot;#9359b1&quot;,</span><br><span class="line">            &quot;孝感&quot;: &quot;#47c0d4&quot;,</span><br><span class="line">            &quot;黄冈&quot;: &quot;#F49F42&quot;,</span><br><span class="line">            &quot;咸宁&quot;: &quot;#AA312C&quot;,</span><br><span class="line">            &quot;恩施州&quot;: &quot;#B35E45&quot;,</span><br><span class="line">            &quot;随州&quot;: &quot;#4B8E6F&quot;,</span><br><span class="line">            &quot;仙桃&quot;: &quot;#ff8603&quot;,</span><br><span class="line">            &quot;天门&quot;: &quot;#ffde1d&quot;,</span><br><span class="line">            &quot;潜江&quot;: &quot;#1e9d95&quot;,</span><br><span class="line">            &quot;神农架&quot;: &quot;#7289AB&quot;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">        * 初始化函数</span><br><span class="line">        * 定义比例尺</span><br><span class="line">        * 添加坐标轴</span><br><span class="line">        */</span><br><span class="line">        const renderinit = function(data)&#123;</span><br><span class="line">            // Linear Scale: Data Space -&gt; Screen Space; </span><br><span class="line">            xScale = d3.scaleLinear()</span><br><span class="line">            .domain([d3.min(data, xValue), d3.max(data, xValue)]) // &quot;extent&quot; is equivalent to [d3.min(data, xValue), d3.max(data, xValue)]; </span><br><span class="line">            .range([0, innerWidth])</span><br><span class="line">            .nice();   //不加nice()会使得坐标轴多出一截</span><br><span class="line"></span><br><span class="line">            // Introducing y-Scale; </span><br><span class="line">            yScale = d3.scaleLinear()</span><br><span class="line">            .domain(d3.extent(data, yValue).reverse()) // remember to use reverse() to make y-axis start from the bottom; </span><br><span class="line">            //d3 的纵坐标轴，默认是从左上角开始的，因此应该将小一点的数据值映射到大一点的坐标值，可以对domain进行reverse(), 也可以对range() 进行reverse()</span><br><span class="line">            .range([0, innerHeight])</span><br><span class="line">            .nice();</span><br><span class="line"></span><br><span class="line">            // The reason of using group is that nothing is rendered outside svg, so margin of svg is always blank while margin of group is rendered inside svg; </span><br><span class="line">            const g = svg.append(&#x27;g&#x27;)</span><br><span class="line">            .attr(&#x27;transform&#x27;, `translate($&#123;margin.left&#125;, $&#123;margin.top&#125;)`)</span><br><span class="line">            .attr(&#x27;id&#x27;, &#x27;maingroup&#x27;);</span><br><span class="line"></span><br><span class="line">            // Adding axes; </span><br><span class="line">            const yAxis = d3.axisLeft(yScale)</span><br><span class="line">            .tickSize(-innerWidth)</span><br><span class="line">            //.tickFormat(d3.format(&#x27;.2s&#x27;))</span><br><span class="line">            .tickPadding(10); // .tickPadding is used to prevend intersection of ticks; </span><br><span class="line">            const xAxis = d3.axisBottom(xScale)</span><br><span class="line">            //.tickFormat(d3.format(&#x27;.2s&#x27;))</span><br><span class="line">            .tickSize(-innerHeight)</span><br><span class="line">            .tickPadding(10);</span><br><span class="line"></span><br><span class="line">            let yAxisGroup = g.append(&#x27;g&#x27;).call(yAxis)</span><br><span class="line">            .attr(&#x27;id&#x27;, &#x27;yaxis&#x27;);</span><br><span class="line">            yAxisGroup.append(&#x27;text&#x27;)</span><br><span class="line">            .attr(&#x27;font-size&#x27;, &#x27;2em&#x27;)</span><br><span class="line">            .attr(&#x27;transform&#x27;, `rotate(-90)`)</span><br><span class="line">            .attr(&#x27;x&#x27;, -innerHeight / 2)</span><br><span class="line">            .attr(&#x27;y&#x27;, -60)</span><br><span class="line">            .attr(&#x27;fill&#x27;, &#x27;#333333&#x27;)</span><br><span class="line">            .text(yAxisLabel)</span><br><span class="line">            .attr(&#x27;text-anchor&#x27;, &#x27;middle&#x27;) // Make label at the middle of axis. </span><br><span class="line">            yAxisGroup.selectAll(&#x27;.domain&#x27;).remove(); // we can select multiple tags using comma to seperate them and we can use space to signify nesting; </span><br><span class="line">            </span><br><span class="line">            let xAxisGroup = g.append(&#x27;g&#x27;).call(xAxis)</span><br><span class="line">            .attr(&#x27;transform&#x27;, `translate($&#123;0&#125;, $&#123;innerHeight&#125;)`)</span><br><span class="line">            .attr(&#x27;id&#x27;, &#x27;xaxis&#x27;);</span><br><span class="line">            xAxisGroup.append(&#x27;text&#x27;)</span><br><span class="line">            .attr(&#x27;font-size&#x27;, &#x27;2em&#x27;)</span><br><span class="line">            .attr(&#x27;y&#x27;, 60)</span><br><span class="line">            .attr(&#x27;x&#x27;, innerWidth / 2)</span><br><span class="line">            .attr(&#x27;fill&#x27;, &#x27;#333333&#x27;)</span><br><span class="line">            .text(xAxisLabel);</span><br><span class="line">            xAxisGroup.selectAll(&#x27;.domain&#x27;).remove();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            //图例</span><br><span class="line">            var legend_color = [</span><br><span class="line">                &quot;#ff1c12&quot;,</span><br><span class="line">                &quot;#de5991&quot;,</span><br><span class="line">                &quot;#759AA0&quot;,</span><br><span class="line">                &quot;#E69D87&quot;,</span><br><span class="line">                &quot;#be3259&quot;,</span><br><span class="line">                &quot;#EA7E53&quot;,</span><br><span class="line">                &quot;#EEDD78&quot;,</span><br><span class="line">                &quot;#9359b1&quot;,</span><br><span class="line">                &quot;#47c0d4&quot;,</span><br><span class="line">                &quot;#F49F42&quot;,</span><br><span class="line">                &quot;#AA312C&quot;,</span><br><span class="line">                &quot;#B35E45&quot;,</span><br><span class="line">                &quot;#4B8E6F&quot;,</span><br><span class="line">                &quot;#ff8603&quot;,</span><br><span class="line">                &quot;#ffde1d&quot;,</span><br><span class="line">                &quot;#1e9d95&quot;,</span><br><span class="line">                &quot;#7289AB&quot;</span><br><span class="line">            ]</span><br><span class="line">            </span><br><span class="line">            var legend_name = [&quot;武汉市&quot;,</span><br><span class="line">                &quot;黄石市&quot;,</span><br><span class="line">                &quot;十堰市&quot;,</span><br><span class="line">                &quot;荆州市&quot;,</span><br><span class="line">                &quot;宜昌市&quot;,</span><br><span class="line">                &quot;襄阳市&quot;,</span><br><span class="line">                &quot;鄂州市&quot;,</span><br><span class="line">                &quot;荆门市&quot;,</span><br><span class="line">                &quot;孝感市&quot;,</span><br><span class="line">                &quot;黄冈市&quot;,</span><br><span class="line">                &quot;咸宁市&quot;,</span><br><span class="line">                &quot;恩施州&quot;,</span><br><span class="line">                &quot;随州市&quot;,</span><br><span class="line">                &quot;仙桃市&quot;,</span><br><span class="line">                &quot;天门市&quot;,</span><br><span class="line">                &quot;潜江市&quot;,</span><br><span class="line">                &quot;神农架&quot;,</span><br><span class="line">            ];</span><br><span class="line"></span><br><span class="line">            //draw</span><br><span class="line"></span><br><span class="line">            //每一行图例设置为一个group</span><br><span class="line">            let legend = d3.select(&#x27;#maingroup&#x27;).selectAll(&#x27;.legend&#x27;)</span><br><span class="line">            .data(legend_name)</span><br><span class="line">            .enter()</span><br><span class="line">            .append(&#x27;g&#x27;)</span><br><span class="line">            .attr(&#x27;class&#x27;,&#x27;legend&#x27; )</span><br><span class="line">            .attr(&#x27;transform&#x27;, function(d,i)&#123;</span><br><span class="line">                return `translate($&#123;innerWidth+10&#125;,$&#123;i*25+10&#125;)`</span><br><span class="line">            &#125;)</span><br><span class="line">            </span><br><span class="line">                        </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            //图例矩形</span><br><span class="line">            legend.append(&#x27;rect&#x27;)</span><br><span class="line">            .data(legend_name)</span><br><span class="line">            .attr(&#x27;x&#x27;,0 )</span><br><span class="line">            .attr(&#x27;y&#x27;,0 )</span><br><span class="line">            .attr(&#x27;width&#x27;, 30)</span><br><span class="line">            .attr(&#x27;height&#x27;, 10)</span><br><span class="line">            .attr(&#x27;fill&#x27;, function(d,i)&#123;</span><br><span class="line">                return legend_color[i]</span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">            //图例文字</span><br><span class="line">            legend.append(&quot;text&quot;)</span><br><span class="line">            .data(legend_name) </span><br><span class="line">            .attr(&#x27;class&#x27;, &#x27;legend_text&#x27;)</span><br><span class="line">            .attr(&quot;x&quot;, 40)</span><br><span class="line">            .attr(&quot;y&quot;, 9)</span><br><span class="line">            .attr(&quot;dy&quot;, &quot;.06em&quot;)</span><br><span class="line">            .style(&quot;text-anchor&quot;, &quot;start&quot;)</span><br><span class="line">            .text(function (d,i) &#123;return legend_name[i];&#125;); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            //title</span><br><span class="line">            d3.select(&#x27;#maingroup&#x27;)</span><br><span class="line">            .append(&#x27;text&#x27;)</span><br><span class="line">            .text(&quot;Demo2-疫情动态散点图&quot;)</span><br><span class="line">            .attr(&#x27;text-anchor&#x27;, &#x27;middle&#x27;)</span><br><span class="line">            .attr(&#x27;font-size&#x27;, &#x27;2em&#x27;)</span><br><span class="line">            .attr(&#x27;transform&#x27;, `translate($&#123;innerWidth / 2&#125;,-10)`)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        const renderUpdate = function(seq)&#123;</span><br><span class="line">            const g = d3.select(&#x27;#maingroup&#x27;);</span><br><span class="line"></span><br><span class="line">            time = seq[0][&#x27;日期&#x27;];</span><br><span class="line">            g.selectAll(&#x27;.date_text&#x27;).remove();</span><br><span class="line">            //添加日期</span><br><span class="line">            g.append(&quot;text&quot;)</span><br><span class="line">            .data([&#x27;seq&#x27;])</span><br><span class="line">            .attr(&#x27;class&#x27;, &#x27;date_text&#x27;)</span><br><span class="line">            .attr(&#x27;x&#x27;, innerWidth/4+30)</span><br><span class="line">            .attr(&#x27;y&#x27;, innerHeight/10-10)</span><br><span class="line">            .attr(&#x27;dy&#x27;, &#x27;.5em&#x27;)</span><br><span class="line">            .attr(&#x27;text-anchor&#x27;,&#x27;end&#x27; )</span><br><span class="line">            .attr(&#x27;fill&#x27;, &#x27;#504f4f&#x27;)</span><br><span class="line">            .attr(&#x27;font-size&#x27;, &#x27;4em&#x27;)</span><br><span class="line">            .attr(&#x27;font-weight&#x27;, &#x27;bold&#x27;)</span><br><span class="line">            .text(time)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            let circleUpdate = g.selectAll(&#x27;circle&#x27;).data(seq,d =&gt; d[&#x27;地区&#x27;]);</span><br><span class="line"></span><br><span class="line">            let circleEnter = circleUpdate.enter().append(&#x27;circle&#x27;)</span><br><span class="line">            .attr(&#x27;cx&#x27;, d =&gt; xScale(xValue(d)) )</span><br><span class="line">            .attr(&#x27;cy&#x27;, d =&gt; yScale(yValue(d)) )</span><br><span class="line">            .attr(&#x27;r&#x27;,d =&gt; rValue(d))</span><br><span class="line">            .attr(&#x27;fill&#x27;, d =&gt; color[d[&#x27;地区&#x27;]] )</span><br><span class="line">            .attr(&#x27;opacity&#x27;,0.8)</span><br><span class="line"></span><br><span class="line">            circleUpdate.merge(circleEnter).transition().ease(d3.easeLinear).duration(1000)</span><br><span class="line">            .attr(&#x27;cx&#x27;, d =&gt; xScale(xValue(d)) )</span><br><span class="line">            .attr(&#x27;cy&#x27;, d =&gt; yScale(yValue(d)) )</span><br><span class="line">            .attr(&#x27;r&#x27;,d =&gt; rValue(d));</span><br><span class="line">            //ease：更新模式（幅度）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        d3.csv(&#x27;./data/hubeinxt.csv&#x27;).then( data =&gt; &#123;</span><br><span class="line">            data = data.filter( d =&gt; d[&#x27;地区&#x27;] !== &#x27;总计&#x27;);//数据清洗</span><br><span class="line"></span><br><span class="line">            data.forEach(d =&gt; &#123;</span><br><span class="line">                d[&#x27;确诊人数&#x27;] = +(d[&#x27;确诊人数&#x27;]);</span><br><span class="line">                d[&#x27;新增确诊&#x27;] = +(d[&#x27;新增确诊&#x27;]);</span><br><span class="line">                d[&#x27;扩散指数&#x27;] = +(d[&#x27;扩散指数&#x27;]);</span><br><span class="line"></span><br><span class="line">                if(d[&#x27;新增确诊&#x27;]&lt;0)&#123;</span><br><span class="line">                    d[&#x27;新增确诊&#x27;] = 0;</span><br><span class="line">                &#125;</span><br><span class="line">                console.log(data)</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            allDates = data.map(d =&gt; d[&#x27;日期&#x27;]);</span><br><span class="line">            //console.log(allDates); 发现有很多日期是重复的</span><br><span class="line"></span><br><span class="line">            allDates = Array.from(new Set(allDates));//用集合去掉重复值</span><br><span class="line"></span><br><span class="line">            //对日期进行排序</span><br><span class="line">            allDates = allDates.sort((a,b)=&gt;&#123;</span><br><span class="line">                return new Date(a)- new Date(b);</span><br><span class="line">            &#125;);            </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            //设置一个空array，用于存放每一天的数据，每一天的数据也是array</span><br><span class="line">            sequantial = []; </span><br><span class="line"></span><br><span class="line">            allDates.forEach(d =&gt;&#123;</span><br><span class="line">                sequantial.push([])</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            //根据日期的索引，将对应日期的数据push进 sequentail数组中。</span><br><span class="line">            data.forEach(d =&gt; &#123;</span><br><span class="line">                sequantial[ allDates.indexOf(d[&#x27;日期&#x27;])].push(d);</span><br><span class="line">            &#125;);</span><br><span class="line">            </span><br><span class="line">            renderinit(data);</span><br><span class="line"></span><br><span class="line">            let c = 0; //sequential的索引</span><br><span class="line">            let intervalId = setInterval(()=&gt; &#123;</span><br><span class="line">                if (c&gt;allDates.length ) &#123;</span><br><span class="line">                    clearInterval(intervalID);</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    renderUpdate(sequantial[c]);</span><br><span class="line">                    c = c+1 ; </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;, 1000);</span><br><span class="line"></span><br><span class="line">        &#125;);//end of then()</span><br><span class="line"></span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="可视化效果"><a href="#可视化效果" class="headerlink" title="可视化效果"></a>可视化效果</h3><p><img src="https://img-blog.csdnimg.cn/a420189607ff4c868564461b9666af4e.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="本节课示例代码-demo3-折线图-html"><a href="#本节课示例代码-demo3-折线图-html" class="headerlink" title="本节课示例代码 (demo3-折线图.html)"></a>本节课示例代码 (demo3-折线图.html)</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line">&lt;!<span class="variable constant_">DOCTYPE</span> html&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Line<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./js/d3.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">svg</span> <span class="attr">width</span>=<span class="string">&quot;1600&quot;</span> <span class="attr">height</span>=<span class="string">&quot;800&quot;</span> <span class="attr">id</span>=<span class="string">&quot;mainsvg&quot;</span> <span class="attr">class</span>=<span class="string">&quot;svgs&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> svg = d3.<span class="title function_">select</span>(<span class="string">&#x27;#mainsvg&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> width = +svg.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> height = +svg.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> margin = &#123;<span class="attr">top</span>: <span class="number">120</span>, <span class="attr">right</span>: <span class="number">50</span>, <span class="attr">bottom</span>: <span class="number">50</span>, <span class="attr">left</span>: <span class="number">120</span>&#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> innerWidth = width - margin.<span class="property">left</span> - margin.<span class="property">right</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> innerHeight = height - margin.<span class="property">top</span> - margin.<span class="property">bottom</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> g = svg.<span class="title function_">append</span>(<span class="string">&#x27;g&#x27;</span>).<span class="title function_">attr</span>(<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;maingroup&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      .<span class="title function_">attr</span>(<span class="string">&#x27;transform&#x27;</span>, <span class="string">`translate(<span class="subst">$&#123;margin.left&#125;</span>, <span class="subst">$&#123;margin.top&#125;</span>)`</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> <span class="title function_">xValue</span> = (<span class="params">datum</span>) =&gt; &#123;<span class="keyword">return</span> datum[<span class="string">&#x27;日期&#x27;</span>]&#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> <span class="title function_">yValue</span> = (<span class="params">datum</span>) =&gt; &#123;<span class="keyword">return</span> datum[<span class="string">&#x27;现有确诊&#x27;</span>]&#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">let</span> xSacle, yScale; </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">let</span> alldates;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">let</span> allkeys; </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> render_init = <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        xScale = d3.<span class="title function_">scaleTime</span>()</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">domain</span>(d3.<span class="title function_">extent</span>(data, xValue))</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">range</span>([<span class="number">0</span>, innerWidth])</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">nice</span>();</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        yScale = d3.<span class="title function_">scaleLinear</span>()</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">domain</span>([d3.<span class="title function_">max</span>(data, yValue), d3.<span class="title function_">min</span>(data, yValue)])</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">range</span>([<span class="number">0</span>, innerHeight])</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">nice</span>();</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">// Adding axes</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">const</span> xAxis = d3.<span class="title function_">axisBottom</span>(xScale)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">ticks</span>(<span class="title class_">Math</span>.<span class="title function_">floor</span>(alldates.<span class="property">length</span>) / <span class="number">4</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">tickFormat</span>(d3.<span class="title function_">timeFormat</span>(<span class="string">&#x27;%b-%d&#x27;</span>))</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">tickSize</span>(-innerHeight)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//ticks： 表示设置几个刻度</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//tickSize：表示刻度线的长短</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">const</span> xAxisGroup = g.<span class="title function_">append</span>(<span class="string">&#x27;g&#x27;</span>).<span class="title function_">call</span>(xAxis)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;transform&#x27;</span>, <span class="string">`translate(0, <span class="subst">$&#123;innerHeight&#125;</span>)`</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">const</span> yAxis = d3.<span class="title function_">axisLeft</span>(yScale).<span class="title function_">tickSize</span>(-innerWidth);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">const</span> yAxisGroup = g.<span class="title function_">append</span>(<span class="string">&#x27;g&#x27;</span>).<span class="title function_">call</span>(yAxis);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        g.<span class="title function_">selectAll</span>(<span class="string">&#x27;.tick text&#x27;</span>).<span class="title function_">attr</span>(<span class="string">&#x27;font-size&#x27;</span>, <span class="string">&#x27;2em&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        g.<span class="title function_">append</span>(<span class="string">&#x27;path&#x27;</span>).<span class="title function_">attr</span>(<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;alterPath&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;; </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> render_update = <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">const</span> line = d3.<span class="title function_">line</span>()</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">x</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;<span class="keyword">return</span> <span class="title function_">xScale</span>(<span class="title function_">xValue</span>(d))&#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">y</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;<span class="keyword">return</span> <span class="title function_">yScale</span>(<span class="title function_">yValue</span>(d))&#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">curve</span>(d3.<span class="property">curveCardinal</span>.<span class="title function_">tension</span>(<span class="number">0.5</span>))</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">// lineEmpty is typically used for the first animation that raise the line up; </span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">const</span> lineEmpty = d3.<span class="title function_">line</span>()</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">x</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;<span class="keyword">return</span> <span class="title function_">xScale</span>(<span class="title function_">xValue</span>(d))&#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">y</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;<span class="keyword">return</span> <span class="title function_">yScale</span>(<span class="number">0</span>)&#125;)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">curve</span>(d3.<span class="property">curveCardinal</span>.<span class="title function_">tension</span>(<span class="number">0.5</span>))</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">const</span> maingroup = d3.<span class="title function_">select</span>(<span class="string">&#x27;#maingroup&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">const</span> pathupdate = maingroup.<span class="title function_">selectAll</span>(<span class="string">&#x27;.datacurve&#x27;</span>).<span class="title function_">data</span>([data])</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">const</span> pathenter = pathupdate.<span class="title function_">enter</span>().<span class="title function_">append</span>(<span class="string">&#x27;path&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;datacurve&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">attr</span>(<span class="string">&quot;fill&quot;</span>, <span class="string">&quot;none&quot;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">attr</span>(<span class="string">&quot;stroke&quot;</span>, <span class="string">&quot;steelblue&quot;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">attr</span>(<span class="string">&quot;stroke-width&quot;</span>, <span class="number">2.5</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">attr</span>(<span class="string">&quot;d&quot;</span>, lineEmpty)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          pathupdate.<span class="title function_">merge</span>(pathenter)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">transition</span>().<span class="title function_">duration</span>(<span class="number">2000</span>).<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          .<span class="title function_">attr</span>(<span class="string">&quot;d&quot;</span>, line)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      <span class="keyword">const</span> render_update_alter = <span class="keyword">function</span>(<span class="params">data</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">const</span> line = d3.<span class="title function_">line</span>()</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">x</span>( <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(<span class="title function_">xValue</span>(d)) )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">y</span>( <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(<span class="title function_">yValue</span>(d)) )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">curve</span>(d3.<span class="property">curveCardinal</span>.<span class="title function_">tension</span>(<span class="number">0.5</span>) ); </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//line中，设置属性 x,y 时，d会遍历投进来的数组</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//curve： 拟合策略</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">// tension: 平滑程度</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        d3.<span class="title function_">select</span>(<span class="string">&#x27;#alterPath&#x27;</span>).<span class="title function_">datum</span>(data)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;stroke&#x27;</span>, <span class="string">&#x27;green&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;stroke-width&#x27;</span>, <span class="string">&#x27;2.5&#x27;</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>,<span class="string">&#x27;none&#x27;</span> )</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">transition</span>().<span class="title function_">duration</span>(<span class="number">2000</span>)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        .<span class="title function_">attr</span>(<span class="string">&#x27;d&#x27;</span>, line)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//datum： 不遍历传进来的数据，而是将data作为一个主体传进来</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//使用datum传进来后，.attr( &#x27;&#x27; , d =&gt; &#123;...&#125;) 这里的d就是整个数据，而不是遍历后的单条数据了</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="comment">//Notable： fill是有一个默认的黑色填充的，应该把fill设置成None</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        </span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      d3.<span class="title function_">csv</span>(<span class="string">&#x27;./data/province.csv&#x27;</span>).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">data</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          data = data.<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d[<span class="string">&#x27;省份&#x27;</span>]!== <span class="string">&#x27;总计&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          data = data.<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d[<span class="string">&#x27;省份&#x27;</span>]!== <span class="string">&#x27;湖北&#x27;</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">//因为湖北的数据量太大了，这里应该另外想办法处理</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          alldates = <span class="title class_">Array</span>.<span class="title function_">from</span>(<span class="keyword">new</span> <span class="title class_">Set</span>(data.<span class="title function_">map</span>(<span class="function"><span class="params">d</span> =&gt;</span> d[<span class="string">&#x27;日期&#x27;</span>])));</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">//这句话放在日期格式化前!放在日期格式化后将不起作用</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">//猜测： 转化为Date()类后，实体不一样</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">//pre-processing</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          data.<span class="title function_">forEach</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            d[<span class="string">&#x27;现有确诊&#x27;</span>] = +(d[<span class="string">&#x27;现有确诊&#x27;</span>]);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            d[<span class="string">&#x27;日期&#x27;</span>] = <span class="keyword">new</span> <span class="title class_">Date</span>(d[<span class="string">&#x27;日期&#x27;</span>]);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="comment">//按照省份划分数据</span></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">let</span> provinces = &#123;&#125;;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          allkeys = <span class="title class_">Array</span>.<span class="title function_">from</span>(<span class="keyword">new</span> <span class="title class_">Set</span>( data.<span class="title function_">map</span>(<span class="function"><span class="params">d</span> =&gt;</span> d[<span class="string">&#x27;省份&#x27;</span>]) ));</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          allkeys.<span class="title function_">forEach</span>(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">              provinces[key] = [];</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          data.<span class="title function_">forEach</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            provinces[ d[<span class="string">&#x27;省份&#x27;</span>] ].<span class="title function_">push</span>(d);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          allkeys.<span class="title function_">forEach</span>( <span class="function"><span class="params">key</span> =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            provinces[key] = provinces[key].<span class="title function_">sort</span>( <span class="function">(<span class="params">b,a</span>) =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                <span class="keyword">return</span> b[<span class="string">&#x27;日期&#x27;</span>] - a[<span class="string">&#x27;日期&#x27;</span>];</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">            &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="variable language_">console</span>.<span class="title function_">log</span>(provinces)</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="title function_">render_init</span>(data);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">let</span> c = <span class="number">0</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          <span class="keyword">let</span> intervalId = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">              <span class="keyword">if</span>(c &gt;= allkeys.<span class="property">length</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                  <span class="built_in">clearInterval</span>(intervalId);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">              &#125;<span class="keyword">else</span>&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                  <span class="keyword">let</span> key = allkeys[c];</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                  <span class="title function_">render_update_alter</span>(provinces[key]);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">                  c = c + <span class="number">1</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">              &#125;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">          &#125;, <span class="number">2000</span>);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      &#125;);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="可视化效果-1"><a href="#可视化效果-1" class="headerlink" title="可视化效果"></a>可视化效果</h3><p><img src="https://img-blog.csdnimg.cn/7fd27f98649c4665a3d43d046e490e2b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94%20SVG%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%EF%BC%8C%E4%BD%BF%E7%94%A8D3%E7%BB%98%E5%88%B6%E5%9F%BA%E6%9C%AC%E5%9B%BE%E5%BD%A2/" rel="prev" title="【D3.js 学习记录】—— SVG入门知识，使用D3绘制基本图形">
+      <i class="fa fa-chevron-left"></i> 【D3.js 学习记录】—— SVG入门知识，使用D3绘制基本图形
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%E3%80%91%E2%80%94%E2%80%94Interaction%20%E5%9C%B0%E5%9B%BE%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="next" title="【D3.js 学习记录】——Interaction 地图数据交互可视化">
+      【D3.js 学习记录】——Interaction 地图数据交互可视化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A"><span class="nav-number">1.</span> <span class="nav-text">数据绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DataJoin"><span class="nav-number">1.1.</span> <span class="nav-text">DataJoin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#D3-js%E7%BB%91%E5%AE%9A%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%89%E4%B8%AA%E7%8A%B6%E6%80%81%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">D3.js绑定数据的三个状态：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Enter"><span class="nav-number">1.2.1.</span> <span class="nav-text">Enter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Update"><span class="nav-number">1.2.2.</span> <span class="nav-text">Update</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Exit"><span class="nav-number">1.2.3.</span> <span class="nav-text">Exit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data-join"><span class="nav-number">1.2.4.</span> <span class="nav-text">data.join</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E3%80%90%E8%80%81%E6%96%B9%E6%B3%95%E3%80%91"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">【老方法】</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E3%80%90%E6%96%B0%E6%96%B9%E6%B3%95%E3%80%91"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">【新方法】</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#D3-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB"><span class="nav-number">1.3.</span> <span class="nav-text">D3 实现动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#D3-%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%8F%96"><span class="nav-number">1.4.</span> <span class="nav-text">D3 数据读取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%BC%96%E7%A8%8B%E6%80%9D%E8%B7%AF"><span class="nav-number">1.5.</span> <span class="nav-text">基本编程思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E8%8A%82%E8%AF%BE%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-demo2-%E5%8A%A8%E6%80%81%E6%95%A3%E7%82%B9%E5%9B%BE-html"><span class="nav-number">1.6.</span> <span class="nav-text">本节课示例代码 (demo2-动态散点图.html)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%95%88%E6%9E%9C"><span class="nav-number">1.7.</span> <span class="nav-text">可视化效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E8%8A%82%E8%AF%BE%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-demo3-%E6%8A%98%E7%BA%BF%E5%9B%BE-html"><span class="nav-number">1.8.</span> <span class="nav-text">本节课示例代码 (demo3-折线图.html)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%95%88%E6%9E%9C-1"><span class="nav-number">1.9.</span> <span class="nav-text">可视化效果</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
