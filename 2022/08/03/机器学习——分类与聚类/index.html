@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="总结了机器学习中分类与聚类的方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习——分类与聚类">
-<meta property="og:url" content="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/index.html">
+<meta property="og:url" content="https://zqqcee.github.io/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/index.html">
 <meta property="og:site_name" content="zqqcee">
 <meta property="og:description" content="总结了机器学习中分类与聚类的方法">
 <meta property="og:locale" content="en_US">
@@ -40,7 +40,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210623145633761.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
 
-<link rel="canonical" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/">
+<link rel="canonical" href="https://zqqcee.github.io/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/">
 
 
 <script id="page-configurations">
@@ -107,6 +107,7 @@
       <h1 class="site-title">zqqcee</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
   </div>
 
   <div class="site-nav-right">
@@ -168,12 +169,12 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/">
+    <link itemprop="mainEntityOfPage" href="https://zqqcee.github.io/2022/08/03/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E5%88%86%E7%B1%BB%E4%B8%8E%E8%81%9A%E7%B1%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
       <meta itemprop="name" content="zqqcee">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content=" Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a>">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -386,7 +387,7 @@ x_i与x_j之间有一串序列p_1p_2...p_t，且p_{n+1}由p_n密度直达，则x
     <img class="site-author-image" itemprop="image" alt="zqqcee"
       src="/images/avatar.jpeg">
   <p class="site-author-name" itemprop="name">zqqcee</p>
-  <div class="site-description" itemprop="description"></div>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -399,7 +400,7 @@ x_i与x_j之间有一串序列p_1p_2...p_t，且p_{n+1}由p_n密度直达，则x
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">

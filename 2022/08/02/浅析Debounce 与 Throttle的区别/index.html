@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Debounce和Throttle是两个非常相似，但不相同的方法，它们都用来控制我们允许一个函数随时间执行的次数，用官方一点的说法就是：防止抖动，但是它们又有不同，具体见文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅析Debounce与Throttle的区别">
-<meta property="og:url" content="http://example.com/2022/08/02/%E6%B5%85%E6%9E%90Debounce%20%E4%B8%8E%20Throttle%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:url" content="https://zqqcee.github.io/2022/08/02/%E6%B5%85%E6%9E%90Debounce%20%E4%B8%8E%20Throttle%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
 <meta property="og:site_name" content="zqqcee">
 <meta property="og:description" content="Debounce和Throttle是两个非常相似，但不相同的方法，它们都用来控制我们允许一个函数随时间执行的次数，用官方一点的说法就是：防止抖动，但是它们又有不同，具体见文">
 <meta property="og:locale" content="en_US">
@@ -37,7 +37,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/9acb8adad094431ab843e83aa246fa27.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA6ISW5a2Q5aW957Sv,size_20,color_FFFFFF,t_70,g_se,x_16">
 
-<link rel="canonical" href="http://example.com/2022/08/02/%E6%B5%85%E6%9E%90Debounce%20%E4%B8%8E%20Throttle%E7%9A%84%E5%8C%BA%E5%88%AB/">
+<link rel="canonical" href="https://zqqcee.github.io/2022/08/02/%E6%B5%85%E6%9E%90Debounce%20%E4%B8%8E%20Throttle%E7%9A%84%E5%8C%BA%E5%88%AB/">
 
 
 <script id="page-configurations">
@@ -104,6 +104,7 @@
       <h1 class="site-title">zqqcee</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
   </div>
 
   <div class="site-nav-right">
@@ -165,12 +166,12 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/02/%E6%B5%85%E6%9E%90Debounce%20%E4%B8%8E%20Throttle%E7%9A%84%E5%8C%BA%E5%88%AB/">
+    <link itemprop="mainEntityOfPage" href="https://zqqcee.github.io/2022/08/02/%E6%B5%85%E6%9E%90Debounce%20%E4%B8%8E%20Throttle%E7%9A%84%E5%8C%BA%E5%88%AB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
       <meta itemprop="name" content="zqqcee">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content=" Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a>">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -241,11 +242,11 @@
 <p>比如在用户注册界面，等用户停止输入邮箱后，判断用户输入的内容是否符合邮箱校验规则。</p>
 <p>在使用时，<strong>我们要注意一个地方</strong>。就是<code>debounce()</code>不能被多次调用，下面给出了一种正确用法与一种错误用法，请读者自行体会。</p>
 <ul>
-<li>WRONG<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="variable language_">window</span>).<span class="title function_">on</span>(<span class="string">&#x27;scroll&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">   _.<span class="title function_">debounce</span>(doSomething, <span class="number">300</span>); </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
-<li>RIGHT<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="variable language_">window</span>).<span class="title function_">on</span>(<span class="string">&#x27;scroll&#x27;</span>, _.<span class="title function_">debounce</span>(doSomething, <span class="number">200</span>));</span><br></pre></td></tr></table></figure>
+<li>WRONG<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="variable language_">window</span>).<span class="title function_">on</span>(<span class="string">&#x27;scroll&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">   _.<span class="title function_">debounce</span>(doSomething, <span class="number">300</span>); </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li>RIGHT<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="variable language_">window</span>).<span class="title function_">on</span>(<span class="string">&#x27;scroll&#x27;</span>, _.<span class="title function_">debounce</span>(doSomething, <span class="number">200</span>));</span><br></pre></td></tr></table></figure>
 <h3 id="Throttle"><a href="#Throttle" class="headerlink" title="Throttle"></a>Throttle</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4>这前面简单介绍过了，这里就不过多赘述。它的<strong>定义</strong>是:<br>不允许某个函数在{delay}长度的时间间隔内执行超过一次</li>
 </ul>
-<h4 id="用法举例"><a href="#用法举例" class="headerlink" title="用法举例"></a>用法举例</h4><p>它的用法与<code>debounce()</code>相似,以lodash.js为例：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_.<span class="title function_">throttle</span>(dosomething, <span class="number">16</span>)</span><br></pre></td></tr></table></figure><br>主要用在检测用户界面是否已经靠近底部了，如果靠近底部就需要请求新的内容供用户查阅。</p>
+<h4 id="用法举例"><a href="#用法举例" class="headerlink" title="用法举例"></a>用法举例</h4><p>它的用法与<code>debounce()</code>相似,以lodash.js为例：<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">_.<span class="title function_">throttle</span>(dosomething, <span class="number">16</span>)</span><br></pre></td></tr></table></figure><br>主要用在检测用户界面是否已经靠近底部了，如果靠近底部就需要请求新的内容供用户查阅。</p>
 </blockquote>
 <h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a target="_blank" rel="noopener" href="https://css-tricks.com/debouncing-throttling-explained-examples/#top-of-site">Debouncing and Throttling Explained Through Examples</a></p>
 
@@ -340,7 +341,7 @@
     <img class="site-author-image" itemprop="image" alt="zqqcee"
       src="/images/avatar.jpeg">
   <p class="site-author-name" itemprop="name">zqqcee</p>
-  <div class="site-description" itemprop="description"></div>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -353,7 +354,7 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
