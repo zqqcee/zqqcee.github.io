@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用Redux-Toolkit，由“object is not extensible”引发的思考及解决方案。本文介绍了Redux-Toolkit中的状态管理机制，介绍了Immer.js即它如何被应用在了Redux的状态管理中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="由“object is not extensible”报错引发的思考及解决方案@React-Toolkit&#x2F;@Immer.js">
+<meta property="og:url" content="https://zqqcee.github.io/2022/11/13/blog-redux/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="使用Redux-Toolkit，由“object is not extensible”引发的思考及解决方案。本文介绍了Redux-Toolkit中的状态管理机制，介绍了Immer.js即它如何被应用在了Redux的状态管理中">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20221113164746168.png">
+<meta property="og:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20221113164757335.png">
+<meta property="og:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20221113182523819.png">
+<meta property="og:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20221113184527375.png">
+<meta property="og:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20221113184916776.png">
+<meta property="article:published_time" content="2022-11-13T07:59:40.762Z">
+<meta property="article:modified_time" content="2022-11-13T11:44:46.019Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20221113164746168.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/2022/11/13/blog-redux/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>由“object is not extensible”报错引发的思考及解决方案@React-Toolkit/@Immer.js | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zqqcee.github.io/2022/11/13/blog-redux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content=" Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          由“object is not extensible”报错引发的思考及解决方案@React-Toolkit/@Immer.js
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-11-13 15:59:40 / Modified: 19:44:46" itemprop="dateCreated datePublished" datetime="2022-11-13T15:59:40+08:00">2022-11-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/visual-analytics/" itemprop="url" rel="index"><span itemprop="name">visual analytics</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">使用Redux-Toolkit，由“object is not extensible”引发的思考及解决方案。本文介绍了Redux-Toolkit中的状态管理机制，介绍了Immer.js即它如何被应用在了Redux的状态管理中</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="使用Redux-Toolkit，由“object-is-not-extensible”引发的思考及解决方案"><a href="#使用Redux-Toolkit，由“object-is-not-extensible”引发的思考及解决方案" class="headerlink" title="使用Redux-Toolkit，由“object is not extensible”引发的思考及解决方案"></a>使用Redux-Toolkit，由“object is not extensible”引发的思考及解决方案</h1><p>[TOC]</p>
+<h2 id="问题重述"><a href="#问题重述" class="headerlink" title="问题重述"></a>问题重述</h2><p>​    最近在做一个数据浏览平台，如图所示</p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20221113164746168.png" alt="image-20221113164746168"></p>
+<p>​    大致的编码逻辑是左上角的数据集选择器，控制全局UI的改变。比如<strong>左部的树形控件数据</strong>，<strong>画布中的节点链接图</strong>等等，都是根据当前所选的数据集来定的。这种组件间的状态服用，自然而然就想到把数据集作为一个状态来交给redux管理。</p>
+<h3 id="使用redux-toolkit"><a href="#使用redux-toolkit" class="headerlink" title="使用redux-toolkit"></a>使用redux-toolkit</h3><p>​    好的，现在开始查redux官方文档。因为刚学会react，教程中redux的store中使用的是<code>createStore()</code>创建的，但是这个方法目前已经弃用了，官方建议使用的是<code>configureStore()</code>。经过一番文档的查阅，开始使用<code>createSlice()</code>来重写reducer。</p>
+<h4 id="使用createSlice"><a href="#使用createSlice" class="headerlink" title="使用createSlice()"></a>使用<code>createSlice()</code></h4><p>​    这里直接贴上我这部分slice的错误代码</p>
+<ul>
+<li><strong>创建slice</strong></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//  redux/optionSlice.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; createSlice &#125; <span class="keyword">from</span> <span class="string">&quot;@reduxjs/toolkit&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; dataSets &#125; <span class="keyword">from</span> <span class="string">&quot;../utils/getData&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="variable constant_">HIGHLIGHT</span> &#125; <span class="keyword">from</span> <span class="string">&quot;./constant&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> optionSlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;option&#x27;</span>,</span><br><span class="line">    <span class="attr">initialState</span>: &#123;</span><br><span class="line">        <span class="attr">data</span>: dataSets[<span class="string">&quot;case1&quot;</span>],</span><br><span class="line">        <span class="attr">mode</span>: <span class="variable constant_">HIGHLIGHT</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">reducers</span>: &#123;</span><br><span class="line">      	<span class="comment">//这里对于state的解释在下文</span></span><br><span class="line">        <span class="attr">changedata</span>: (<span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">            state.<span class="property">data</span> = action.<span class="property">payload</span></span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="attr">changemode</span>: (<span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">            state.<span class="property">mode</span> = action.<span class="property">payload</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> &#123; changedata, changemode &#125; = optionSlice.<span class="property">actions</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> optionSlice.<span class="property">reducer</span></span><br></pre></td></tr></table></figure>
+<p><code>slice</code>有两个导出，一个是在内部负责操作状态的action；一个是reducer</p>
+<p>我还有一另外一个<code>selectionSlice</code>负责管理其他的状态，这里考虑到篇幅就不给出了。</p>
+<h4 id="在index-js中融合两个silce"><a href="#在index-js中融合两个silce" class="headerlink" title="在index.js中融合两个silce"></a>在<code>index.js</code>中融合两个silce</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//   redux/index.js</span></span><br><span class="line"><span class="keyword">import</span> optionReducer <span class="keyword">from</span> <span class="string">&#x27;./optionSlice&#x27;</span>;   <span class="comment">//注意，这里引入的是slice中导出的reducer，slice有两个导出：reducer和action</span></span><br><span class="line"><span class="keyword">import</span> selectionReducer <span class="keyword">from</span> <span class="string">&quot;./selectionSlice&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> reducers = &#123;</span><br><span class="line">    <span class="attr">option</span>: optionReducer,</span><br><span class="line">    <span class="attr">selection</span>: selectionReducer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="在store-js配置store，并使用-lt-Provider-store-store-gt-让所有组件都可以使用redux中管理的状态"><a href="#在store-js配置store，并使用-lt-Provider-store-store-gt-让所有组件都可以使用redux中管理的状态" class="headerlink" title="在store.js配置store，并使用&lt;Provider store={store}&gt;让所有组件都可以使用redux中管理的状态"></a>在store.js配置store，并使用<code>&lt;Provider store=&#123;store&#125;&gt;</code>让所有组件都可以使用redux中管理的状态</h4><ul>
+<li>配置<code>store</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// redux/store.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; configureStore &#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; reducers &#125; <span class="keyword">from</span> <span class="string">&#x27;./index&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> store = <span class="title function_">configureStore</span>(</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">reducer</span>: reducers,<span class="comment">//这里内置了combineReducer</span></span><br><span class="line">    &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加<code>Provider</code></li>
+</ul>
+<p>​    在App标签外部套上<code>&lt;Provider&gt;</code>标签</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createRoot &#125; <span class="keyword">from</span> <span class="string">&#x27;react-dom/client&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&#x27;./App&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">BrowserRouter</span> &#125; <span class="keyword">from</span> <span class="string">&quot;react-router-dom&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Provider</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-redux&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; store &#125; <span class="keyword">from</span> <span class="string">&#x27;./redux/store&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">createRoot</span>(<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;root&#x27;</span>)).<span class="title function_">render</span>(</span><br><span class="line">        <span class="language-xml"><span class="tag">&lt;<span class="name">Provider</span> <span class="attr">store</span>=<span class="string">&#123;store&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">App</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">Provider</span>&gt;</span></span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="绘制节点链接图"><a href="#绘制节点链接图" class="headerlink" title="绘制节点链接图"></a>绘制节点链接图</h3><p>​    用户选择一份数据集，就会把这份数据集交给redux管理，在其他组件中如果想要取用数据集，使用<code>useSelector(state =&gt; state.option.data)</code>即可取用。<strong><font color="red">问题就发生在这一步</font></strong></p>
+<p>​    我先简述一下我的代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// componnets/Canvas/index.jsx</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">Canvas</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> data = <span class="title function_">useSelector</span>(<span class="function"><span class="params">state</span> =&gt;</span> state.<span class="property">option</span>.<span class="property">data</span>)</span><br><span class="line">  </span><br><span class="line">  <span class="title function_">useLayoutEffect</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="title function_">initCanvas</span>()  <span class="comment">//drawLayout</span></span><br><span class="line">  &#125;,[data])</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">initCanvas</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="comment">// .....append canvas</span></span><br><span class="line">    <span class="keyword">const</span> nodes = data.<span class="property">nodes</span></span><br><span class="line">    <span class="keyword">const</span> links = data.<span class="property">links</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//append circle,line......</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> simulation = d3.<span class="title function_">forceSimulation</span>(nodes)</span><br><span class="line">            .<span class="title function_">force</span>(<span class="string">&quot;link&quot;</span>, d3.<span class="title function_">forceLink</span>(links).<span class="title function_">id</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> d.<span class="property">mgmt_ip</span></span><br><span class="line">            &#125;).<span class="title function_">strength</span>(<span class="number">0.5</span>).<span class="title function_">distance</span>(<span class="number">10</span>))</span><br><span class="line">            <span class="comment">//......some force option</span></span><br><span class="line">    				.<span class="title function_">on</span>(<span class="string">&quot;tick&quot;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">              <span class="comment">//refresh canvas</span></span><br><span class="line">            &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">  	<span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    	<span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">&quot;container&quot;</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    这个代码很简单，我在<code>useLayoutEffect()</code>这个钩子里编写了一个画布初始化函数<code>initCanvas()</code>。目的是让组件挂载前，先在一个<code>&lt;div&gt;</code>中绘制出数据。</p>
+<h3 id="报错重现"><a href="#报错重现" class="headerlink" title="报错重现"></a>报错重现</h3><p>​    <strong><font color="maroon">结果这个代码直接报红了，报了一个我从没见过的错误:   “Uncaught TypeError:Cannot add property vx,object is extensible”</font></strong></p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20221113164757335.png" alt="image-20221113164757335"></p>
+<p>​    从这个报错信息很容易就能知道，是在我设置力模拟器时，调用<code>d3.forceLink(links)</code>绑定连边，和绑定节点时，无法像边数据和点数据中添加vx，vy等属性导致的。</p>
+<p>​    为了进一步验证这个特点，我用以下代码验证了我拿到的数据是否真的不可拓展</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> nodes = data.<span class="property">nodes</span></span><br><span class="line"><span class="keyword">const</span> links = data.<span class="property">links</span></span><br><span class="line">nodes.<span class="title function_">forEach</span>(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(node.<span class="title function_">isExtensible</span>())</span><br><span class="line">&#125;)</span><br><span class="line">links.<span class="title function_">forEach</span>(<span class="function"><span class="params">link</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(link.<span class="title function_">isExtensible</span>())</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    毫无意外，控制台输出了清一色的<code>false</code>。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="采用拷贝对象的方式解决（笨方法）"><a href="#采用拷贝对象的方式解决（笨方法）" class="headerlink" title="采用拷贝对象的方式解决（笨方法）"></a>采用拷贝对象的方式解决（笨方法）</h3><p>​    所以这个问题可以基本确定是因为我的数据不可拓展造成的，虽然不知道为什么。但是解决这个的办法无非就是让我的数据能够被拓展。但是搜了半天解除不可拓展性的办法，找不到。于是只能采用拷贝对象的方式，拷贝一份新的对象。</p>
+<p>​    拷贝分两种方式：浅拷贝与深拷贝。在有指针的情况下，<strong>浅拷贝只是增加了一个指针指向已经存在的内存</strong>，而深拷贝就是<strong>增加一个指针并且申请一个新的内存</strong>，<strong>使这个增加的指针指向这个新的内存。</strong>显然，我们需要使用深拷贝，申请一个新的内存存放拷贝的对象。</p>
+<p>​    <code>nodes</code>与<code>links</code>数组中存放的obj如图所示：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  nodes<span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line"> 	 	id<span class="punctuation">:</span>xxxx<span class="punctuation">,</span></span><br><span class="line">    role<span class="punctuation">:</span>xxxx<span class="punctuation">,</span></span><br><span class="line">    type<span class="punctuation">:</span>xxxx</span><br><span class="line">	<span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	links<span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line"> 	 	source<span class="punctuation">:</span>xxxx<span class="punctuation">,</span></span><br><span class="line">    target<span class="punctuation">:</span>xxxx<span class="punctuation">,</span></span><br><span class="line">	<span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>​    因此我们使用对象拓展符<code>&#123;...node&#125;,&#123;...link&#125;</code>即可完成深拷贝，具体代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> newNode = nodes.<span class="title function_">map</span>(<span class="function"><span class="params">node</span> =&gt;</span> (&#123;...node&#125;));</span><br><span class="line"><span class="keyword">const</span> newLink = links.<span class="title function_">map</span>(<span class="function"><span class="params">link</span> =&gt;</span> (&#123;...link&#125;))</span><br></pre></td></tr></table></figure>
+<p>​    接着我们使用newNode和newLink替换原来的nodes和links，就OK了。</p>
+<h3 id="把redux中存储的数据对象替换为数据名"><a href="#把redux中存储的数据对象替换为数据名" class="headerlink" title="把redux中存储的数据对象替换为数据名"></a>把redux中存储的数据对象替换为数据名</h3><p>​    上面的办法显然很蠢······。<strong>我慢慢开始意识到这个对象的不可拓展性很可能是redux帮我处理的</strong>，因为<strong>我们在redux中存放的数据应该由对应的reducer来进行更改</strong>，如果外部能够更改会导致UI组件中获取的状态出现错误。</p>
+<p>​    因为发现这个问题已经很晚了，我没有急着去验证的想法是不是对的，因为我想赶紧把我的蠢方法换掉，让我的程序看起来别那么烂。我建立了一个函数帮我提供数据集，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> case1 <span class="keyword">from</span> <span class="string">&quot;../assets/case1.json&quot;</span></span><br><span class="line"><span class="keyword">import</span> case2 <span class="keyword">from</span> <span class="string">&quot;../assets/case2.json&quot;</span></span><br><span class="line"><span class="keyword">import</span> case3 <span class="keyword">from</span> <span class="string">&quot;../assets/case3.json&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">generate</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> datasets = &#123;</span><br><span class="line">        case1,</span><br><span class="line">        case2,</span><br><span class="line">        case3</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> datasets;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> dataSets = <span class="title function_">generate</span>();</span><br></pre></td></tr></table></figure>
+<p>​    这么做的目的是我在组件中直接使用<code>import &#123;dataSets&#125; from &quot;../util/getData.js&quot;</code>就能获取到全部数据集了。</p>
+<p>​    写到这，应该很明白了。正确的思路应该是将数据集的名字，如case1，case2，case3……交给redux来管理，用户每次切换数据集，就通知reducer更改当前的数据集名称。在组件中如果想要使用数据的话就以下代码来获取。这么做显然比把整份数据交给redux管理更加合理。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;dataSets&#125; <span class="keyword">from</span> <span class="string">&quot;../util/getData.js</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">function Component()&#123;</span></span><br><span class="line"><span class="string">  const dataName = useSelector(state =&gt; state.option.dataName)</span></span><br><span class="line"><span class="string">  const data = dataSets[dataName]</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  //func body</span></span><br><span class="line"><span class="string">  return ....</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+<p>这里贴上一个正确代码，和之前相比，我把交给redux管理的状态从<code>data</code>换成了<code>dataName</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// redux/optionSlice.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; createSlice &#125; <span class="keyword">from</span> <span class="string">&quot;@reduxjs/toolkit&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="variable constant_">HIGHLIGHT</span> &#125; <span class="keyword">from</span> <span class="string">&quot;./constant&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**data option */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> optionSlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;option&#x27;</span>,</span><br><span class="line">    <span class="attr">initialState</span>: &#123;</span><br><span class="line">        <span class="attr">dataName</span>: <span class="string">&quot;case1&quot;</span>,</span><br><span class="line">        <span class="attr">mode</span>: <span class="variable constant_">HIGHLIGHT</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">reducers</span>: &#123;</span><br><span class="line">        <span class="attr">changedata</span>: (<span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">            state.<span class="property">dataName</span> = action.<span class="property">payload</span></span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="attr">changemode</span>: (<span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">            state.<span class="property">mode</span> = action.<span class="property">payload</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> &#123; changedata, changemode &#125; = optionSlice.<span class="property">actions</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> optionSlice.<span class="property">reducer</span></span><br></pre></td></tr></table></figure>
+<p>​    其实已经发现区别了，在修改之前，我把整个数据集<code>data = &#123;nodes:[...],links:[...]&#125;</code>作为了整个状态存放到了redux中。而修改之后，我只存了<strong>数据集的名称</strong>，使用的时候用这个<strong>名称</strong>去一个存放了所有dataSets的地方取。这显然是一种更加合理的编码方式。</p>
+<h2 id="产生原因分析"><a href="#产生原因分析" class="headerlink" title="产生原因分析"></a>产生原因分析</h2><h4 id="immer-js-gt-不可变数据结构"><a href="#immer-js-gt-不可变数据结构" class="headerlink" title="immer.js =&gt; 不可变数据结构"></a>immer.js =&gt; 不可变数据结构</h4><p>​    基本能够初步确定redux-toolkit在返回新状态值的时候，设置了返回的obj是不可扩展的。为了验证我的猜想，我去redux-toolkit官网找到了下面这篇<code>Writing Reducers with Immer</code></p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20221113182523819.png" alt="image-20221113182523819"></p>
+<p>​    Immer，Immer是什么？读这篇文章第一句话,翻译过来</p>
+<blockquote>
+<p>Redux Toolkit’s <a target="_blank" rel="noopener" href="https://redux-toolkit.js.org/api/createReducer"><code>createReducer</code></a> and <a target="_blank" rel="noopener" href="https://redux-toolkit.js.org/api/createSlice"><code>createSlice</code></a> automatically use <a target="_blank" rel="noopener" href="https://immerjs.github.io/immer/">Immer</a> internally to let you write simpler immutable update logic using “mutating” syntax. This helps simplify most reducer implementations.</p>
+<p>译文：Redux Toolkit<a target="_blank" rel="noopener" href="https://redux-toolkit.js.org/api/createReducer"><code>createReducer</code></a>并在内部<a target="_blank" rel="noopener" href="https://redux-toolkit.js.org/api/createSlice"><code>createSlice</code></a>自动使用<a target="_blank" rel="noopener" href="https://immerjs.github.io/immer/">Immer</a>让您使用“mutating”语法编写更简单的不可变的更新逻辑。这有助于简化大多数 reducer 实现。</p>
+</blockquote>
+<p>​    <code>immutable update logic</code>不可变的更新逻辑，我想我找到答案了。于是我去google了<code>immer.js</code>，</p>
+<p>​    在它的中文官方文档中，有一段这么介绍的话：</p>
+<blockquote>
+<p>Immer can be used in any context in which immutable data structures need to be used. For example in combination with React state, React or Redux reducers, or configuration management. Immutable data structures allow for (efficient) change detection: if the reference to an object didn’t change, the object itself did not change. In addition, it makes cloning relatively cheap: Unchanged parts of a data tree don’t need to be copied and are shared in memory with older versions of the same state.</p>
+<p>译文：<strong>Immer 可以在需要使用不可变数据结构的任何上下文中使用</strong>。例如与 React state、React 或 <strong>Redux reducers</strong> 或者 configuration management 结合使用。<strong>不可变的数据结构允许（高效）的变化检测</strong>：如果对对象的引用没有改变，那么对象本身也没有改变。此外，它<strong>使克隆对象相对便宜</strong>：<strong>数据树的未更改部分不需要复制，并且在内存中与相同状态的旧版本共享</strong></p>
+</blockquote>
+<p>​    看完这两段话，比较抽象，直接看官方给的代码示例：</p>
+<ul>
+<li><strong>有一个Todo列表，我们要对它进行更新</strong></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> baseState = [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">title</span>: <span class="string">&quot;Learn TypeScript&quot;</span>,</span><br><span class="line">        <span class="attr">done</span>: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">title</span>: <span class="string">&quot;Try Immer&quot;</span>,</span><br><span class="line">        <span class="attr">done</span>: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>不使用Immer</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//不使用immer</span></span><br><span class="line"><span class="keyword">const</span> nextState = baseState.<span class="title function_">slice</span>() <span class="comment">// 浅拷贝数组</span></span><br><span class="line">nextState[<span class="number">1</span>] = &#123;</span><br><span class="line">    <span class="comment">// 替换第一层元素</span></span><br><span class="line">    ...nextState[<span class="number">1</span>], <span class="comment">// 浅拷贝第一层元素</span></span><br><span class="line">    <span class="attr">done</span>: <span class="literal">true</span> <span class="comment">// 期望的更新</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 因为 nextState 是新拷贝的, 所以使用 push 方法是安全的,</span></span><br><span class="line"><span class="comment">// 但是在未来的任意时间做相同的事情会违反不变性原则并且导致 bug！</span></span><br><span class="line">nextState.<span class="title function_">push</span>(&#123;<span class="attr">title</span>: <span class="string">&quot;Tweet about it&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用Immer</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> produce <span class="keyword">from</span> <span class="string">&quot;immer&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> nextState = <span class="title function_">produce</span>(baseState, <span class="function"><span class="params">draft</span> =&gt;</span> &#123;</span><br><span class="line">    draft[<span class="number">1</span>].<span class="property">done</span> = <span class="literal">true</span></span><br><span class="line">    draft.<span class="title function_">push</span>(&#123;<span class="attr">title</span>: <span class="string">&quot;Tweet about it&quot;</span>&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    从上可以看出，使用Immer会把更改应用当前的草稿<code>draft</code>上，它是当前状态的代理，一旦我们完成了所有的更改，Immer会根据<code>draft</code>上<code>state</code>的更改生成新的<code>nextState</code>,工作原理示意图如下：</p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20221113184527375.png" alt="image-20221113184527375"></p>
+<p>​    引用官方文档中的一段话，来解释Immer的作用</p>
+<blockquote>
+<p>Using Immer is like having a personal assistant. The assistant takes a letter (the current state) and gives you a copy (draft) to jot changes onto. Once you are done, the assistant will take your draft and produce the real immutable, final letter for you (the next state).</p>
+<p>使用 Immer 就像拥有一个私人助理。助手拿一封信（当前状态）并给您一份副本（草稿）以记录更改。完成后，助手将接受您的草稿并为您生成真正不变的最终信件（下一个状态）。</p>
+</blockquote>
+<p>​    这个“私人助理”其实是一个代理对象Proxy，我在redux中也做了进一步的验证。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// /redux/optionSlice.js</span></span><br><span class="line"></span><br><span class="line"><span class="attr">reducers</span>: &#123;</span><br><span class="line">        <span class="attr">changedata</span>: (<span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">						<span class="variable language_">console</span>.<span class="title function_">log</span>(state)</span><br><span class="line">            state.<span class="property">dataName</span> = action.<span class="property">payload</span></span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="attr">changemode</span>: (<span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">            state.<span class="property">mode</span> = action.<span class="property">payload</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>​    我在代码中打印了state，并在控制台查看了它的输出，确实是一个Proxy对象。</p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20221113184916776.png" alt="image-20221113184916776"></p>
+<h3 id="Redux-toolkit中createSlice-的使用"><a href="#Redux-toolkit中createSlice-的使用" class="headerlink" title="Redux-toolkit中createSlice()的使用"></a>Redux-toolkit中<code>createSlice()</code>的使用</h3><p>在浅了解了Immer.js后，我回到官方文档中阅读剩余部分。并整理了以下对我可能有帮助的点 </p>
+<h4 id="状态的不可变性，为什么会引入Immer-js"><a href="#状态的不可变性，为什么会引入Immer-js" class="headerlink" title="状态的不可变性，为什么会引入Immer.js"></a>状态的不可变性，为什么会引入Immer.js</h4><p>​    要分析状态的不可变性，首先我们要引入的一个问题是Redux中不可改变状态的几个原因。官方文档中列出了五条原因，但我认为最重要的是第一条：<strong>会导致bug，例如UI无法正确更新显示最新值</strong>。</p>
+<p>​    那么redux不能更改原始状态，我们如何返回更新后的状态呢？答案是在Reducer中只能拷贝原始值，修改副本并返回副本。如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ✅ This is safe, because we made a copy</span></span><br><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">  ...state,</span><br><span class="line">  <span class="attr">value</span>: <span class="number">123</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    这也让我想到了之前在写类组件时，必须要用拷贝的方式修改，如</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">setState</span>(<span class="function"><span class="params">state</span> =&gt;</span> &#123;</span><br><span class="line">  &#123;...state,<span class="attr">key</span>:newValue&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    我猜和Immer.js也有关系。</p>
+<p>​    这样修改当然OK没有问题，<strong>但是如果状态之中嵌套了许多层，那么我们需要对每一层都进行拷贝</strong>，这样的代码维护方式显然是灾难一样的存在！这里我贴上官网给的例子。</p>
+<blockquote>
+<p>手动编写不可变的更新逻辑很困难，并且<strong>在 reducer 中意外改变状态是 Redux 用户最常犯的一个错误</strong>。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">handwrittenReducer</span>(<span class="params">state, action</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    ...state,</span><br><span class="line">    <span class="attr">first</span>: &#123;</span><br><span class="line">      ...state.<span class="property">first</span>,</span><br><span class="line">      <span class="attr">second</span>: &#123;</span><br><span class="line">        ...state.<span class="property">first</span>.<span class="property">second</span>,</span><br><span class="line">        [action.<span class="property">someId</span>]: &#123;</span><br><span class="line">          ...state.<span class="property">first</span>.<span class="property">second</span>[action.<span class="property">someId</span>],</span><br><span class="line">          <span class="attr">fourth</span>: action.<span class="property">someValue</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    所以，引入了Immer，Immer是一个库，简化了编写不可变更新逻辑的过程。Immer的工作流程我们在上文中已经介绍过了，这里不做过多赘述，值得注意的是，ReactToolkit的<code>createReducer</code>和<code>createSlice</code>都在内部使用了Immer。上文我也已经验证过了<code>state</code>是一个代理。</p>
+<h4 id="更改状态的两种方式：reset与replace"><a href="#更改状态的两种方式：reset与replace" class="headerlink" title="更改状态的两种方式：reset与replace"></a>更改状态的两种方式：<code>reset</code>与<code>replace</code></h4><ul>
+<li>reset</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// reset 修改</span></span><br><span class="line"><span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="title function_">todoDeleted</span>(<span class="params">state, action.payload</span>) &#123;</span><br><span class="line">      <span class="comment">// Construct a new array immutably</span></span><br><span class="line">      <span class="keyword">const</span> newTodos = state.<span class="property">todos</span>.<span class="title function_">filter</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">id</span> !== action.<span class="property">payload</span>)</span><br><span class="line">      <span class="comment">// &quot;Mutate&quot; the existing state to save the new array</span></span><br><span class="line">      state.<span class="property">todos</span> = newTodos</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>replace</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// replace 替换</span></span><br><span class="line"><span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="title function_">todoDeleted</span>(<span class="params">state, action.payload</span>) &#123;</span><br><span class="line">      <span class="comment">// Construct a new result array immutably and return it</span></span><br><span class="line">      <span class="keyword">return</span> state.<span class="title function_">filter</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">id</span> !== action.<span class="property">payload</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这里有一个易错的地方，就是有一些修改函数会有默认返回值，那么在修改状态后有一个返回值，reducer就不知道应该使用哪个值作为最新的状态了。如</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="comment">// ❌ ERROR: mutates state, but also returns new array size!</span></span><br><span class="line">    <span class="attr">brokenReducer</span>: <span class="function">(<span class="params">state, action</span>) =&gt;</span> state.<span class="title function_">push</span>(action.<span class="property">payload</span>),</span><br><span class="line">    <span class="comment">// ✅ SAFE: the `void` keyword prevents a return value</span></span><br><span class="line">    <span class="attr">fixedReducer1</span>: <span class="function">(<span class="params">state, action</span>) =&gt;</span> <span class="keyword">void</span> state.<span class="title function_">push</span>(action.<span class="property">payload</span>),</span><br><span class="line">    <span class="comment">// ✅ SAFE: curly braces make this a function body and no return</span></span><br><span class="line">    <span class="attr">fixedReducer2</span>: <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">      state.<span class="title function_">push</span>(action.<span class="property">payload</span>)</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+<h4 id="如何输出当前状态"><a href="#如何输出当前状态" class="headerlink" title="如何输出当前状态"></a>如何输出当前状态</h4><p>​    想要从reducer中记录正在进行的状态以查看它在更新时的样子，这个场景是很常见的。但不幸的是，直接输出<code>state</code>是一个<code>Proxy</code>对象。为了解决这个问题，Immer提供了一个函数<code>current()</code>，如果需要查看状态可以使用它</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="title function_">todoToggled</span>(<span class="params">state, action</span>) &#123;</span><br><span class="line">      <span class="comment">// ❌ ERROR: logs the Proxy-wrapped data</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(state)</span><br><span class="line">      <span class="comment">// ✅ CORRECT: logs a plain JS copy of the current data</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">current</span>(state))</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+<h4 id="为什么会引入Immer？"><a href="#为什么会引入Immer？" class="headerlink" title="为什么会引入Immer？"></a>为什么会引入Immer？</h4><p>​    下面三点是我对官方文档的一个总结与复述</p>
+<ul>
+<li><p>使用Immer的优点</p>
+<ul>
+<li>Immer极大简化了不可变的更新逻辑</li>
+<li>减少了reducer更新状态的编写错误。引入Immer后，无需创建副本，直接进行修改即可。（相当于你把修改的工作交给了一个代理，由代理帮你进行修改）</li>
+</ul>
+</li>
+<li><p>Immer在性能上的权衡</p>
+<ul>
+<li>无需考虑，reducer几乎从来都不是Redux应用中的性能瓶颈</li>
+</ul>
+</li>
+<li><p>是否考虑未来将Immer设置为可选项？</p>
+<ul>
+<li>我有预感很多人在简单看了Redux-toolkit文档就拿去用了以后，都会给它们提Issue。因为这个对象的不可变性稍微不留意就会出错（但是习惯了它们的写法以后其实效率提升很多）。官方文档中也给出了为什么不打算将Immer设置为可选项的理由，它们说React-toolkit的架构是通过直接导入Immer来实现的，需要在应用程序加载期间立即同步使用Immer。</li>
+</ul>
+<blockquote>
+<p>And finally: <strong>Immer is built into RTK by default because we believe it is the best choice for our users!</strong> We <em>want</em> our users to be using Immer, and consider it to be a critical non-negotiable component of RTK. The great benefits like simpler reducer code and preventing accidental mutations far outweigh the relatively small concerns.</p>
+<p>最后：<strong>Immer 默认内置在 React-toolkit 中，因为我们相信它是我们用户的最佳选择！</strong>我们希望我们的用户使用 Immer，并将其视为 React-toolkit 的关键组件。更简单的 reducer 代码和防止意外突变等巨大好处，远远超过了那些可以被忽视的问题。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>​    这是我解决问题的完整过程，最近在做项目，写了好久的文档，好久没有沉淀自己的代码能力了。碰巧周日，碰巧遇到了一个值得记录的问题，赶紧把自己的思考过程落实在了文字。</p>
+<p>​    从组件中选择状态升格为全局这是一个值得思考的问题，我也认为这是很考验一个React写手能力的工作。最近刚入门React，浅记录一下解决问题的全过程。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/03/%E3%80%90D3.js%E5%AE%9E%E6%88%98%E3%80%91Force%20Simulation%20%E5%8A%9B%E5%AF%BC%E5%9B%BE%E5%88%B6%E4%BD%9C/" rel="prev" title="【D3.js 学习记录（实战）】Force 力导图数据可视化">
+      <i class="fa fa-chevron-left"></i> 【D3.js 学习记录（实战）】Force 力导图数据可视化
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Redux-Toolkit%EF%BC%8C%E7%94%B1%E2%80%9Cobject-is-not-extensible%E2%80%9D%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">使用Redux-Toolkit，由“object is not extensible”引发的思考及解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E9%87%8D%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">问题重述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8redux-toolkit"><span class="nav-number">1.1.1.</span> <span class="nav-text">使用redux-toolkit</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8createSlice"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">使用createSlice()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8index-js%E4%B8%AD%E8%9E%8D%E5%90%88%E4%B8%A4%E4%B8%AAsilce"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">在index.js中融合两个silce</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8store-js%E9%85%8D%E7%BD%AEstore%EF%BC%8C%E5%B9%B6%E4%BD%BF%E7%94%A8-lt-Provider-store-store-gt-%E8%AE%A9%E6%89%80%E6%9C%89%E7%BB%84%E4%BB%B6%E9%83%BD%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8redux%E4%B8%AD%E7%AE%A1%E7%90%86%E7%9A%84%E7%8A%B6%E6%80%81"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">在store.js配置store，并使用&lt;Provider store&#x3D;{store}&gt;让所有组件都可以使用redux中管理的状态</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E8%8A%82%E7%82%B9%E9%93%BE%E6%8E%A5%E5%9B%BE"><span class="nav-number">1.1.2.</span> <span class="nav-text">绘制节点链接图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E9%87%8D%E7%8E%B0"><span class="nav-number">1.1.3.</span> <span class="nav-text">报错重现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E6%8B%B7%E8%B4%9D%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E5%BC%8F%E8%A7%A3%E5%86%B3%EF%BC%88%E7%AC%A8%E6%96%B9%E6%B3%95%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">采用拷贝对象的方式解决（笨方法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%8Aredux%E4%B8%AD%E5%AD%98%E5%82%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1%E6%9B%BF%E6%8D%A2%E4%B8%BA%E6%95%B0%E6%8D%AE%E5%90%8D"><span class="nav-number">1.2.2.</span> <span class="nav-text">把redux中存储的数据对象替换为数据名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">产生原因分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#immer-js-gt-%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">immer.js &#x3D;&gt; 不可变数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redux-toolkit%E4%B8%ADcreateSlice-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">Redux-toolkit中createSlice()的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E7%9A%84%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%BC%95%E5%85%A5Immer-js"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">状态的不可变性，为什么会引入Immer.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9%E7%8A%B6%E6%80%81%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%EF%BC%9Areset%E4%B8%8Ereplace"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">更改状态的两种方式：reset与replace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%BE%93%E5%87%BA%E5%BD%93%E5%89%8D%E7%8A%B6%E6%80%81"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">如何输出当前状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%BC%95%E5%85%A5Immer%EF%BC%9F"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">为什么会引入Immer？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">1.4.</span> <span class="nav-text">思考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
