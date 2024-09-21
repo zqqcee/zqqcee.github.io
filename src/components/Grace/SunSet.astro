@@ -1,0 +1,78 @@
+<section class="root">
+	<section class="polygon-1"></section>
+	<section class="polygon-2"></section>
+	<section class="polygon-3"></section>
+</section>
+<style>
+	.root {
+		will-change: auto;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: -1;
+		filter: blur(240px);
+	}
+	.root > section {
+		opacity: 1;
+		position: absolute;
+		animation: scale-into-middle 2s ease-in-out;
+		transform: scale(0.8);
+		opacity: 0.6;
+	}
+	.polygon-1 {
+		bottom: 100px;
+		left: 28%;
+		width: 50vw;
+		height: 55vh;
+		background: linear-gradient(#fe5, #fdee99);
+		clip-path: polygon(0 10%, 30% 0, 100% 40%, 70% 100%, 20% 90%);
+	}
+	.polygon-2 {
+		bottom: 0;
+		left: 2%;
+		width: 50vw;
+		height: 50vh;
+		background: linear-gradient(-36deg, #e950d1, #f980d9, #f5f, #ff2c55, #ff5e55);
+		clip-path: polygon(10% 0, 100% 70%, 100% 100%, 5% 90%);
+	}
+
+	.polygon-3 {
+		bottom: 0;
+		left: 30%;
+		width: 60vw;
+		height: 50vh;
+		background: #5750e9;
+		clip-path: polygon(80% 0, 100% 70%, 100% 100%, 20% 90%);
+	}
+
+	@keyframes scale-into-middle {
+		0% {
+			transform: scale(0);
+			opacity: 0;
+		}
+		70% {
+			transform: scale(0.8);
+			opacity: 0.8;
+		}
+		100% {
+			transform: scale(0.8);
+			opacity: 0.6;
+		}
+	}
+	.title {
+		font-size: 8rem;
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+	}
+
+	#time {
+		width: 500px;
+	}
+</style>

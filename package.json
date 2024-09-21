@@ -1,29 +1,33 @@
 {
-  "name": "zqqcee",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "prepare": "husky"
-  },
-  "dependencies": {
-    "@astrojs/check": "^0.9.3",
-    "@astrojs/react": "^3.6.2",
-    "@astrojs/tailwind": "^5.1.0",
-    "@types/react": "^18.3.6",
-    "@types/react-dom": "^18.3.0",
-    "astro": "^4.15.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "tailwindcss": "^3.4.11",
-    "typescript": "^5.6.2"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.9.1",
-    "husky": "^9.1.6"
-  }
+	"name": "zqqcee",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"start": "astro dev",
+		"build": "astro check && astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"@astrojs/check": "^0.9.3",
+		"@astrojs/react": "^3.6.2",
+		"@astrojs/tailwind": "^5.1.0",
+		"@types/react": "^18.3.6",
+		"@types/react-dom": "^18.3.0",
+		"astro": "^4.15.6",
+		"dayjs": "^1.11.13",
+		"framer-motion": "^11.5.4",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"tailwindcss": "^3.4.11",
+		"typescript": "^5.6.2"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.1",
+		"@tailwindcss/typography": "^0.5.15",
+		"husky": "^9.1.6",
+		"prettier-plugin-astro": "^0.14.1"
+	}
 }
