@@ -8,14 +8,16 @@ import BlurFade from '../Grace/magic-ui/BlurFadeIn.tsx';
 
 <div class="flex flex-col justify-start gap-4">
 	{
-		allPosts.map((article, i) => (
-			<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
-				<span class="text-teal-200 text-base font-bold">
-					{dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
-				</span>
-				<PostLink title={article.frontmatter.title} href={article.url} client:load />
-			</BlurFade>
-		))
+		allPosts
+			.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1))
+			.map((article, i) => (
+				<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
+					<span class="text-teal-200 text-base font-bold">
+						{dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
+					</span>
+					<PostLink title={article.frontmatter.title} href={article.url} client:load />
+				</BlurFade>
+			))
 	}
 	<motion.circle cx={500} animate={{ cx: [null, 100] }} />
 </div>
