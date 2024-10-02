@@ -44,6 +44,22 @@ export default {
 					},
 				},
 			}),
+			keyframes: {
+				signatrue: {
+					'0%, 100%': { strokeDashoffset: 2400 },
+					'55%': { fill: '#fff' },
+					'70%': { strokeDashoffset: 2000, fill: '#fff' },
+					'100%': { strokeDashoffset: 2400, fill: 'transparent' },
+				},
+				signatruelogo: {
+					'0%, 100%': { strokeDashoffset: 2550 },
+					'34%': { strokeDashoffset: 5000, fill: 'transparent' },
+					'35%': { fill: '#ffffff30' },
+					'55%': { fill: '#ffffff' },
+					'80%': { strokeDashoffset: 5000, fill: '#fff' },
+					'100%': { strokeDashoffset: 2550, fill: 'transparent' },
+				},
+			},
 		},
 	},
 	plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],
