@@ -2,6 +2,8 @@
 import Footer from '@/components/Footer.astro';
 import SunSet from '@/components/Grace/SunSet.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
+import Navigation from '@/components/Navigation';
+import Header from '@/components/Header';
 ---
 
 <html lang="en">
@@ -14,7 +16,8 @@ import BlurFade from '@/components/ui/BlurFadeIn';
 	</head>
 	<body class="bg-black">
 		<SunSet client:load />
-		<BlurFade client:load className="mx-auto my-10 max-w-5xl">
+		<Header client:load />
+		<BlurFade client:load className="mx-auto my-10 max-w-[750px]">
 			<slot />
 		</BlurFade>
 		<Footer />
