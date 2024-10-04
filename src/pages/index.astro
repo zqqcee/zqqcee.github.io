@@ -3,10 +3,13 @@ import HomeLayout from '../layouts/HomeLayout.astro';
 import Intro from '../components/Intro/Intro.astro';
 import Divider from '../components/Divider.astro';
 import PostCollection from '../components/Article/PostCollection.astro';
+import Home from '../components/HomePage/Home.astro';
+import '../styles/global.css';
 ---
 
 <HomeLayout>
+	<Home />
 	<Intro />
-	<Divider />
-	<PostCollection client:load />
+	<!-- <Divider />
+	<PostCollection /> -->
 </HomeLayout>

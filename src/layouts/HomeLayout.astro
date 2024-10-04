@@ -2,7 +2,9 @@
 import Footer from '@/components/Footer.astro';
 import SunSet from '@/components/Grace/SunSet.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
-import Header from '@/components/Header';
+import Header from '@/components/Header.astro';
+const { width = 'max-w-6xl' } = Astro.props;
+console.log(`mx-auto mt-[100px] max-w-${width}`);
 ---
 
 <html lang="en">
@@ -13,10 +15,10 @@ import Header from '@/components/Header';
 		<meta name="generator" content={Astro.generator} />
 		<title>zqqcee</title>
 	</head>
-	<body class="bg-black">
-		<SunSet client:load />
-		<Header client:load />
-		<BlurFade client:load className="mx-auto mt-[100px] max-w-[750px]">
+	<body class="bg-gray-900">
+		<SunSet />
+		<Header />
+		<BlurFade client:load className=`mx-auto mt-[100px] ${width}`>
 			<slot />
 		</BlurFade>
 		<Footer />

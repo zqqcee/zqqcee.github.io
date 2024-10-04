@@ -35,6 +35,9 @@ export default {
 							padding: '.15rem .3rem',
 							backgroundColor: '#3b3b3b',
 						},
+						'li::marker': {
+							color: 'var(--tw-prose-bullets)',
+						},
 						'code::before': {
 							content: '',
 						},

@@ -1,0 +1,42 @@
+---
+import React from 'react';
+import Navigation from './Navigation';
+import avatar from '../../public/avatar.jpeg';
+import Signatrue, { SignatureLogo } from './Signature';
+---
+
+<div
+	id="header"
+	class="w-full flex items-center box-border fixed top-0 inset-x-0 z-[9] mx-auto px-40 py-3 backdrop-blur-3xl"
+>
+	<div class="flex-1 flex justify-center items-center">
+		<img src={avatar.src} class="rounded-2xl object-fill bg-cover w-11 h-11" />
+	</div>
+	<div class="grow flex justify-center">
+		<Navigation client:load />
+	</div>
+	<div class="flex flex-1 row-end-1 justify-center gap-4">
+		<SignatureLogo />
+		<Signatrue />
+	</div>
+</div>
+
+<script>
+	const progressiveBorder = () => {
+		const offsetY = window.scrollY;
+		const dom = document.querySelector('#header');
+		if (!dom) return;
+		if (offsetY < 50) {
+			dom.classList.remove('backdrop-blur-3xl');
+		} else if (!dom.classList.contains('backdrop-blur-3xl')) {
+			dom.classList.add('backdrop-blur-3xl');
+		}
+		if (offsetY < 400) {
+			dom.style['border-bottom'] = `1px solid rgb(75,85,99,${offsetY / 400})`;
+		} else {
+			dom.style['border-bottom'] = `1px solid rgb(75,85,99)})`;
+		}
+	};
+	document.addEventListener('astro:page-load', progressiveBorder);
+	document.addEventListener('scroll', progressiveBorder);
+</script>

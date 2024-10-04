@@ -4,18 +4,21 @@ import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
 import PostLink from './PostLink';
 import BlurFade from '../ui/BlurFadeIn.tsx';
+import PostItem from './PostItem.astro';
 ---
 
-<div class="flex flex-col justify-start gap-4">
+<div class="flex flex-col justify-start gap-4 w-full">
 	{
 		allPosts
 			.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1))
 			.map((article, i) => (
 				<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
-					<span class="text-teal-200 text-base font-bold">
-						{dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
-					</span>
-					<PostLink title={article.frontmatter.title} href={article.url} client:load />
+					<PostItem
+						title={article.frontmatter.title}
+						href={article.url}
+						date={dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
+						desc={article.frontmatter.description}
+					/>
 				</BlurFade>
 			))
 	}

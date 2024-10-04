@@ -13,23 +13,28 @@ import { MagicCard } from '@/components/ui/MagicCard';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function Navigation() {
-	// const [menukey, setMenukey] = React.useState<string>();
 	return (
-		<MagicCard className="w-auto text-white rounded-full ring-1 ring-gray-500 px-6 shadow-inner border-none mt-1">
+		<MagicCard className="w-auto text-white rounded-full ring-1 ring-gray-500 px-6 shadow-inner border-none mt-1 ">
 			<Menubar className="border-none">
 				<div className="flex gap-4">
 					<MenubarMenu>
-						<MenubarTrigger>主页</MenubarTrigger>
+						<MenubarTrigger>
+							<a href="/" target="_self">
+								主页
+							</a>
+						</MenubarTrigger>
 					</MenubarMenu>
 					<MenubarMenu>
-						<MenubarTrigger>文章</MenubarTrigger>
-						<AnimatePresence>
-							<MenubarContent>
-								<MenubarItem>技术</MenubarItem>
-								<MenubarItem>思考</MenubarItem>
-								<MenubarItem>生活</MenubarItem>
-							</MenubarContent>
-						</AnimatePresence>
+						<MenubarTrigger>
+							<a href="/posts" target="_self">
+								文章
+							</a>
+						</MenubarTrigger>
+						{/* <MenubarContent>
+							<MenubarItem>技术</MenubarItem>
+							<MenubarItem>思考</MenubarItem>
+							<MenubarItem>生活</MenubarItem>
+						</MenubarContent> */}
 					</MenubarMenu>
 					<MenubarMenu>
 						<MenubarTrigger>归档</MenubarTrigger>

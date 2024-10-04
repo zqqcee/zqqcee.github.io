@@ -5,7 +5,7 @@ function PostLink({ title, href }) {
 	const [isHovered, setIsHovered] = React.useState(false);
 	return (
 		<div
-			className="w-fit text-white cursor-pointer font-bold"
+			className="w-full text-white cursor-pointer font-bold "
 			onMouseEnter={() => {
 				setIsHovered(true);
 			}}
