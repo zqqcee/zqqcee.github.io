@@ -30,9 +30,10 @@ export default {
 							color: theme('colors.white'),
 							borderRadius: '.25rem',
 							color: '#ffffff',
+							// padding: '0px 2px',
 							fontSize: '.875em',
 							fontWeight: '550',
-							padding: '.15rem .3rem',
+							padding: '.15rem .4rem',
 							backgroundColor: '#3b3b3b',
 						},
 						'li::marker': {

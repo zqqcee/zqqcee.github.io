@@ -3,6 +3,7 @@ import BlurFade from '../components/ui/BlurFadeIn';
 import HomeLayout from './HomeLayout.astro';
 import dayjs from 'dayjs';
 const { frontmatter } = Astro.props;
+console.log(frontmatter);
 const title = frontmatter.title;
 ---
 
@@ -19,7 +20,7 @@ const title = frontmatter.title;
 		<div
 			class="prose dark:prose-invert
 	  prose-h1:font-bold max-w-full prose-h1:text-xl prose-h4:text-white
-	  prose-a:text-blue-600 prose-p:text-justify prose-img:rounded-xl ::prose-marker: text-white"
+	  prose-a:text-cyan-300 prose-a:font-semibold prose-p:text-justify prose-img:rounded-xl ::prose-marker: text-white"
 		>
 			<slot />
 		</div>
