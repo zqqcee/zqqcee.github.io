@@ -3,14 +3,16 @@ import { SocialMedia } from '../Intro/SocialMedia';
 ---
 
 <section
-	class="min-h-screen text-white w-full flex justify-start items-center flex-col lg:flex-row lg:justify-between"
+	class="min-h-screen text-white w-full flex justify-center items-center flex-col-reverse lg:flex-row lg:justify-between"
 >
-	<h1 class="text-5xl font-bold leading-[70px]" style={{ fontFamily: '"Noto Serif SC",serif' }}>
-		<span>Make it happend !</span>
+	<div
+		class="text-2xl lg:text-5xl font-bold leading-[70px] flex flex-col"
+		style={{ fontFamily: '"Noto Serif SC",serif' }}
+	>
+		<h1>Make it happend !</h1>
 		<!-- <span>Life is a Journey</span> -->
-		<br />
-		<span>参与世界的变化 🌍</span>
-		<SocialMedia client:load className="mt-2 gap-4  pl-0" />
-	</h1>
+		<h1 class="inline-block lg:mt-4">参与世界的变化 🌍</h1>
+		<SocialMedia client:load className="mt-10 gap-4 pl-0 mx-auto lg:mx-0 lg:mt-10" />
+	</div>
 	<img src={'../../../public/test.png'} class="rounded-3xl w-[300px]" />
 </section>

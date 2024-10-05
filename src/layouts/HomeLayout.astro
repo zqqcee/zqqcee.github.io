@@ -18,9 +18,7 @@ console.log(`mx-auto mt-[100px] max-w-${width}`);
 	<body class="bg-slate-900">
 		{showNeon && <SunSet />}
 		<Header title={title} />
-		<BlurFade client:load className=`mx-auto ${width} my-20 px-10`>
-			<slot />
-		</BlurFade>
+		<slot />
 		<Footer />
 	</body>
 </html>

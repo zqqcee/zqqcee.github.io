@@ -1,5 +1,5 @@
 ---
-title: 由“object is not extensible”报错引发的思考及解决方案@React-Toolkit/@Immer.js
+title: 由“object is not extensible”报错引发的思考及解决方案
 tags: javascript
 categories: thought
 description: 使用Redux-Toolkit，由“object is not extensible”引发的思考及解决方案。本文介绍了Redux-Toolkit中的状态管理机制，介绍了Immer.js即它如何被应用在了Redux的状态管理中
@@ -9,7 +9,6 @@ top: 99
 mathjax: true
 abbrlink: 6686
 ---
-
 ## 问题重述
 
 最近在做一个数据浏览平台，如图所示
@@ -498,11 +497,9 @@ reducers: {
 
   - Immer极大简化了不可变的更新逻辑
   - 减少了reducer更新状态的编写错误。引入Immer后，无需创建副本，直接进行修改即可。（相当于你把修改的工作交给了一个代理，由代理帮你进行修改）
-
 - Immer在性能上的权衡
 
   - 无需考虑，reducer几乎从来都不是Redux应用中的性能瓶颈
-
 - 是否考虑未来将Immer设置为可选项？
 
   - 我有预感很多人在简单看了Redux-toolkit文档就拿去用了以后，都会给它们提Issue。因为这个对象的不可变性稍微不留意就会出错（但是习惯了它们的写法以后其实效率提升很多）。官方文档中也给出了为什么不打算将Immer设置为可选项的理由，它们说React-toolkit的架构是通过直接导入Immer来实现的，需要在应用程序加载期间立即同步使用Immer。
@@ -510,6 +507,7 @@ reducers: {
   > And finally: **Immer is built into RTK by default because we believe it is the best choice for our users!** We _want_ our users to be using Immer, and consider it to be a critical non-negotiable component of RTK. The great benefits like simpler reducer code and preventing accidental mutations far outweigh the relatively small concerns.
   >
   > 最后：**Immer 默认内置在 React-toolkit 中，因为我们相信它是我们用户的最佳选择！**我们希望我们的用户使用 Immer，并将其视为 React-toolkit 的关键组件。更简单的 reducer 代码和防止意外突变等巨大好处，远远超过了那些可以被忽视的问题。
+  >
 
 ## 思考
 

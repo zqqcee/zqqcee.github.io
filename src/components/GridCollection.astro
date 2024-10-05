@@ -1,0 +1,22 @@
+---
+import dayjs from 'dayjs';
+import { motion } from 'framer-motion';
+// const allPosts = await Astro.glob('../../pages/posts/*.md');
+const { posts } = Astro.props;
+---
+
+<ul class="mt-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 list-none">
+	{
+		posts.map((post) => {
+			return (
+				<li class="cursor-pointer text-white">
+					<a href={post.url} target="_self">
+						<div class="h-full py-6 flex flex-row items-center relative bg-zinc-700/50 rounded-lg justify-center text-lg font-semibold hover:bg-gray-800/60">
+							{post.frontmatter.title}
+						</div>
+					</a>
+				</li>
+			);
+		})
+	}
+</ul>

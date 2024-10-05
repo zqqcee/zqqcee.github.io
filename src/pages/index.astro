@@ -4,12 +4,13 @@ import Intro from '../components/Intro/Intro.astro';
 import Divider from '../components/Divider.astro';
 import PostCollection from '../components/Article/PostCollection.astro';
 import Home from '../components/HomePage/Home.astro';
+import BlurFade from '@/components/ui/BlurFadeIn';
 import '../styles/global.css';
 ---
 
 <HomeLayout>
-	<Home />
-	<Intro />
-	<!-- <Divider />
-	<PostCollection /> -->
+	<BlurFade client:load className=`mx-auto max-w-6xl my-20 px-20`>
+		<Home />
+		<Intro />
+	</BlurFade>
 </HomeLayout>

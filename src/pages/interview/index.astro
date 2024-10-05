@@ -1,0 +1,19 @@
+---
+import HomeLayout from '@/layouts/HomeLayout.astro';
+import Title from '@/components/Title.astro';
+import GridCollection from '@/components/GridCollection.astro';
+import BlurFade from '@/components/ui/BlurFadeIn';
+const febasicPosts = await Astro.glob('./febasic/*.md');
+const algoPosts = await Astro.glob('./algorithm/*.md');
+---
+
+<HomeLayout>
+	<BlurFade client:load className=`mx-auto max-w-4xl px-20`>
+		<Title title="算法笔记" />
+		<GridCollection posts={algoPosts} />
+	</BlurFade>
+	<BlurFade client:load className=`mx-auto max-w-4xl px-20`>
+		<Title title="前端面经" className="mt-10" />
+		<GridCollection posts={febasicPosts} />
+	</BlurFade>
+</HomeLayout>

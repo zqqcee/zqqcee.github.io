@@ -16,7 +16,7 @@ function Navigation() {
 	return (
 		<MagicCard className="w-auto text-white rounded-full ring-1 ring-gray-500 px-6 shadow-inner border-none mt-1 ">
 			<Menubar className="border-none">
-				<div className="flex gap-4">
+				<div className="flex">
 					<MenubarMenu>
 						<MenubarTrigger>
 							<a href="/" target="_self">
@@ -37,17 +37,33 @@ function Navigation() {
 						</MenubarContent> */}
 					</MenubarMenu>
 					<MenubarMenu>
-						<MenubarTrigger>归档</MenubarTrigger>
+						<MenubarTrigger>
+							<a href="/thoughts" target="_self">
+								小记
+							</a>
+						</MenubarTrigger>
 					</MenubarMenu>
 					<MenubarMenu>
-						<MenubarTrigger>秋招专栏</MenubarTrigger>
-						<MenubarContent>
-							<MenubarItem>算法笔记</MenubarItem>
+						<MenubarTrigger>
+							<a href="/interview" target="_self">
+								秋招专栏
+							</a>
+						</MenubarTrigger>
+						{/* <MenubarContent>
+							<MenubarItem>
+								<a href="/interview/algorithm" target="_self">
+									算法笔记
+								</a>
+							</MenubarItem>
 							<MenubarItem>八股笔记</MenubarItem>
-						</MenubarContent>
+						</MenubarContent> */}
 					</MenubarMenu>
 					<MenubarMenu>
-						<MenubarTrigger>书签</MenubarTrigger>
+						<MenubarTrigger>
+							<a href="/bookmark" target="_self">
+								书签
+							</a>
+						</MenubarTrigger>
 					</MenubarMenu>
 				</div>
 			</Menubar>

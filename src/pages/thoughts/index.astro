@@ -1,14 +1,14 @@
 ---
 import HomeLayout from '../../layouts/HomeLayout.astro';
+import Title from '@/components/Title.astro';
 import PostCollection from '@/components/Article/PostCollection.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
-import Title from '@/components/Title.astro';
 const allPosts = await Astro.glob('./*.md');
 ---
 
 <HomeLayout>
 	<BlurFade client:load className=`mx-auto max-w-4xl px-20`>
-		<Title title="文章" />
+		<Title title="日记/杂谈/非正式思考 📝" />
 		<PostCollection posts={allPosts} />
 	</BlurFade>
 </HomeLayout>
