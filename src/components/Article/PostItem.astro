@@ -3,13 +3,15 @@ const { date, title, href, desc } = Astro.props;
 import PostLink from './PostLink';
 ---
 
-<div
-	class="border-none flex flex-col gap-2 rounded-lg px-4 py-8 w-full ring-0 hover:bg-gray-800 transition-all duration-200"
+<a
+	class="cursor-pointer border-none flex flex-col gap-2 rounded-lg px-4 py-8 w-full ring-0 hover:bg-gray-800 transition-all duration-200"
+	href={href}
+	target="_self"
 >
 	<h1 class="text-white text-xl font-bold self-center">{title}</h1>
 	<span class="self-center text-teal-700 text-sm">
 		{date}
 	</span>
-	<div class="text-gray-500 mt-2">{desc}</div>
+	<div class="text-gray-400 mt-2">{desc}</div>
 	<!-- <PostLink title={title} href={href} client:load /> -->
-</div>
+</a>

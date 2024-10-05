@@ -3,10 +3,10 @@ import BlurFade from '../components/ui/BlurFadeIn';
 import HomeLayout from './HomeLayout.astro';
 import dayjs from 'dayjs';
 const { frontmatter } = Astro.props;
-console.log(frontmatter);
+const title = frontmatter.title;
 ---
 
-<HomeLayout>
+<HomeLayout showNeon={true} width="max-w-2xl" isPost title={title}>
 	<div class="flex flex-col gap-8 max-w-5xl text-white">
 		<div class="text-3xl font-bold leading-tight text-white mb-2">
 			<h1>{frontmatter.title}</h1>

@@ -3,6 +3,7 @@ import React from 'react';
 import Navigation from './Navigation';
 import avatar from '../../public/avatar.jpeg';
 import Signatrue, { SignatureLogo } from './Signature';
+const { title } = Astro.props;
 ---
 
 <div
@@ -15,6 +16,7 @@ import Signatrue, { SignatureLogo } from './Signature';
 	<div class="grow flex justify-center">
 		<Navigation client:load />
 	</div>
+
 	<div class="flex flex-1 row-end-1 justify-center gap-4">
 		<SignatureLogo />
 		<Signatrue />
@@ -22,11 +24,12 @@ import Signatrue, { SignatureLogo } from './Signature';
 </div>
 
 <script>
+	// 渐变背景
 	const progressiveBorder = () => {
 		const offsetY = window.scrollY;
 		const dom = document.querySelector('#header');
 		if (!dom) return;
-		if (offsetY < 50) {
+		if (offsetY < 20) {
 			dom.classList.remove('backdrop-blur-3xl');
 		} else if (!dom.classList.contains('backdrop-blur-3xl')) {
 			dom.classList.add('backdrop-blur-3xl');

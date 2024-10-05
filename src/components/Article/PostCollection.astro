@@ -7,21 +7,21 @@ import BlurFade from '../ui/BlurFadeIn.tsx';
 import PostItem from './PostItem.astro';
 ---
 
-<div class="flex flex-col justify-start gap-4 w-full">
-	{
-		allPosts
-			.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1))
-			.map((article, i) => (
-				<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
-					<PostItem
-						title={article.frontmatter.title}
-						href={article.url}
-						date={dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
-						desc={article.frontmatter.description}
-					/>
-				</BlurFade>
-			))
-	}
-	<motion.circle cx={500} animate={{ cx: [null, 100] }} />
+<div>
+	<div class="flex flex-col justify-start gap-4 w-full backdrop-blur-md">
+		{
+			allPosts
+				.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1))
+				.map((article, i) => (
+					<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
+						<PostItem
+							title={article.frontmatter.title}
+							href={article.url}
+							date={dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
+							desc={article.frontmatter.description}
+						/>
+					</BlurFade>
+				))
+		}
+	</div>
 </div>
-<div class="flex flex-col justify-start gap-4"></div>

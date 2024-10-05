@@ -3,7 +3,7 @@ import Footer from '@/components/Footer.astro';
 import SunSet from '@/components/Grace/SunSet.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
 import Header from '@/components/Header.astro';
-const { width = 'max-w-6xl' } = Astro.props;
+const { width = 'max-w-6xl', showNeon = true, title } = Astro.props;
 console.log(`mx-auto mt-[100px] max-w-${width}`);
 ---
 
@@ -15,9 +15,9 @@ console.log(`mx-auto mt-[100px] max-w-${width}`);
 		<meta name="generator" content={Astro.generator} />
 		<title>zqqcee</title>
 	</head>
-	<body class="bg-gray-900">
-		<SunSet />
-		<Header />
+	<body class="bg-slate-900">
+		{showNeon && <SunSet />}
+		<Header title={title} />
 		<BlurFade client:load className=`mx-auto mt-[100px] ${width}`>
 			<slot />
 		</BlurFade>
