@@ -1,17 +1,18 @@
 ---
 import React from 'react';
-import Navigation from './Navigation';
+import Navigation from './Nav/Navigation';
 import avatar from '../../public/avatar.jpeg';
 import Signatrue, { SignatureLogo } from './Signature';
 const { title } = Astro.props;
+import SMNavigation from './Nav/SMNavigation';
 ---
 
 <div
 	id="header"
-	class="w-full flex items-center box-border fixed top-0 inset-x-0 z-[9] mx-auto px-40 py-3 backdrop-blur-3xl"
+	class="hidden w-full lg:flex items-center box-border fixed top-0 inset-x-0 z-[9] mx-auto px-40 py-3 backdrop-blur-3xl"
 >
 	<div class="flex-1 justify-center items-center">
-		<img src={avatar.src} class="rounded-2xl object-fill bg-cover w-11 h-11" />
+		<a href="/"><img src={avatar.src} class="rounded-2xl object-fill bg-cover w-11 h-11" /></a>
 	</div>
 	<div class="grow flex justify-center">
 		<Navigation client:load />
@@ -21,7 +22,15 @@ const { title } = Astro.props;
 		<Signatrue />
 	</div>
 </div>
-
+<div
+	id="header"
+	class="lg:hidden flex w-full items-center box-border fixed top-0 inset-x-0 z-[9] mx-auto px-10 py-3 backdrop-blur-3xl justify-between"
+>
+	<div class="flex-1 justify-start items-center">
+		<a href="/"><img src={avatar.src} class="rounded-2xl object-fill bg-cover w-11 h-11" /></a>
+	</div>
+	<div class="text-white"><SMNavigation client:load /></div>
+</div>
 <script>
 	// 渐变背景
 	const progressiveBorder = () => {

@@ -11,13 +11,26 @@ import {
 } from '@/components/ui/Menubar';
 import { MagicCard } from '@/components/ui/MagicCard';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MenuConfig } from './config';
 
 function Navigation() {
 	return (
 		<MagicCard className="w-auto text-white rounded-full ring-1 ring-gray-500 px-6 shadow-inner border-none mt-1 ">
 			<Menubar className="border-none">
 				<div className="flex">
-					<MenubarMenu>
+					{Object.keys(MenuConfig).map((key) => {
+						const menu = MenuConfig[key];
+						return (
+							<MenubarMenu key={key}>
+								<MenubarTrigger>
+									<a href={menu.href} target="_self">
+										{menu.title}
+									</a>
+								</MenubarTrigger>
+							</MenubarMenu>
+						);
+					})}
+					{/* <MenubarMenu>
 						<MenubarTrigger>
 							<a href="/" target="_self">
 								主页
@@ -30,11 +43,6 @@ function Navigation() {
 								文章
 							</a>
 						</MenubarTrigger>
-						{/* <MenubarContent>
-							<MenubarItem>技术</MenubarItem>
-							<MenubarItem>思考</MenubarItem>
-							<MenubarItem>生活</MenubarItem>
-						</MenubarContent> */}
 					</MenubarMenu>
 					<MenubarMenu>
 						<MenubarTrigger>
@@ -49,14 +57,6 @@ function Navigation() {
 								秋招专栏
 							</a>
 						</MenubarTrigger>
-						{/* <MenubarContent>
-							<MenubarItem>
-								<a href="/interview/algorithm" target="_self">
-									算法笔记
-								</a>
-							</MenubarItem>
-							<MenubarItem>八股笔记</MenubarItem>
-						</MenubarContent> */}
 					</MenubarMenu>
 					<MenubarMenu>
 						<MenubarTrigger>
@@ -64,7 +64,7 @@ function Navigation() {
 								书签
 							</a>
 						</MenubarTrigger>
-					</MenubarMenu>
+					</MenubarMenu> */}
 				</div>
 			</Menubar>
 		</MagicCard>
