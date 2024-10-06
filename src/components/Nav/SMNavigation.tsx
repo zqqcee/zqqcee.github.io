@@ -32,7 +32,7 @@ function SMNavigation() {
 					</svg>
 				</div>
 			</DrawerTrigger>
-			<DrawerContent className="h-fit border-none py-10 backdrop-blur-xl bg-gray-900/30">
+			<DrawerContent className="h-full border-none py-10 backdrop-blur-xl bg-gray-900/30">
 				<div className="h-2 bg-gray-600 mb-4 w-20 mx-auto rounded-lg "></div>
 				<div className="w-full h-full">
 					{Object.keys(MenuConfig).map((key) => {
