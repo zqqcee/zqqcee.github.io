@@ -309,7 +309,7 @@ class Solution {
   - 执行操作 ②：把 next 的下一个节点指向 pre 的下一个节点；
   - 执行操作 ③：把 pre 的下一个节点指向 next。
 
-![image.png](img/1615105296-bmiPxl-image.png)
+![image.png](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202410061621565.png)
 
 ```java
 class Solution {
@@ -377,7 +377,7 @@ class Solution {
 输出：[2,1,4,3,5]
 ```
 
-![img](img/reverse_ex1.png)
+![img](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202410061622167.png)
 
 **思路：**
 
@@ -676,9 +676,9 @@ while(!pq.isEmpty() && pq.peek().end <= trip.start){
 ```
 
     如果当前的`trip`的开始站点，小于优先级队列中的队首结束站点，那么当前 `trip`入队。
-
+    
     最后，更新当前车上的乘客数，并判断是否大于`capacity`
-
+    
     由于优先级队列需要根据`trip`的结束时间排序，需要获取队首元素的结束站点，上车人数。因此需要建一个辅助类 `Trip`，将每一个 `trip`存成这个辅助类，加入优先级队列中。
 
 完整代码如下 ：

@@ -15,7 +15,7 @@ layout: ../../../layouts/PostLayout.astro
 
 这里暴力DP在一些复合困难题中会超时，比如[354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/)。因此只记录二分查找法。
 
-![img](img/poker3.png)
+![img](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202410061622662.png)
 
 将数组nums按蜘蛛纸牌的方式，放置在不同的牌堆中，**每次放置必须保证这个牌尽可能放在靠前（即左边）的牌堆中。**最后得到的牌堆数就是最长子序列的长度（证明不会）将二分查找法，用在寻找这个数的左边界上，来提速。
 
@@ -505,7 +505,7 @@ for (int i = 1; i < d; i++) {
 
 分割一个nxm的矩形，最少需要用到多少块正方形瓷砖
 
-![img](img/sample_11_1592.png)
+![img](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202410061623333.png)
 
 ```
 输入：n = 2, m = 3
@@ -520,7 +520,7 @@ for (int i = 1; i < d; i++) {
 - 设一个大小为a的正方形，放置在 `i，j`处，将矩形分割为4块：Rect1 ,Rect2, Rect3, Rect4。分割子问题
 - `dfs(n,m)`的定义为：将大小为 `n x m`矩形使用正方形分割需要用多少块。可以用memo消除重叠子问题
 
-![image-20230609101208137](img/image-20230609101208137.png)
+![image-20230609101208137](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202410061623026.png)
 
 **代码**
 
@@ -592,7 +592,7 @@ class Solution {
 
 eg:
 
-![img](img/rob1-tree.png)
+![img](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202410061623292.png)
 
 ```
 输入: root = [3,2,3,null,3,
@@ -669,7 +669,7 @@ class Solution {
 
 eg:
 
-![img](img/tree1.png)
+![img](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202410061623272.png)
 
 ```
 输入：arr = [6,2,4]
