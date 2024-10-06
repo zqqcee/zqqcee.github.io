@@ -1,4 +1,5 @@
-const baseURL = import.meta.env.BASE_URL;
+// const baseURL = import.meta.env.BASE_URL;
+const baseURL = '';
 export const MenuConfig = {
 	home: {
 		title: '主页',
