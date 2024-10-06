@@ -7,7 +7,7 @@ const allPosts = await Astro.glob('./*.md');
 ---
 
 <HomeLayout>
-	<BlurFade client:load className=`mx-auto max-w-4xl px-20`>
+	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
 		<Title title="文章" />
 		<PostCollection posts={allPosts} />
 	</BlurFade>
