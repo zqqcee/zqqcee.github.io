@@ -2,6 +2,7 @@
 	"name": "zqqcee",
 	"type": "module",
 	"version": "0.0.1",
+	"packageManager": "pnpm@8.7.0",
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",
