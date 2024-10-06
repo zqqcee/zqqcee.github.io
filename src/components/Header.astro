@@ -29,7 +29,9 @@ import SMNavigation from './Nav/SMNavigation';
 	class="lg:hidden flex w-full items-center box-border fixed top-0 inset-x-0 z-[9] mx-auto px-10 py-3 backdrop-blur-3xl justify-between"
 >
 	<div class="flex-1 justify-start items-center">
-		<a href="/"><img src={avatar.src} class="rounded-2xl object-fill bg-cover w-11 h-11" /></a>
+		<a href=`${import.meta.env.BASE_URL}/`
+			><img src={avatar.src} class="rounded-2xl object-fill bg-cover w-11 h-11" /></a
+		>
 	</div>
 	<div class="text-white"><SMNavigation client:load /></div>
 </div>
