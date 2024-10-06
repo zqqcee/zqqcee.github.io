@@ -6,5 +6,6 @@ COPY . .
 RUN npm run astro build
 
 FROM caddy:2
+COPY ./CaddyFile /etc/caddy/Caddyfile
 COPY --from=build /app/dist /var/www/html
 EXPOSE 80
