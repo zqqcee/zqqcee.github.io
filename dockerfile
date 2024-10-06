@@ -5,5 +5,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
+FROM caddy:2-alpine
 COPY --from=build /app/dist /var/www/html
-EXPOSE 4321
+EXPOSE 80
