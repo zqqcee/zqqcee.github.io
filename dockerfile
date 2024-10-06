@@ -5,6 +5,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM caddy:lts
+FROM caddy:2
 COPY --from=build /app/dist /var/www/html
 EXPOSE 80
