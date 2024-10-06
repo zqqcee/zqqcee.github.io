@@ -1,5 +1,5 @@
 ---
-const { date, title, href, desc } = Astro.props;
+const { date, title, href, desc, tags } = Astro.props;
 import PostLink from './PostLink';
 ---
 
@@ -9,9 +9,10 @@ import PostLink from './PostLink';
 	target="_self"
 >
 	<h1 class="text-white text-xl font-bold self-center">{title}</h1>
-	<span class="self-center text-teal-700 text-sm">
-		{date}
-	</span>
+	<div class="self-center flex justify-start items-center gap-2">
+		<div class="text-gray-200 text-sm px-2 bg-sky-900/30 rounded-md">{date}</div>
+		{tags && <div class="text-gray-200 text-sm px-2 bg-sky-900/30 rounded-md">{tags}</div>}
+	</div>
 	<div class="text-gray-400 mt-2">{desc}</div>
 	<!-- <PostLink title={title} href={href} client:load /> -->
 </a>

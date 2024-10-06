@@ -12,15 +12,18 @@ const { posts } = Astro.props;
 	{
 		posts
 			.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1))
-			.map((article, i) => (
-				<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
-					<PostItem
-						title={article.frontmatter.title}
-						href={article.url}
-						date={dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
-						desc={article.frontmatter.description}
-					/>
-				</BlurFade>
-			))
+			.map((article, i) => {
+				return (
+					<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
+						<PostItem
+							title={article.frontmatter.title}
+							href={article.url}
+							date={dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
+							desc={article.frontmatter.description}
+							tags={article.frontmatter.tags}
+						/>
+					</BlurFade>
+				);
+			})
 	}
 </div>
