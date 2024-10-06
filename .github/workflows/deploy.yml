@@ -29,7 +29,7 @@ jobs:
         with:
           version: 8.7.0
       - name: Install
-        run: pnpm run install
+        run: pnpm install
 
       - name: Build
         run: pnpm run build
