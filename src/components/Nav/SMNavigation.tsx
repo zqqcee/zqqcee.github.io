@@ -37,7 +37,6 @@ function SMNavigation() {
 				<div className="w-full h-full">
 					{Object.keys(MenuConfig).map((key) => {
 						const menu = MenuConfig[key];
-						console.log(menu);
 						return (
 							<div className="sm-menu-item" key={key}>
 								<menu.icon className="w-5 h-5" />
