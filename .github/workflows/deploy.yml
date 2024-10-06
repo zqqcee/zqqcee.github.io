@@ -32,7 +32,7 @@ jobs:
         run: pnpm install
 
       - name: Build
-        run: pnpm run build
+        run: pnpm run astro build
       # - name: Install, build, and upload your site
       #   uses: withastro/action@v3
       #   # run: npm run install && npm run build
