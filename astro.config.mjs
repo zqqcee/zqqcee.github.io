@@ -18,6 +18,8 @@ export default defineConfig({
 		// rehypePlugins: [rehypeAccessibleEmojis],
 	},
 	site: 'https://zqqcee.github.io',
-	base: '',
-	trailingSlash: 'ignore',
+	redirects: {
+		'/posts': '/posts/1',
+		'/thoughts': '/thoughts/1',
+	},
 });

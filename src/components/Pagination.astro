@@ -1,0 +1,21 @@
+---
+import { cn } from '@/lib/utils';
+const { pageNum, total, next, prev } = Astro.props;
+const btnWrapperClass = (disabledPage, customClass = '') =>
+	cn('flex-1 cursor-pointer', pageNum === disabledPage ? 'invisible' : 'visible', customClass);
+---
+
+<style>
+	.button {
+		@apply hover:bg-gray-700/80 w-fit px-4 py-1 rounded-lg cursor-pointer;
+	}
+</style>
+<div class="text-base lg:text-lg text-gray-200 flex items-center my-10 font-bold">
+	<div class={btnWrapperClass(1, 'flex justify-start text-left')}>
+		<a class="button" href={prev}> {'上一页'} </a>
+	</div>
+	<div class="text-center flex-1">{`${pageNum} / ${total}`}</div>
+	<div class={btnWrapperClass(total, 'flex justify-end text-right')}>
+		<a class="button" href={next}> {'下一页'} </a>
+	</div>
+</div>

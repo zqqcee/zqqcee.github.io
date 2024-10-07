@@ -1,0 +1,26 @@
+---
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PostCollection from '@/components/Article/PostCollection.astro';
+import BlurFade from '@/components/ui/BlurFadeIn';
+import Title from '@/components/Title.astro';
+import Pagination from '@/components/Pagination.astro';
+export async function getStaticPaths({ paginate }) {
+	const allPosts = await Astro.glob('./*.md');
+	return paginate(allPosts, { pageSize: 5 });
+}
+// 所有分页数据都在 "page" 参数中传递
+const { page } = Astro.props;
+---
+
+<HomeLayout>
+	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20 text-white`>
+		<Title title="日记/杂谈/非正式思考 📝" />
+		<PostCollection posts={page.data} />
+		<Pagination
+			pageNum={page.currentPage}
+			total={page.lastPage}
+			next={page.url.next}
+			prev={page.url.prev}
+		/>
+	</BlurFade>
+</HomeLayout>
