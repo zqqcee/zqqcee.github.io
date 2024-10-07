@@ -17,7 +17,7 @@ export default defineConfig({
 		remarkPlugins: [[remarkToc, { heading: 'toc', maxDepth: 3 }]],
 		// rehypePlugins: [rehypeAccessibleEmojis],
 	},
-	site: 'https://121.41.19.187',
+	site: 'zqqcee.github.io',
 	redirects: {
 		'/posts': '/posts/1',
 		'/thoughts': '/thoughts/1',
