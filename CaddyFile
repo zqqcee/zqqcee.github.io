@@ -1,15 +1,22 @@
 :80 {
-        # Set this path to your site's directory.
-        root * /var/www/html
+    # Redirect all HTTP requests to HTTPS
+    redir https://{host}{uri} 302
+}
 
-        # Enable the static file server.
-        file_server
-        redir /posts /posts/1 302
-        redir /thoughts /thoughts/1 302
+:443 {
+    # Set the root directory for your website
+    root * /var/www/html
 
-        # Another common task is to set up a reverse proxy:
-        # reverse_proxy localhost:8080
+    # Enable the static file server
+    file_server
 
-        # Or serve a PHP site through php-fpm:
-        # php_fastcgi localhost:9000
+    # Redirection rules
+    redir /posts /posts/1 302
+    redir /thoughts /thoughts/1 302
+
+    # Automatically get and serve certificates from Let's Encrypt
+    tls your-email@example.com
+
+    # Uncomment and configure this if you are reverse proxying to a service
+    # reverse_proxy localhost:8080
 }
