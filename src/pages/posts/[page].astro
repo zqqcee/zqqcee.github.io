@@ -4,8 +4,10 @@ import PostCollection from '@/components/Article/PostCollection.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
 import Title from '@/components/Title.astro';
 import Pagination from '@/components/Pagination.astro';
+import dayjs from 'dayjs';
 export async function getStaticPaths({ paginate }) {
 	const allPosts = await Astro.glob('./*.md');
+	allPosts.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1));
 	return paginate(allPosts, { pageSize: 5 });
 }
 // 所有分页数据都在 "page" 参数中传递
