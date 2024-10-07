@@ -15,7 +15,7 @@
     redir /thoughts /thoughts/1 302
 
     # Automatically get and serve certificates from Let's Encrypt
-    tls your-email@example.com
+    tls zqqcee@163.com
 
     # Uncomment and configure this if you are reverse proxying to a service
     # reverse_proxy localhost:8080
