@@ -4,7 +4,8 @@
 
         # Enable the static file server.
         file_server
-        rewrite /ccspace/* /
+        redir /posts /posts/1 302
+        redir /thoughts /thoughts/1 302
 
         # Another common task is to set up a reverse proxy:
         # reverse_proxy localhost:8080
