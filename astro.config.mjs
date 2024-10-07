@@ -19,7 +19,7 @@ export default defineConfig({
 	},
 	site: 'https://zqqcee.github.io',
 	redirects: {
-		// '/posts': '/posts/1',
+		'/posts': '/posts/1',
 		'/thoughts': '/thoughts/1',
 	},
 });
