@@ -150,20 +150,20 @@ export const MenuConfig = {
 		),
 		href: baseURL + '/bookmark',
 	},
-	message: {
-		title: '留言',
-		icon: (props) => (
-			<svg viewBox="-4 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" {...props}>
-				<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-					<g id="Icon-Set-Filled" transform="translate(-419.000000, -153.000000)" fill="#fff">
-						<path
-							d="M437,153 L423,153 C420.791,153 419,154.791 419,157 L419,179 C419,181.209 420.791,183 423,183 L430,176 L437,183 C439.209,183 441,181.209 441,179 L441,157 C441,154.791 439.209,153 437,153"
-							id="bookmark"
-						></path>
-					</g>
-				</g>
-			</svg>
-		),
-		href: baseURL + '/message',
-	},
+	// message: {
+	// 	title: '留言',
+	// 	icon: (props) => (
+	// 		<svg viewBox="-4 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" {...props}>
+	// 			<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+	// 				<g id="Icon-Set-Filled" transform="translate(-419.000000, -153.000000)" fill="#fff">
+	// 					<path
+	// 						d="M437,153 L423,153 C420.791,153 419,154.791 419,157 L419,179 C419,181.209 420.791,183 423,183 L430,176 L437,183 C439.209,183 441,181.209 441,179 L441,157 C441,154.791 439.209,153 437,153"
+	// 						id="bookmark"
+	// 					></path>
+	// 				</g>
+	// 			</g>
+	// 		</svg>
+	// 	),
+	// 	href: baseURL + '/message',
+	// },
 };
