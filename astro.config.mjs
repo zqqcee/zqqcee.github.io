@@ -20,7 +20,7 @@ export default defineConfig({
 	server: {
 		host: true,
 	},
-	site: 'https://zqqcee.github.io',
+	site: 'https://luckycc.cc',
 	redirects: {
 		'/posts': '/posts/1',
 		'/thoughts': '/thoughts/1',
