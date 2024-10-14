@@ -1,4 +1,4 @@
-:80 {
+luckycc.cc {
         # Set this path to your site's directory.
         root * /var/www/html
 
@@ -14,18 +14,18 @@
         # php_fastcgi localhost:9000
 }
 
-:443 {
-        # Set this path to your site's directory.
-        root * /var/www/html
+# :443 {
+#         # Set this path to your site's directory.
+#         root * /var/www/html
 
-        # Enable the static file server.
-        file_server
-        redir /posts /posts/1 302
-        redir /thoughts /thoughts/1 302
+#         # Enable the static file server.
+#         file_server
+#         redir /posts /posts/1 302
+#         redir /thoughts /thoughts/1 302
 
-        # Another common task is to set up a reverse proxy:
-        # reverse_proxy localhost:8080
+#         # Another common task is to set up a reverse proxy:
+#         # reverse_proxy localhost:8080
 
-        # Or serve a PHP site through php-fpm:
-        # php_fastcgi localhost:9000
-}
+#         # Or serve a PHP site through php-fpm:
+#         # php_fastcgi localhost:9000
+# }
