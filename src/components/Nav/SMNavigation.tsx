@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/Drawer';
 import { MenuConfig } from './config';
 import React from 'react';
-import '@/styles/global.css';
+// import '@/styles/global.css';
 
 function SMNavigation() {
 	return (
