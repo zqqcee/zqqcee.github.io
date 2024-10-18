@@ -64,6 +64,9 @@ export default {
 					'100%': { strokeDashoffset: 2550, fill: 'transparent' },
 				},
 			},
+			screens: {
+				lg: '1140px',
+			},
 		},
 	},
 	plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],

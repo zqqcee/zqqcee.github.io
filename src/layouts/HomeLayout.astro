@@ -15,9 +15,11 @@ const { width = 'max-w-6xl', showNeon = true, title } = Astro.props;
 		<title>zqqcee</title>
 	</head>
 	<body class="bg-slate-900">
-		{showNeon && <SunSet />}
-		<Header title={title} />
-		<slot />
+		<main class="min-h-screen">
+			{showNeon && <SunSet />}
+			<Header title={title} />
+			<slot />
+		</main>
 		<Footer />
 	</body>
 </html>

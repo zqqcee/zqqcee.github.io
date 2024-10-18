@@ -128,7 +128,7 @@ abbrlink: 59926
 
 详情请见：[zqqcee/ipad-cursor-hexo](https://github.com/zqqcee/ipad-cursor-hexo)，欢迎star🌟！
 
-欢迎访问我的个人博客，查看效果 [zqqcee](https://zqqcee.github.io/)🔥
+欢迎访问我的个人博客，查看效果 [zqqcee](https://luckycc.cc)🔥
 
 ## 遇到的问题
 
