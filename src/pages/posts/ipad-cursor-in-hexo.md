@@ -130,6 +130,8 @@ abbrlink: 59926
 
 欢迎访问我的个人博客，查看效果 [zqqcee](https://luckycc.cc)🔥
 
+> 2024-10-19 更新：该博客已迁移至 [luckycc.cc](https://luckycc.cc)，这个效果没有继续沿用
+
 ## 遇到的问题
 
 - 鼠标样式不生效问题：
