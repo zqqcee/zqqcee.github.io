@@ -95,6 +95,8 @@ layout: ../../layouts/PostLayout.astro
 
 效果仍然参考了[Doctor Wu的博客](https://doctorwu.me/)，但是动画可能看起来没有那么丝滑。
 
+![neon](https://ccspace-assets.oss-cn-hangzhou.aliyuncs.com/ccspace/202410191645376.gif)
+
 ### 菜单栏光影
 
 关于Menubar，我参考了[Innei的博客](https://innei.in/)，做了基本的**响应式设计**，这是两种不同的Menubar：
@@ -109,7 +111,7 @@ layout: ../../layouts/PostLayout.astro
 
 如果你正在使用大屏幕浏览的话，会发现Menubar上会有光影，这是使用了 [MagicCard](https://magicui.design/docs/components/magic-card) 制作的效果，光影会随着你的鼠标进行移动。
 
-![neon](https://ccspace-assets.oss-cn-hangzhou.aliyuncs.com/ccspace/202410191645376.gif)
+![menubar光影](https://ccspace-assets.oss-cn-hangzhou.aliyuncs.com/ccspace/202410191802539.gif)
 
 ### Animation
 
