@@ -1,6 +1,7 @@
 FROM node:lts AS build
 WORKDIR /app
 COPY package*.json ./
+RUN npm config set registry https://registry.npmmirror.com
 RUN npm install
 COPY . .
 RUN npm run astro build
