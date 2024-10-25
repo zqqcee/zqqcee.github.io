@@ -12,7 +12,7 @@ layout: ../../layouts/PostLayout.astro
 
 其实写博客这件事，在很早就开始了。
 
-### Timeline
+## Timeline
 
 2020-01-11，我在CSDN上发布了我的第一篇文章，当时是大二的下学期，因为想进入某位导师的智能媒体与数据挖掘实验室，学习了使用python进行网络爬虫。这一篇博客只贴上了代码，没有其他的内容。
 
@@ -71,7 +71,7 @@ layout: ../../layouts/PostLayout.astro
 
 # 设计
 
-### 动态签名
+## 动态签名
 
 ![video-new](https://ccspace-assets.oss-cn-hangzhou.aliyuncs.com/ccspace/202410191645373.gif)
 
@@ -87,7 +87,7 @@ layout: ../../layouts/PostLayout.astro
 - 使用Ink space 扣出这张图像的svg path
 - 创建svg CSS动画，可以看这篇： [Animated line drawing in SVG](https://jakearchibald.com/2013/animated-line-drawing-svg)
 
-### 霓虹灯背景
+## 霓虹灯背景
 
 我用codepen.io存放了这个效果的源代码：[The neon light](https://codepen.io/zqqcee-the-bold/pen/KKjjorx)，感兴趣可以看看。
 
@@ -97,7 +97,7 @@ layout: ../../layouts/PostLayout.astro
 
 ![neon](https://ccspace-assets.oss-cn-hangzhou.aliyuncs.com/ccspace/202410191645376.gif)
 
-### 菜单栏光影
+## 菜单栏光影
 
 关于Menubar，我参考了[Innei的博客](https://innei.in/)，做了基本的**响应式设计**，这是两种不同的Menubar：
 
@@ -113,7 +113,7 @@ layout: ../../layouts/PostLayout.astro
 
 ![menubar光影](https://ccspace-assets.oss-cn-hangzhou.aliyuncs.com/ccspace/202410191802539.gif)
 
-### Animation
+## Animation
 
 借助 [Magic UI](https://magicui.design/)，能够很方便地制作动画，在博客中的许多动画都来自于它。
 

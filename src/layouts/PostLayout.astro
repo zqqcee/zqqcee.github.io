@@ -7,27 +7,33 @@ const title = frontmatter.title;
 ---
 
 <HomeLayout showNeon={true} isPost title={title}>
-	<BlurFade client:load className=`mx-auto max-w-6xl my-40 px-6 lg:px-20`>
-		<div class="flex flex-col gap-8 max-w-5xl text-white">
-			<div class="text-xl lg:text-3xl font-bold leading-tight text-white mb-2 self-center">
-				<h1>{frontmatter.title}</h1>
+	<BlurFade client:load className=`mx-auto max-w-6xl my-40 px-6 lg:px-40`>
+		<div class="flex">
+			<div class="flex flex-col gap-8 max-w-5xl text-white">
+				<div class="text-xl lg:text-3xl font-bold leading-tight text-white mb-2 self-center">
+					<h1>{frontmatter.title}</h1>
+				</div>
+				<div class="flex gap-4 items-center self-center">
+					{
+						frontmatter.date && (
+							<div class="font-bold text-gray-300 text-lg">
+								{dayjs(frontmatter.date).format('YYYY-MM-DD')}
+							</div>
+						)
+					}
+				</div>
+				<div
+					class="prose prose-base leading-loose max-w-full
+					prose-headings:text-white
+					prose-a:font-semibold prose-a:px-1 prose-a:underline-offset-4
+					prose-p:text-justify
+					prose-img:rounded-xl ::prose-marker: text-white
+					prose-blockquote:not-italic"
+				>
+					<slot />
+				</div>
 			</div>
-			<div class="flex gap-4 items-center self-center">
-				{
-					frontmatter.date && (
-						<div class="font-bold text-gray-300 text-lg">
-							{dayjs(frontmatter.date).format('YYYY-MM-DD')}
-						</div>
-					)
-				}
-			</div>
-			<div
-				class="prose
-	  prose-h1:font-bold max-w-full prose-h1:text-2xl prose-h4:text-white
-	  prose-a:text-cyan-300 prose-a:font-semibold prose-p:text-justify prose-img:rounded-xl ::prose-marker: text-white"
-			>
-				<slot />
-			</div>
+			<div>123123</div>
 		</div>
 	</BlurFade>
 </HomeLayout>

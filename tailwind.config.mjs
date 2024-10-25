@@ -1,3 +1,6 @@
+import { color } from 'framer-motion';
+import { blockquote } from 'framer-motion/client';
+
 /** @type {import('tailwindcss').Config} */
 export default {
 	darkMode: ['class'],
@@ -8,42 +11,44 @@ export default {
 				DEFAULT: {
 					css: {
 						color: theme('colors.white'),
+						strong: {
+							color: theme('colors.white'),
+						},
 						a: {
 							color: theme('colors.white'),
-						},
-						h1: {
-							color: theme('colors.white'),
-						},
-						h2: {
-							color: theme('colors.white'),
-						},
-						h3: {
-							color: theme('colors.white'),
+							transition: 'all 0.3s ease-in-out',
+							'text-decoration-color': '#ffffff',
+							'&:hover': {
+								'text-decoration-color': '#67e8f9',
+								color: '#67e8f9',
+							},
 						},
 						p: {
-							color: theme('colors.white'),
-						},
-						strong: {
 							color: theme('colors.white'),
 						},
 						code: {
 							color: theme('colors.white'),
 							borderRadius: '.25rem',
 							color: '#ffffff',
-							// padding: '0px 2px',
 							fontSize: '.875em',
 							fontWeight: '550',
 							padding: '.15rem .4rem',
-							backgroundColor: '#3b3b3b',
+							backgroundColor: '#44494c',
+						},
+						'code::before': {
+							content: 'none',
+						},
+						'code::after': {
+							content: 'none',
 						},
 						'li::marker': {
 							color: 'var(--tw-prose-bullets)',
 						},
-						'code::before': {
-							content: '',
-						},
-						'code::after': {
-							content: '',
+						blockquote: {
+							p: {
+								'&::before': { content: 'none' },
+								'&::after': { content: 'none' },
+							},
 						},
 					},
 				},
@@ -65,7 +70,7 @@ export default {
 				},
 			},
 			screens: {
-				lg: '1140px',
+				lg: '900px',
 			},
 		},
 	},

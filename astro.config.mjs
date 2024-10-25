@@ -15,7 +15,6 @@ export default defineConfig({
 			transformers: [],
 		},
 		remarkPlugins: [[remarkToc, { heading: 'toc', maxDepth: 3 }]],
-		// rehypePlugins: [rehypeAccessibleEmojis],
 	},
 	server: {
 		host: true,
