@@ -33,8 +33,9 @@ const { toc = [] } = Astro.props;
 		li.addEventListener(
 			'click',
 			(e) => {
-				const liDom = e.currentTarget;
-				const dom = document.querySelector(`#${liDom.id}`);
+				const liDom = e.currentTarget as HTMLElement;
+				const id = liDom.id;
+				const dom = document.querySelector(`#${id}`);
 				dom?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 			},
 			true
