@@ -2,15 +2,21 @@
 import BlurFade from '../components/ui/BlurFadeIn';
 import HomeLayout from './HomeLayout.astro';
 import dayjs from 'dayjs';
-const { frontmatter } = Astro.props;
+import Toc from '../components/Toc/index.astro';
+const { frontmatter, headings = [] } = Astro.props;
 const title = frontmatter.title;
+
+//TODO: 写一个脚本，在中英文之间添加空格
 ---
 
 <HomeLayout showNeon={true} isPost title={title}>
 	<BlurFade client:load className=`mx-auto max-w-6xl my-40 px-6 lg:px-40`>
 		<div class="flex">
 			<div class="flex flex-col gap-8 max-w-5xl text-white">
-				<div class="text-xl lg:text-3xl font-bold leading-tight text-white mb-2 self-center">
+				<div
+					class="text-xl lg:text-3xl font-bold leading-tight text-white mb-2 self-center"
+					id="top"
+				>
 					<h1>{frontmatter.title}</h1>
 				</div>
 				<div class="flex gap-4 items-center self-center">
@@ -33,6 +39,7 @@ const title = frontmatter.title;
 					<slot />
 				</div>
 			</div>
+			<Toc toc={headings} />
 		</div>
 	</BlurFade>
 </HomeLayout>

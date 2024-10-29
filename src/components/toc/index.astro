@@ -1,3 +1,46 @@
 ---
 //table of content
+const { toc = [] } = Astro.props;
 ---
+
+<div class="relative w-56">
+	<div
+		class="hidden lg:block text-white w-full pl-8 leading-relaxed sticky top-20 bg-gray-700/10 ml-8 rounded-xl py-4"
+	>
+		<ul>
+			{
+				toc.map((d) => {
+					return (
+						<li
+							class="pt-2 text-sm toc-li cursor-pointer hover:-translate-y-1 hover:-translate-x-1 transition-all truncate"
+							id={d.slug}
+						>
+							<a target="_self" title={d.text} style={{ paddingLeft: `${d.depth - 1}em` }}>
+								{d.text}
+							</a>
+						</li>
+					);
+				})
+			}
+		</ul>
+		<div class="text-sm mt-4 opacity-80 cursor-pointer" id="scroll-to-top">回到顶部</div>
+	</div>
+</div>
+
+<script>
+	const lis = document.querySelectorAll('.toc-li');
+	lis.forEach((li) => {
+		li.addEventListener(
+			'click',
+			(e) => {
+				const liDom = e.currentTarget;
+				const dom = document.querySelector(`#${liDom.id}`);
+				dom?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			},
+			true
+		);
+	});
+	document.querySelector('#scroll-to-top').addEventListener('click', (e) => {
+		document.querySelector('#top')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	});
+</script>

@@ -10,16 +10,14 @@ mathjax: true
 abbrlink: 28243
 ---
 
-# Pull Request完整过程【记一次给antvis/G6的PR】
-
-### 前言
+# 前言
 
 G6正在进行 `v4`到 `v5`的版本升级，发了几个Issue Hunt，因为很喜欢G6，所以想尝试帮助完成一个矩形Item的迁移。在编写测试demo的过程中，发现了G6的一个严重bug。本文记录了我从发现bug，排查bug到给G6提PR，与仓库管理员沟通，最终PR被成功merge的过程。这是我给G6的第二个PR，给想要参与开源，为自己喜欢的项目贡献绵薄之力的朋友提供一套完整的贡献流程参考。附上两次Pull Request的链接
 
 - Doc fix ：[Fix issue#4552, another 404 not found and typo errors #4554](https://github.com/antvis/G6/pull/4554)
 - Bug fix ：[Fix: &#34;Node not found&#34; error from &#39;getNode()&#39;#4608](https://github.com/antvis/G6/pull/4608)
 
-### Bug 重现
+# Bug 重现
 
 这是我在编写测试demo时，发现G6中存在的一个bug。报错信息显示：`Node not found for id: 1`。
 
@@ -27,7 +25,7 @@ G6正在进行 `v4`到 `v5`的版本升级，发了几个Issue Hunt，因为很�
 
 根据字面意思，某个方法收到了 `id`为1的节点，但是在我传入的数据中并不存在这个节点。
 
-### 问题排查
+# 问题排查
 
 我在 `Graph.getNode()`这个方法的前后调试了很久，更奇怪的是，直接调用 `Graph.getNode(1)`居然是能够返回节点的。由于G6的代码中写的是:
 
@@ -45,7 +43,7 @@ Object.keys(data).forEach((id) => {
 
 到这里，问题就定位完毕了。
 
-### 解决方案
+# 解决方案
 
 其实要解决这个问题很简单，有以下三种方法：
 
@@ -59,7 +57,7 @@ Object.keys(data).forEach((id) => {
 
 在解决这个问题的时候，我还考虑到了一种情况，如果用户比较调皮，**输入的 `id`中又有 `string`类型，又有 `number`类型**应该怎么解决呢？这里我采用了添加 `try-catch`代码块来进行解决。
 
-#### old version
+## old version
 
 ```typescript
 // 'id' variable is always string in here, but one in user data is number, possibly.
@@ -69,7 +67,7 @@ Object.keys(data).forEach((id) => {
 });
 ```
 
-#### new version
+## new version
 
 ```typescript
 Object.keys(data).forEach((id) => {
@@ -100,21 +98,21 @@ Object.keys(data).forEach((id) => {
 > 经过测试，我发现 `id`变量在 `Object.keys(update).forEach((id)=>{...})`之后总是字符串类型，但是这个 `id`变量在用户数据中很有可能是数字类型。
 > 我尝试添加一个 `try-catch` 块来修复这个错误，但**这样做似乎不太合理**。 我想你们可以在文档中说明：限制 `id` 为字符串类型，或者在 `transformer data` 层强制将 `id` 设置为字符串类型来避免这个错误。
 
-#### 收到回复
+# 收到回复
 
 很快，我收到了仓库管理员**十吾**的回复，她回复了一个👍，我好开心，我问她这是可以接受的吗，如果是的话，需不需要重新创建一个PR来进行提交（因为我一开始提交的PR有其他修改，但是另外的修改无法被merge）。
 
 ![image-20230608213348021](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202026.png)
 
-### PR提交完整过程
+# PR提交完整过程
 
 这一部分记录完整的PR提交过程，其中包含了我遇到的问题，一并做陈述并给出解决方案。因为这是我第二次给开源仓库做贡献，所以一些看起来很简单的细节我也记录在这里，帮后面的同学少踩一些坑。
 
-#### fork仓库 & clone代码仓
+## fork仓库 & clone代码仓
 
 直接fork，选仅fork默认分支即可。fork仓库后，在自己的github主页就能看到一个一摸一样的代码仓了。这一步注意，是要clone自己fork后的代码仓，比如我需要clone的地址是：`https://github.com/zqqcee/G6.git`,这里 `zqqcee`是自己的用户名，不要clone错了。
 
-#### 添加upstream
+## 添加upstream
 
 这一步的目的是将 `antvis`的源仓库添加为上游仓库，不然我们无法同步它们的更新。运行：
 
@@ -129,7 +127,7 @@ git remote add upstream "https://github.com/antvis/G6.git"
 > upstream:xxxx
 > upstream:xxxx
 
-#### fetch 新分支
+## fetch 新分支
 
 由于我是给**v5分支**提的PR，因此我需要先**fetch v5分支**。运行：
 
@@ -141,7 +139,7 @@ git fetch upstream/v5
 
 下一步，我们就需要把这个分支的内容在本地创建，并进行修改。
 
-#### 创建新分支
+## 创建新分支
 
 这一步在我执行的时候有一个很大的坑：我在master分支上直接运行：
 
@@ -166,14 +164,14 @@ git checkout -b origin/v5 upstream/v5
 git checkout -b v5-fix#NodeNotFound
 ```
 
-#### 完成修改（注意commit规范）
+## 完成修改（注意commit规范）
 
 写完代码后注意自己的commit规范，每一个commit都要让别人能看懂，不要全部修改完再做提交。这里我把每一个修改的含义都分得比较清楚，如下：
 
 - bug 重现 commit
 - bug 修复 commit
 
-#### push到个人仓库
+## push到个人仓库
 
 在这一步我遇到了大麻烦，由于G6发布了 `issue hunt`,因此这里我push到个人仓库时，由于我的**`personal token`没有包含workflow，**因此push不成功。报错：**"refusing to allow a Personal Access Token to create or update workflow `.github/workflows/build.yml` without `workflow` scope"**
 
@@ -195,7 +193,7 @@ git checkout -b v5-fix#NodeNotFound
 
 - 最后，重新push就能成功了
 
-#### 创建Pull Request
+## 创建Pull Request
 
 到fork的仓库中，push成功后，仓库中会显示有一个新的分支。然后点击 `Pull Request`
 
@@ -205,7 +203,7 @@ git checkout -b v5-fix#NodeNotFound
 
 ![image-20230608215845380](https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202467.png)
 
-#### 填写PR信息
+## 填写PR信息
 
 PR信息非常关键，必须非常清楚地说明你为什么要创建这个PR ，以及这个PR修复了什么问题。这里直接贴上我的PR 说明，供参考。
 
