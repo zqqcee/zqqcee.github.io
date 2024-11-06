@@ -5,6 +5,7 @@ categories: visual analytics
 description: 虽然Canvas可以用于渲染万级数据量，但是当节点数超过1w时，尽管一次渲染的时间很短，但还是会产生视觉上的卡顿。为此继续调研了一些优化方案，记录见文。
 date: 2022-01-20
 top: 100
+layout: ../../layouts/PostLayout.astro
 mathjax: true
 abbrlink: 4555
 ---
