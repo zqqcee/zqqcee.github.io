@@ -5,6 +5,7 @@ categories: note
 date: 2022-10-11
 description: leetcode【寻找两个正序数组中位数】做题笔记，包含解题步骤、思考过程与完整代码
 mathjax: true
+layout: ../../layouts/PostLayout.astro
 abbrlink: 13577
 ---
 
