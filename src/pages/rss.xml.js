@@ -22,7 +22,13 @@ export function GET(context) {
 			pubDate: post.frontmatter.date || dayjs().format('YYYY-MM-DD'),
 		})),
 		// (optional) inject custom xml
-		customData: `<language>en-us</language>`,
+		customData: `
+            <language>en-us</language>
+            <follow_challenge>
+                <feedId>79193578455209984</feedId>
+                <userId>55616285853528064</userId>
+            </follow_challenge>
+        `,
 		stylesheet: '/rss/styles.xsl',
 	});
 }
