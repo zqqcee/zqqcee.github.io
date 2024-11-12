@@ -8,7 +8,7 @@ export function GET(context) {
 	return rss({
 		title: 'luckycc',
 		// `<description>` field in output xml
-		description: "zqqcee's blog page",
+		description: 'Check it out ceeblog!',
 		// Pull in your project "site" from the endpoint context
 		// https://docs.astro.build/en/reference/api-reference/#contextsite
 		site: context.site,
@@ -28,11 +28,6 @@ export function GET(context) {
                 <feedId>79193578455209984</feedId>
                 <userId>55616285853528064</userId>
             </follow_challenge>
-            <image>
-                <url>https://luckycc.cc/avatar.jpeg</url>
-                <title>luckycc</title>
-                <link>https://luckycc.cc/avatar.jpeg</link>
-            </image>
         `,
 		stylesheet: '/rss/styles.xsl',
 	});
