@@ -29,9 +29,9 @@ export function GET(context) {
                 <userId>55616285853528064</userId>
             </follow_challenge>
             <image>
-                <url>http://url/to/img</url>
-                <title>example image</title>
-                <link>http://example</link>
+                <url>https://luckycc.cc/avatar.jpeg</url>
+                <title>luckycc</title>
+                <link>https://luckycc.cc/avatar.jpeg</link>
             </image>
         `,
 		stylesheet: '/rss/styles.xsl',
