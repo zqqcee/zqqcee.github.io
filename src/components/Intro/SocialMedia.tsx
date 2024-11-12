@@ -32,6 +32,11 @@ export function SocialMedia(props) {
 					<Icons.mail className="size-full fill-white" />
 				</a>
 			</DockIcon>
+			<DockIcon className="bg-cyan-700 dark:bg-white/10 p-3">
+				<a href="https://luckycc.cc/rss.xml" target="_blank">
+					<Icons.rss className="size-full fill-white" />
+				</a>
+			</DockIcon>
 		</Dock>
 	);
 }
@@ -83,6 +88,20 @@ const Icons = {
 				clipRule="evenodd"
 				d="M3.75 5.25L3 6V18L3.75 18.75H20.25L21 18V6L20.25 5.25H3.75ZM4.5 7.6955V17.25H19.5V7.69525L11.9999 14.5136L4.5 7.6955ZM18.3099 6.75H5.68986L11.9999 12.4864L18.3099 6.75Z"
 			/>
+		</svg>
+	),
+	rss: (props: IconProps) => (
+		<svg
+			width="800px"
+			height="800px"
+			viewBox="0 0 16 16"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<path d="M3 1H1V3H3C8.52285 3 13 7.47715 13 13V15H15V13C15 6.37258 9.62742 1 3 1Z" />
+			<path d="M3 6H1V8H3C5.76142 8 8 10.2386 8 13V15H10V13C10 9.13401 6.86599 6 3 6Z" />
+			<path d="M3 15C4.10457 15 5 14.1046 5 13C5 11.8954 4.10457 11 3 11C1.89543 11 1 11.8954 1 13C1 14.1046 1.89543 15 3 15Z" />
 		</svg>
 	),
 };
