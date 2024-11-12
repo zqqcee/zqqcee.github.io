@@ -2,9 +2,12 @@
 import HomeLayout from '@/layouts/HomeLayout.astro';
 import Title from '@/components/Title.astro';
 import GridCollection from '@/components/GridCollection.astro';
+import PostCollection from '@/components/Article/PostCollection.astro';
+
 import BlurFade from '@/components/ui/BlurFadeIn';
 const febasicPosts = await Astro.glob('./febasic/*.md');
 const algoPosts = await Astro.glob('./algorithm/*.md');
+const posts = await Astro.glob('./*.md');
 ---
 
 <HomeLayout>
@@ -15,5 +18,9 @@ const algoPosts = await Astro.glob('./algorithm/*.md');
 	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
 		<Title title="前端面经" className="mt-10" />
 		<GridCollection posts={febasicPosts} />
+	</BlurFade>
+	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
+		<Title title="文章" className="mt-10" />
+		<PostCollection posts={posts} />
 	</BlurFade>
 </HomeLayout>
