@@ -28,6 +28,11 @@ export function GET(context) {
                 <feedId>79193578455209984</feedId>
                 <userId>55616285853528064</userId>
             </follow_challenge>
+            <image>
+                <url>http://url/to/img</url>
+                <title>example image</title>
+                <link>http://example</link>
+            </image>
         `,
 		stylesheet: '/rss/styles.xsl',
 	});
