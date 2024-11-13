@@ -8,7 +8,7 @@ export function GET(context) {
 	return rss({
 		title: 'luckycc',
 		// `<description>` field in output xml
-		description: 'Check it out ceeblog!',
+		description: 'Check it out ceeblog! @zqqcee',
 		// Pull in your project "site" from the endpoint context
 		// https://docs.astro.build/en/reference/api-reference/#contextsite
 		site: context.site,
