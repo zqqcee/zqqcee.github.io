@@ -1,0 +1,32 @@
+<!DOCTYPE html><!-- ---
+//留言
+import Test from './Test';
+import HomeLayout from '@/layouts/HomeLayout.astro';
+import BlurFade from '@/components/ui/BlurFadeIn';
+import Title from '@/components/Title.astro';
+import MessageItem from './MessageItem.astro';
+
+const url = new URL(
+	`/message/get?${new URLSearchParams({ page_num: '1', page_size: '20' }).toString()}`,
+	'http://localhost:3000'
+);
+const response = await fetch(url, {
+	method: 'GET'
+});
+const { data } = await response.json();
+---
+
+<HomeLayout>
+	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20 text-white`>
+		<Title title="留言" />
+		<div class="text-white font-2xl">
+			{
+				data.map((message, i) => (
+					<BlurFade delay={0.1 * i} client:load>
+						<MessageItem message={message} />
+					</BlurFade>
+				))
+			}
+		</div>
+	</BlurFade>
+</HomeLayout> --><link rel="stylesheet" href="/_astro/index.CEeGZy4l.css"><div></div>
