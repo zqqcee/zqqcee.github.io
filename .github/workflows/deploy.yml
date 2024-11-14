@@ -6,11 +6,10 @@ on:
   push:
     branches: [main]
   # Allows you to run this workflow manually from the Actions tab on GitHub.
-  workflow_dispatch:
 
 # Allow this job to clone the repo and create a page deployment
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -44,7 +43,6 @@ jobs:
       #   #  path: . # The root location of your Astro project inside the repository. (optional)
       #    node-version: 20 # The specific version of Node that should be used to build your site. Defaults to 20. (optional)
       #    package-manager: pnpm@8.7.0 # The Node package manager that should be used to install dependencies and build your site. Automatically detected based on your lockfile. (optional)
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -57,3 +55,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: release
