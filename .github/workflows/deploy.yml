@@ -36,6 +36,13 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist/'
+      - name: Deploy to pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: release
+
       # - name: Install, build, and upload your site
       #   uses: withastro/action@v3
       #   # run: npm run install && npm run build
@@ -55,13 +62,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to pages branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: release
