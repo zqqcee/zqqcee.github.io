@@ -1096,7 +1096,7 @@ upstream:xxxx&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;</content:encoded></item><item><title>JAVA的转型与动态绑定</title><link>https://luckycc.cc/posts/java-transtype-dynamicbind/</link><guid isPermaLink="true">https://luckycc.cc/posts/java-transtype-dynamicbind/</guid><description>浅析JAVA中的转型与动态绑定</description><pubDate>Tue, 20 Apr 2021 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;上转型与下转型&lt;/h3&gt;
 &lt;p&gt;想要理解java中的转型只需要记住一句话:
-&lt;code&gt;&amp;lt;font color = &quot;red&quot; size=&quot;5&quot;&amp;gt;&lt;/code&gt;父类引用指向子类对象&lt;code&gt;&amp;lt;/font&amp;gt;&lt;/code&gt;
+&lt;code&gt;&amp;lt;font color = &quot;red&quot; size=&quot;5&quot;&amp;gt;&lt;/code&gt;父类引用指向子类对象 &lt;code&gt;&amp;lt;/font&amp;gt;&lt;/code&gt;
 这句话是什么意思呢？&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&lt;span&gt;&lt;span&gt;Father&lt;/span&gt;&lt;span&gt; f1 &lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt; new&lt;/span&gt;&lt;span&gt; Son&lt;/span&gt;&lt;span&gt;();   &lt;/span&gt;&lt;span&gt;// 这就叫 upcasting （向上转型)&lt;/span&gt;&lt;/span&gt;
 &lt;span&gt;&lt;span&gt;// 现在 f1 引用指向一个Son对象&lt;/span&gt;&lt;/span&gt;
