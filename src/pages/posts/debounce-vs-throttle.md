@@ -7,6 +7,7 @@ date: 2022-06-30
 layout: ../../layouts/PostLayout.astro
 mathjax: true
 top: 95
+hidden: true
 abbrlink: 29863
 ---
 

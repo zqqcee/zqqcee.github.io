@@ -7,12 +7,13 @@ description: 浅析JAVA中的转型与动态绑定
 date: 2021-04-20
 mathjax: true
 abbrlink: 16504
+hidden: true
 ---
 
 ### 上转型与下转型
 
 想要理解java中的转型只需要记住一句话:
-`<font color = "red" size="5">`父类引用指向子类对象`</font>`
+`<font color = "red" size="5">`父类引用指向子类对象 `</font>`
 这句话是什么意思呢？
 
 ```java
