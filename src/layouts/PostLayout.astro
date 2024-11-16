@@ -3,7 +3,7 @@ import BlurFade from '../components/ui/BlurFadeIn';
 import HomeLayout from './HomeLayout.astro';
 import dayjs from 'dayjs';
 import Toc from '../components/Toc/toc.astro';
-const { frontmatter, headings = [] } = Astro.props;
+const { frontmatter, headings = [], url } = Astro.props;
 const title = frontmatter.title;
 
 //TODO: 写一个脚本，在中英文之间添加空格
