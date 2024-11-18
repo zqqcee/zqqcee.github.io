@@ -1,6 +1,7 @@
 ---
 title: How to be a good Project Manager?
 date: 2023-05-28
+hidden: true
 layout: ../../layouts/PostLayout.astro
 ---
 
