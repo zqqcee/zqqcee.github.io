@@ -8,7 +8,10 @@ import dayjs from 'dayjs';
 export async function getStaticPaths({ paginate }) {
 	const allPosts = await Astro.glob('./*.md');
 	allPosts.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1));
-	return paginate(allPosts, { pageSize: 7 });
+	return paginate(
+		allPosts.filter((d) => !d.frontmatter.hidden),
+		{ pageSize: 7 }
+	);
 }
 // 所有分页数据都在 "page" 参数中传递
 const { page } = Astro.props;

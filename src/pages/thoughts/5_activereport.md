@@ -1,6 +1,7 @@
 ---
 title: 关于主动汇报
 date: 2023-07-10
+hidden: true
 layout: ../../layouts/PostLayout.astro
 ---
 
