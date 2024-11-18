@@ -3,6 +3,8 @@ import BlurFade from '../components/ui/BlurFadeIn';
 import HomeLayout from './HomeLayout.astro';
 import dayjs from 'dayjs';
 import Toc from '../components/Toc/toc.astro';
+import TestComments from '../components/TestComments';
+import CommentsCollection from '../components/Comments/CommentsCollection';
 const { frontmatter, headings = [], url } = Astro.props;
 const title = frontmatter.title;
 
@@ -10,6 +12,7 @@ const title = frontmatter.title;
 ---
 
 <HomeLayout showNeon={true} isPost title={title}>
+	<TestComments client:load />
 	<BlurFade client:load className=`mx-auto max-w-6xl my-40 px-6 lg:px-40`>
 		<div class="flex">
 			<div class="flex flex-col gap-8 max-w-5xl text-white">
@@ -42,4 +45,5 @@ const title = frontmatter.title;
 			<Toc toc={headings} />
 		</div>
 	</BlurFade>
+	<CommentsCollection client:load pageId={'astro-cookbook'} />
 </HomeLayout>
