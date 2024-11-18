@@ -42,7 +42,7 @@ const title = frontmatter.title;
 					<slot />
 				</div>
 			</div>
-			<Toc toc={headings} />
+			{!!headings?.length && <Toc toc={headings} />}
 		</div>
 	</BlurFade>
 	<CommentsCollection client:load pageId={'astro-cookbook'} />
