@@ -8,4 +8,6 @@ export interface IComment {
     createdTime: string;
     approved: boolean;
     text: string;
+    avatar: string
 }
+export const weekday = ['一', '二', '三', '四', '五', '六', '日']

@@ -44,6 +44,6 @@ const title = frontmatter.title;
 			</div>
 			{!!headings?.length && <Toc toc={headings} />}
 		</div>
+		<CommentsCollection client:load pageId={'astro-cookbook'} className={'mt-10'} />
 	</BlurFade>
-	<CommentsCollection client:load pageId={'astro-cookbook'} />
 </HomeLayout>
