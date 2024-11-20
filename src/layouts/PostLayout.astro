@@ -4,7 +4,7 @@ import HomeLayout from './HomeLayout.astro';
 import dayjs from 'dayjs';
 import Toc from '../components/Toc/toc.astro';
 import TestComments from '../components/TestComments';
-import CommentsCollection from '../components/Comments/CommentsCollection';
+import Comments from '../components/Comments';
 const { frontmatter, headings = [], url } = Astro.props;
 const title = frontmatter.title;
 
@@ -44,6 +44,6 @@ const title = frontmatter.title;
 			</div>
 			{!!headings?.length && <Toc toc={headings} />}
 		</div>
-		<CommentsCollection client:load pageId={'astro-cookbook'} className={'mt-10'} />
+		<Comments client:load pageId={'astro-cookbook'} />
 	</BlurFade>
 </HomeLayout>
