@@ -9,6 +9,7 @@ export interface IComment {
     approved: boolean;
     text: string;
     avatar: string
+    children: IComment[]
 }
 export interface IPostComment {
     pageId: string;

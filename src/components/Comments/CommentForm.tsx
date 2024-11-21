@@ -15,6 +15,9 @@ import {
 } from '@/components/ui/form';
 import FormInputItem from '../Form/FormInputItem';
 import CloseIcon from '../Form/CloseIcon';
+import { motion, AnimatePresence } from 'motion/react';
+import TextArea from '../Form/TextArea';
+import { postComments } from '@/scripts/api/comments';
 
 // parentId:stirng
 // pageId:xxxx
@@ -32,8 +35,8 @@ const formSchema = z.object({
 interface IProps {
 	isReply?: boolean; //是否是回复别人的评论
 	pageId: string;
-	parentId?: string;
-	setReplyVisible: React.Dispatch<React.SetStateAction<boolean>>;
+	parentId?: number;
+	setReplyVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 	parentUser?: string;
 }
 function CommentForm(props: IProps) {
@@ -42,56 +45,68 @@ function CommentForm(props: IProps) {
 		resolver: zodResolver(formSchema),
 	});
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		console.log(values);
+		const comment = { ...values, pageId, parentId };
+		postComments(comment);
 	};
 	return (
-		<div
+		<motion.div
 			className={
 				isReply
-					? 'p-6 rounded-xl shadow-gray-500/60 shadow-inner ring-1 ring-gray-500 mt-5 relative'
+					? 'p-6 rounded-xl shadow-gray-500/60 shadow-inner ring-1 ring-gray-500 mt-4 relative'
 					: 'mt-5'
 			}
+			initial={
+				isReply ? { opacity: 0, scale: 0, transformOrigin: 'top right' } : { opacity: 1, scale: 1 }
+			}
+			animate={isReply ? { opacity: 1, scale: 1 } : false}
+			exit={{
+				opacity: 0,
+				scale: 0,
+				transformOrigin: 'top right',
+				height: 0,
+				padding: 0,
+				margin: 0,
+			}}
 		>
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" autoComplete={'off'}>
-					<div className="flex gap-4 justify-stretch">
-						<FormInputItem name="username" placeholder={'您的名称'} form={form} required />
-						<FormInputItem name="email" placeholder={'邮箱'} form={form} required />
-						<FormInputItem name="url" placeholder={'网址（选填）'} form={form} />
-					</div>
-					<FormField
-						control={form.control}
-						name={'text'}
-						render={({ field }) => (
-							<FormItem className={'flex-1'}>
-								{isReply && (
-									<FormLabel className="text-white pl-1">{`回复 @${parentUser}`}</FormLabel>
-								)}
-								<FormControl>
-									<textarea
-										{...field}
-										className="h-[150px] box-border border border-gray-600 rounded-md p-2 bg-transparent text-white shadow-gray-700 w-full placeholder:text-gray-300 placeholder:text-sm focus-visible:outline-none text-sm"
-										placeholder="请友善评论哦 :P"
-										required
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+			<div>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" autoComplete={'off'}>
+						<div className="flex gap-4 justify-stretch">
+							<FormInputItem name="username" placeholder={'您的名称'} form={form} required />
+							<FormInputItem name="email" placeholder={'邮箱'} form={form} required />
+							<FormInputItem name="url" placeholder={'网址（选填）'} form={form} />
+						</div>
+						<FormField
+							control={form.control}
+							name={'text'}
+							render={({ field }) => (
+								<FormItem className={'flex-1'}>
+									<FormControl>
+										<TextArea
+											{...field}
+											replyUser={parentUser}
+											placeholder="友善评论哦"
+											required
+											maxLength={500}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* <Button type="submit">Submit</Button> */}
+					</form>
+				</Form>
+				{/* TODO:1 添加framer-motion  2 添加submit button*/}
+				{isReply && (
+					<CloseIcon
+						onClick={() => {
+							setReplyVisible(false);
+						}}
 					/>
-					{/* <Button type="submit">Submit</Button> */}
-				</form>
-			</Form>
-
-			{/* TODO:1 添加framer-motion  2 添加submit button*/}
-			{isReply && (
-				<CloseIcon
-					onClick={() => {
-						setReplyVisible(false);
-					}}
-				/>
-			)}
-		</div>
+				)}
+			</div>
+		</motion.div>
 	);
 }
 

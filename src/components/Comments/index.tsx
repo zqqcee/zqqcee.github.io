@@ -9,7 +9,9 @@ interface IProps {
 function Comments({ pageId }: IProps) {
 	return (
 		<div>
-			<CommentForm pageId={pageId} />
+			<div className="mt-12">
+				<CommentForm pageId={pageId} />
+			</div>
 			<CommentsCollection pageId={pageId} className={'mt-10'} />
 		</div>
 	);

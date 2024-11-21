@@ -15,7 +15,10 @@ import { MenuConfig } from './config';
 
 function Navigation() {
 	return (
-		<MagicCard className="w-auto text-white rounded-full ring-1 ring-gray-500 px-6 shadow-inner border-none mt-1 ">
+		<MagicCard
+			className="w-auto text-white rounded-full ring-1 ring-gray-500 px-6 shadow-inner border-none mt-1 bg-netrual-800"
+			gradientColor="#ffffff90"
+		>
 			<Menubar className="border-none">
 				<div className="flex">
 					{Object.keys(MenuConfig).map((key) => {
@@ -30,41 +33,6 @@ function Navigation() {
 							</MenubarMenu>
 						);
 					})}
-					{/* <MenubarMenu>
-						<MenubarTrigger>
-							<a href="/" target="_self">
-								主页
-							</a>
-						</MenubarTrigger>
-					</MenubarMenu>
-					<MenubarMenu>
-						<MenubarTrigger>
-							<a href="/posts" target="_self">
-								文章
-							</a>
-						</MenubarTrigger>
-					</MenubarMenu>
-					<MenubarMenu>
-						<MenubarTrigger>
-							<a href="/thoughts" target="_self">
-								小记
-							</a>
-						</MenubarTrigger>
-					</MenubarMenu>
-					<MenubarMenu>
-						<MenubarTrigger>
-							<a href="/interview" target="_self">
-								秋招专栏
-							</a>
-						</MenubarTrigger>
-					</MenubarMenu>
-					<MenubarMenu>
-						<MenubarTrigger>
-							<a href="/bookmark" target="_self">
-								书签
-							</a>
-						</MenubarTrigger>
-					</MenubarMenu> */}
 				</div>
 			</Menubar>
 		</MagicCard>

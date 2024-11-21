@@ -1,14 +1,11 @@
 // 评论集合
 import React from 'react';
 import type { IComment } from '@/types/comments';
-import { weekday } from '@/types/comments';
 import { getComments } from '@/scripts/api/comments';
 import { cn } from '@/lib/utils';
 import { Player } from '@lottiefiles/react-lottie-player';
-
-import dayjs from 'dayjs';
 import CommentItem from './CommentItem';
-import CommentForm from './CommentForm';
+import { arrToTree } from '@/helper/comment';
 
 const CommentsCollection = ({ pageId, className = '' }) => {
 	const [comments, setComments] = React.useState<IComment[]>([]);
@@ -17,7 +14,7 @@ const CommentsCollection = ({ pageId, className = '' }) => {
 		setLoading(true);
 		getComments(pageId)
 			.then((res) => {
-				setComments(res);
+				setComments(arrToTree(res || [], 'id', 'parentId'));
 			})
 			.finally(() => {
 				setLoading(false);
@@ -29,7 +26,7 @@ const CommentsCollection = ({ pageId, className = '' }) => {
 			<div>评论区载入中</div>
 		</div>
 	) : (
-		<div className={cn('text-white', className)}>
+		<div className={cn('text-white gap-4 flex flex-col', className)}>
 			{comments.map((comment) => (
 				<CommentItem key={comment.id} comment={comment} />
 			))}

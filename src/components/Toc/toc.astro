@@ -41,7 +41,7 @@ const { toc = [] } = Astro.props;
 			true
 		);
 	});
-	document.querySelector('#scroll-to-top').addEventListener('click', (e) => {
+	document.querySelector('#scroll-to-top')?.addEventListener('click', (e) => {
 		document.querySelector('#top')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	});
 </script>
