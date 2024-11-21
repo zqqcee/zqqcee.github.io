@@ -18,13 +18,8 @@ import CloseIcon from '../Form/CloseIcon';
 import { motion, AnimatePresence } from 'motion/react';
 import TextArea from '../Form/TextArea';
 import { postComments } from '@/scripts/api/comments';
+import { useToast } from '@/hooks/use-toast';
 
-// parentId:stirng
-// pageId:xxxx
-// email:xxx
-//url:xxxx
-//text:xxxx
-// usename: x
 const formSchema = z.object({
 	email: z.string(),
 	url: z.string().optional(),
@@ -41,12 +36,19 @@ interface IProps {
 }
 function CommentForm(props: IProps) {
 	const { isReply, pageId, parentId, parentUser, setReplyVisible } = props;
+	const { toast } = useToast();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		const comment = { ...values, pageId, parentId };
-		postComments(comment);
+		// postComments(comment);
+		toast({
+			title: `✅ Hello ${values.username}，谢谢你的评论！`,
+			description: '在通过审核后，它会出现在这篇文章的下方',
+			className: 'bg-gray-700 text-white border border-gray-500',
+			duration: 2000,
+		});
 	};
 	return (
 		<motion.div
@@ -72,7 +74,7 @@ function CommentForm(props: IProps) {
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" autoComplete={'off'}>
 						<div className="flex gap-4 justify-stretch">
-							<FormInputItem name="username" placeholder={'您的名称'} form={form} required />
+							<FormInputItem name="username" placeholder={'你的名称'} form={form} required />
 							<FormInputItem name="email" placeholder={'邮箱'} form={form} required />
 							<FormInputItem name="url" placeholder={'网址（选填）'} form={form} />
 						</div>
@@ -85,7 +87,7 @@ function CommentForm(props: IProps) {
 										<TextArea
 											{...field}
 											replyUser={parentUser}
-											placeholder="友善评论哦"
+											placeholder={'说点什么吧'}
 											required
 											maxLength={500}
 										/>
@@ -94,10 +96,8 @@ function CommentForm(props: IProps) {
 								</FormItem>
 							)}
 						/>
-						{/* <Button type="submit">Submit</Button> */}
 					</form>
 				</Form>
-				{/* TODO:1 添加framer-motion  2 添加submit button*/}
 				{isReply && (
 					<CloseIcon
 						onClick={() => {
