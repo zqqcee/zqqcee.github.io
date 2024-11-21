@@ -29,7 +29,7 @@ function FormInputItem(props: IProps) {
 						<Input
 							placeholder={placeholder}
 							{...field}
-							className="bg-transparent border-gray-600 text-white shadow-sm shadow-gray-700"
+							className="bg-transparent border-gray-600 text-white shadow-sm shadow-gray-700 invalid:border-cyan-300"
 							required={required}
 						/>
 					</FormControl>

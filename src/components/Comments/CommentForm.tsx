@@ -40,15 +40,32 @@ function CommentForm(props: IProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
+	const [loading, setLoading] = React.useState<boolean>(false);
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		const comment = { ...values, pageId, parentId };
-		// postComments(comment);
-		toast({
-			title: `✅ Hello ${values.username}，谢谢你的评论！`,
-			description: '在通过审核后，它会出现在这篇文章的下方',
-			className: 'bg-gray-700 text-white border border-gray-500',
-			duration: 2000,
-		});
+		setLoading(true);
+		postComments(comment)
+			.then(() => {
+				toast({
+					title: `✅ Hello ${values.username}，谢谢你的评论！`,
+					description: '在通过审核后，它会出现在这篇文章的下方',
+					className: 'bg-gray-700 text-white border border-gray-500',
+					duration: 5000,
+				});
+			})
+			.catch(() => {
+				toast({
+					title: `😢 抱歉，出了一些问题`,
+					description: '重新发送一下试试看',
+					className: 'bg-gray-800 text-rose-300 border border-gray-500',
+					duration: 5000,
+				});
+			})
+			.finally(() => {
+				form.reset({ email: '', url: '', username: '', text: '' });
+				setReplyVisible?.(false);
+				setLoading(false);
+			});
 	};
 	return (
 		<motion.div
@@ -72,7 +89,7 @@ function CommentForm(props: IProps) {
 		>
 			<div>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" autoComplete={'off'}>
+					<form className="space-y-4" autoComplete={'off'}>
 						<div className="flex gap-4 justify-stretch">
 							<FormInputItem name="username" placeholder={'你的名称'} form={form} required />
 							<FormInputItem name="email" placeholder={'邮箱'} form={form} required />
@@ -89,6 +106,8 @@ function CommentForm(props: IProps) {
 											replyUser={parentUser}
 											placeholder={'说点什么吧'}
 											required
+											onSubmit={form.handleSubmit(onSubmit)}
+											loading={loading}
 											maxLength={500}
 										/>
 									</FormControl>

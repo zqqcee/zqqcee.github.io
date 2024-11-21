@@ -30,7 +30,6 @@ export const postComments = async (comment: z.infer<typeof formSchema>) => {
         `comments`,
         import.meta.env.PUBLIC_API
     );
-    console.log(comment)
     const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -39,10 +38,8 @@ export const postComments = async (comment: z.infer<typeof formSchema>) => {
         // credentials: "include",
         body: JSON.stringify(comment),
     }).catch(e => {
-        console.log(e)
     });
     const resObject = await response.json();
-    console.log(resObject)
     return resObject.data;
 
 }

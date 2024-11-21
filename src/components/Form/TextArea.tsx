@@ -1,8 +1,9 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { MagicCard } from '../ui/MagicCard';
+import { Loader2 } from 'lucide-react';
 function TextArea(props) {
-	const { maxLength, replyUser, placeholder, ...other } = props;
+	const { maxLength, replyUser, placeholder, onSubmit, loading, ...other } = props;
 	const replyEle = React.useMemo(() => {
 		if (replyUser)
 			return (
@@ -36,14 +37,23 @@ function TextArea(props) {
 					)}
 				>
 					<div className="text-xs text-gray-400">{`${other.value?.length}/${maxLength}`}</div>
-					<div className="text-xs  flex gap-2 items-center cursor-pointer active:scale-90 hover:scale-105 duration-100">
-						<div>
-							<img src="/svg/send.svg" className="object-fill w-4 h-4" />
+					{loading ? (
+						<Loader2 className="animate-spin w-4 h-4" />
+					) : (
+						<div
+							className="text-xs flex gap-2 items-center cursor-pointer active:scale-90 hover:scale-105 duration-100"
+							onClick={() => {
+								onSubmit?.();
+							}}
+						>
+							<div>
+								<img src="/svg/send.svg" className="object-fill w-4 h-4" />
+							</div>
+							<div>
+								<button type="submit">送达</button>
+							</div>
 						</div>
-						<div>
-							<button type="submit">送达</button>
-						</div>
-					</div>
+					)}
 				</div>
 			</div>
 		</MagicCard>
