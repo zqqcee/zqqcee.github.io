@@ -16,6 +16,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_API: ${{vars.PUBLIC_API}}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
@@ -29,7 +31,6 @@ jobs:
           version: 8.7.0
       - name: Install
         run: pnpm install
-
       - name: Build
         run: pnpm run astro build
       - name: Upload Pages Artifact
