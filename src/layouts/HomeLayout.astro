@@ -4,12 +4,14 @@ import SunSet from '@/components/Grace/SunSet.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
 import Header from '@/components/Header.astro';
 import og from '../../public/og.png';
+import { Toaster } from '@/components/ui/toaster';
+
 const { width = 'max-w-6xl', showNeon = true, title } = Astro.props;
 ---
 
 <html lang="en">
 	<head>
-		<meta charset="utf-8" />
+		<meta charset="UTF-8" />
 		<link rel="icon" type="image/svg+xml" href="/avatar.jpeg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
@@ -49,6 +51,7 @@ const { width = 'max-w-6xl', showNeon = true, title } = Astro.props;
 			<Header title={title} />
 			<slot />
 		</main>
+		<Toaster client:load />
 		<Footer />
 	</body>
 </html>

@@ -3,7 +3,9 @@ import BlurFade from '../components/ui/BlurFadeIn';
 import HomeLayout from './HomeLayout.astro';
 import dayjs from 'dayjs';
 import Toc from '../components/Toc/toc.astro';
-const { frontmatter, headings = [] } = Astro.props;
+import Comments from '../components/Comments';
+import { Separator } from '@/components/ui/separator';
+const { frontmatter, headings = [], url } = Astro.props;
 const title = frontmatter.title;
 
 //TODO: 写一个脚本，在中英文之间添加空格
@@ -41,5 +43,7 @@ const title = frontmatter.title;
 			</div>
 			{!!headings?.length && <Toc toc={headings} />}
 		</div>
+		<div class="bg-gray-500 h-px w-full mt-5"></div>
+		<Comments client:load pageId={url} />
 	</BlurFade>
 </HomeLayout>
