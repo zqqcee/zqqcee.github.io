@@ -3,7 +3,7 @@ import React from 'react';
 import type { IComment } from '@/types/comments';
 import dayjs from 'dayjs';
 import { weekday } from '@/types/comments';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import CommentForm from './CommentForm';
 import { AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
