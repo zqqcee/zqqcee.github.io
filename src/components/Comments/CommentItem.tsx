@@ -45,7 +45,7 @@ function CommentItem({ comment }: IProps) {
 							<div className="text-gray-400 text-xs">{`${dayjs(comment.createdTime).format('YYYY-MM-DD HH:MM')} 星期${weekday[dayjs(comment.createdTime).day()]}`}</div>
 						</div>
 						<div className="rounded-xl rounded-bl-sm bg-gray-600  p-2 min-w-10 w-fit relative group">
-							<p className="text-justify text-sm">{comment.text}</p>
+							<p className="text-justify text-sm whitespace-pre-line">{comment.text}</p>
 							<div
 								className={cn(
 									'group-hover:visible invisible absolute -right-2 -bottom-2 bg-gray-700 bg-transparent border border-gray-500 shadow-inner shadow-gray-300 w-5 h-5 rounded-lg p-1 hover:scale-110 cursor-pointer active:scale-90',
