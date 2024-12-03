@@ -23,9 +23,9 @@ export default {
 								color: '#67e8f9',
 							},
 						},
-						p: {
-							color: theme('colors.white'),
-						},
+						// p: {
+						// 	color: theme('colors.white'),
+						// },
 						code: {
 							color: theme('colors.white'),
 							borderRadius: '.25rem',

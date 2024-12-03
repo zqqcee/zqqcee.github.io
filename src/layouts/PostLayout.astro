@@ -7,13 +7,12 @@ import Comments from '../components/Comments';
 import { Separator } from '@/components/ui/separator';
 const { frontmatter, headings = [], url } = Astro.props;
 const title = frontmatter.title;
-
 //TODO: 写一个脚本，在中英文之间添加空格
 ---
 
 <HomeLayout showNeon={true} isPost title={title}>
 	<BlurFade client:load className=`mx-auto max-w-6xl my-40 px-6 lg:px-40`>
-		<div class="flex">
+		<div class="flex font-serif">
 			<div class="flex flex-col gap-8 max-w-5xl text-white">
 				<div
 					class="text-xl lg:text-3xl font-bold leading-tight text-white mb-2 self-center"
@@ -31,12 +30,13 @@ const title = frontmatter.title;
 					}
 				</div>
 				<div
-					class="prose prose-base leading-loose max-w-full
+					class="prose prose-base leading-loose max-w-full text-gray-100 text-base
 					prose-headings:text-white
-					prose-a:font-semibold prose-a:px-1 prose-a:underline-offset-4
+					prose-a:prose-a:px-1 prose-a:underline-offset-4
 					prose-p:text-justify
-					prose-img:rounded-xl ::prose-marker: text-white
-					prose-blockquote:not-italic"
+					prose-img:rounded-xl
+					prose-blockquote:not-italic prose-blockquote:text-gray-300
+					prose-code:font-mono"
 				>
 					<slot />
 				</div>
