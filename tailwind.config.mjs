@@ -12,7 +12,7 @@ export default {
 					css: {
 						color: theme('colors.white'),
 						strong: {
-							color: theme('colors.white'),
+							color: '#bfdeb6',
 						},
 						a: {
 							color: theme('colors.white'),
@@ -48,6 +48,13 @@ export default {
 							p: {
 								'&::before': { content: 'none' },
 								'&::after': { content: 'none' },
+							},
+							strong: {
+								color: '#bfdeb6',
+							},
+							a: {
+								color: '#D0D5DB',
+								'text-decoration-color': '#D0D5DB',
 							},
 						},
 					},

@@ -33,16 +33,17 @@ interface IProps {
 	parentId?: number;
 	setReplyVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 	parentUser?: string;
+	pageTitle?: string;
 }
 function CommentForm(props: IProps) {
-	const { isReply, pageId, parentId, parentUser, setReplyVisible } = props;
+	const { isReply, pageId, parentId, parentUser, setReplyVisible, pageTitle } = props;
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		const comment = { ...values, pageId, parentId };
+		const comment = { ...values, pageId, parentId, pageTitle };
 		setLoading(true);
 		postComments(comment)
 			.then(() => {

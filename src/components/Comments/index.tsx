@@ -5,12 +5,13 @@ import CommentForm from './CommentForm';
 
 interface IProps {
 	pageId: string;
+	pageTitle: string;
 }
-function Comments({ pageId }: IProps) {
+function Comments({ pageId, pageTitle }: IProps) {
 	return (
 		<div>
 			<div className="mt-12">
-				<CommentForm pageId={pageId} />
+				<CommentForm pageId={pageId} pageTitle={pageTitle} />
 			</div>
 			<CommentsCollection pageId={pageId} className={'mt-10'} />
 		</div>

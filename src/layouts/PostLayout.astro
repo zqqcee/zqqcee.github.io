@@ -44,6 +44,6 @@ const title = frontmatter.title;
 			{!!headings?.length && <Toc toc={headings} />}
 		</div>
 		<div class="bg-gray-500 h-px w-full mt-5"></div>
-		<Comments client:load pageId={url} />
+		<Comments client:load pageId={url} pageTitle={title} />
 	</BlurFade>
 </HomeLayout>
