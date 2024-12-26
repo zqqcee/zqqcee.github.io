@@ -3,7 +3,7 @@ import Footer from '@/components/Footer.astro';
 import SunSet from '@/components/Grace/SunSet.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
 import Header from '@/components/Header.astro';
-import og from '../../public/og.png';
+import og from '../../public/avatar.jpeg';
 import { Toaster } from '@/components/ui/toaster';
 
 const { width = 'max-w-6xl', showNeon = true, title } = Astro.props;
@@ -15,7 +15,7 @@ const { width = 'max-w-6xl', showNeon = true, title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/avatar.jpeg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:image" content={`https://luckycc.cc${og.src}`} />
 		<link
