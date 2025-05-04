@@ -11,7 +11,15 @@ const { posts } = Astro.props;
 <div class="flex flex-col justify-start gap-4 w-full backdrop-blur-md">
 	{
 		posts
-			.sort((a, b) => (dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1))
+			.sort((a, b) => {
+				if (a.frontmatter.pin && !b.frontmatter.pin) {
+					return -1;
+				}
+				if (b.frontmatter.pin && !a.frontmatter.pin) {
+					return 1;
+				}
+				return dayjs(a.frontmatter.date).isBefore(dayjs(b.frontmatter.date)) ? 1 : -1;
+			})
 			.map((article, i) => {
 				return (
 					<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
@@ -21,6 +29,7 @@ const { posts } = Astro.props;
 							date={dayjs(article.frontmatter.date).format('YYYY/MM/DD')}
 							desc={article.frontmatter.description}
 							tags={article.frontmatter.tags}
+							isPin={article.frontmatter.pin}
 						/>
 					</BlurFade>
 				);

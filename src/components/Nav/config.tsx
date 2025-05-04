@@ -14,15 +14,6 @@ export const MenuConfig = {
 		),
 		href: baseURL + '/',
 	},
-	posts: {
-		title: '文章',
-		icon: (props) => (
-			<svg fill="#fff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-				<path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2ZM10,16,7,17l1-3,7-7,2,2Z" />
-			</svg>
-		),
-		href: baseURL + '/posts/1',
-	},
 	thoughts: {
 		title: '小记',
 		icon: (props) => (
@@ -31,6 +22,15 @@ export const MenuConfig = {
 			</svg>
 		),
 		href: baseURL + '/thoughts/1',
+	},
+	posts: {
+		title: '文章',
+		icon: (props) => (
+			<svg fill="#fff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+				<path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2ZM10,16,7,17l1-3,7-7,2,2Z" />
+			</svg>
+		),
+		href: baseURL + '/posts/1',
 	},
 	interview: {
 		title: '秋招专栏',

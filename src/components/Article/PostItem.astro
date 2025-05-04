@@ -1,5 +1,5 @@
 ---
-const { date, title, href, desc, tags } = Astro.props;
+const { date, title, href, desc, tags, isPin } = Astro.props;
 import PostLink from './PostLink';
 ---
 
@@ -8,7 +8,16 @@ import PostLink from './PostLink';
 	href={href}
 	target="_self"
 >
-	<div class="text-white text-xl font-bold self-center">{title}</div>
+	<div class="items-center flex justify-center relative">
+		<div class="text-white text-xl font-bold">{title}</div>
+		{
+			isPin ? (
+				<div class="text-white text-xl font-bold absolute right-0">
+					<img src="/svg/pin.svg" class="object-fill w-5 h-5 stroke-white fill-white white" />
+				</div>
+			) : null
+		}
+	</div>
 	<div class="self-center flex justify-start items-center gap-2">
 		<div class="text-gray-200 text-sm px-2 bg-sky-900/30 rounded-md">{date}</div>
 		{tags && <div class="text-gray-200 text-sm px-2 bg-sky-900/30 rounded-md">{tags}</div>}
