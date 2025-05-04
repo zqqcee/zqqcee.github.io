@@ -1,5 +1,5 @@
 ---
-title: 记一次在GPT帮助下的心理疗愈
+title: 记一次心理疗愈
 date: 2025-03-25
 layout: ../../layouts/PostLayout.astro
 ---
