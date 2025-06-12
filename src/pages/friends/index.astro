@@ -2,10 +2,51 @@
 import HomeLayout from '../../layouts/HomeLayout.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
 import Title from '@/components/Title.astro';
+import FriendsCollection from '@/components/Friends/FriendsCollection.astro';
+import { IFriend } from '@/types/friend';
+const friends: IFriend[] = [
+	{
+		name: '小白',
+		link: 'https://innei.in/',
+		description: '一个非常棒的开发者'
+	},
+	{
+		name: '小黑',
+		link: 'https://skywt.cn/',
+		description: '一个非常棒的开发者'
+	},
+	{
+		name: '小黑',
+		link: 'https://hong97.ltd/',
+		description: '一个非常棒的开发者'
+	},
+	{
+		name: '小红',
+		avatar:
+			'https://cdn.jsdelivr.net/gh/yangshun/tech-interview-handbook@master/src/assets/yangshun.jpg',
+		link: 'https://yangshun.dev/',
+		description: '一个非常棒的开发者'
+	},
+	{
+		name: '小绿',
+		avatar:
+			'https://cdn.jsdelivr.net/gh/yangshun/tech-interview-handbook@master/src/assets/yangshun.jpg',
+		link: 'https://yangshun.dev/',
+		description: '一个非常棒的开发者'
+	},
+	{
+		name: '小蓝',
+		avatar:
+			'https://cdn.jsdelivr.net/gh/yangshun/tech-interview-handbook@master/src/assets/yangshun.jpg',
+		link: 'https://yangshun.dev/',
+		description: '一个非常棒的开发者'
+	}
+];
 ---
 
 <HomeLayout>
-	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
-		<Title title="这个空间似乎仍然在施工当中 👷" />
+	<BlurFade client:load className="w-full mx-auto px-8 xl:w-[70%]">
+		<Title title="祝你健康，快乐，热爱生活" />
+		<FriendsCollection friends={friends} />
 	</BlurFade>
 </HomeLayout>
