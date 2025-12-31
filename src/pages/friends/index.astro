@@ -6,48 +6,39 @@ import FriendsCollection from '@/components/Friends/FriendsCollection.astro';
 import { IFriend } from '@/types/friend';
 const friends: IFriend[] = [
 	{
-		name: '小白',
-		link: 'https://innei.in/',
-		description:
-			'一个非常棒的开发者 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vestibulum dapibus lectus, sit amet volutpat ante commodo et. Nulla auctor metus id mauris iaculis tempus. Nunc tincidunt libero et justo laoreet, id tristique purus efficitur. Integer aliquet risus nec ullamcorper bibendum. Proin luctus enim a odio aliquam, id condimentum lorem fermentum. Vivamus fermentum lacus vitae metus placerat, eu rutrum est lacinia. Aenean ullamcorper rhoncus ligula, a facilisis metus eleifend nec. Sed scelerisque, ipsum eget consectetur fermentum, sapien orci bibendum ligula, eget aliquam dolor augue vitae mauris. Cras at justo at lectus tempor fringilla. In ac dolor et elit semper sollicitudin. Duis ac volutpat nunc, sed fringilla leo. Nunc tempus, justo eu consequat lobortis, sapien eros varius nulla, vitae pretium libero magna nec ligula. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam id nisi vel nibh eleifend tempor. Fusce eget eleifend augue.'
-	},
-	{
-		name: '小黑',
-		link: 'https://skywt.cn/',
-		description: '一个非常棒的开发者'
-	},
-	{
-		name: '小黑',
+		name: 'Hong',
 		link: 'https://hong97.ltd/',
-		description: '一个非常棒的开发者'
+		description: 'hong97.ltd'
 	},
 	{
-		name: '小红',
-		avatar:
-			'https://cdn.jsdelivr.net/gh/yangshun/tech-interview-handbook@master/src/assets/yangshun.jpg',
-		link: 'https://yangshun.dev/',
-		description: '一个非常棒的开发者'
+		name: 'Cyan',
+		link: 'https://cyandev.app/',
+		description: 'A random guy on the internet, a software engineer'
 	},
 	{
-		name: '小绿',
-		avatar:
-			'https://cdn.jsdelivr.net/gh/yangshun/tech-interview-handbook@master/src/assets/yangshun.jpg',
-		link: 'https://yangshun.dev/',
-		description: '一个非常棒的开发者'
+		name: 'SkyWT',
+		link: 'https://skywt.cn/',
+		avatar: 'https://img.skywt.net/avatar.jpg',
+		description: 'Big Tech employee by day, freelance developer by night.'
 	},
 	{
-		name: '小蓝',
-		avatar:
-			'https://cdn.jsdelivr.net/gh/yangshun/tech-interview-handbook@master/src/assets/yangshun.jpg',
-		link: 'https://yangshun.dev/',
-		description: '一个非常棒的开发者'
+		name: 'Sepush',
+		avatar: 'https://sepush.github.io/avatar.svg',
+		link: 'https://sepush.github.io/',
+		description: 'AKA 卡比 @Naive-UI'
+	},
+	{
+		name: 'Soon',
+		avatar: 'https://avatars.githubusercontent.com/u/79413249?s=400',
+		link: 'https://sooniter.site',
+		description: 'Hello world! Today I will make you even better.'
 	}
 ];
 ---
 
 <HomeLayout>
 	<BlurFade client:load className="w-full mx-auto px-8 xl:w-[70%]">
-		<Title title="祝你健康，快乐，热爱生活" className="text-xl md:text-2xl lg:text-3xl" />
+		<Title title="Nice to meet you!" className="text-xl md:text-2xl lg:text-3xl" />
 		<FriendsCollection friends={friends} />
 	</BlurFade>
 </HomeLayout>
