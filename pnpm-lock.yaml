@@ -77,6 +77,9 @@ dependencies:
   lucide-react:
     specifier: ^0.446.0
     version: 0.446.0(react@18.3.1)
+  medium-zoom:
+    specifier: ^1.1.0
+    version: 1.1.0
   motion:
     specifier: ^11.11.17
     version: 11.11.17(react-dom@18.3.1)(react@18.3.1)
@@ -3577,6 +3580,10 @@ packages:
       mdast-util-to-string: 4.0.0
       unist-util-is: 6.0.0
       unist-util-visit: 5.0.0
+    dev: false
+
+  /medium-zoom@1.1.0:
+    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
     dev: false
 
   /merge2@1.4.1:
