@@ -2,6 +2,7 @@
 title: 25岁我想说的
 date: 2025-05-28
 layout: ../../layouts/PostLayout.astro
+pin: true
 ---
 
 偶然发现2025年05月29日当天有一条日程，上面写着：**我的生日，熬到这天你就成功了**。

@@ -2,10 +2,43 @@
 import HomeLayout from '../../layouts/HomeLayout.astro';
 import BlurFade from '@/components/ui/BlurFadeIn';
 import Title from '@/components/Title.astro';
+import FriendsCollection from '@/components/Friends/FriendsCollection.astro';
+import { IFriend } from '@/types/friend';
+const friends: IFriend[] = [
+	{
+		name: 'Hong',
+		link: 'https://hong97.ltd/',
+		description: 'hong97.ltd'
+	},
+	{
+		name: 'Cyan',
+		link: 'https://cyandev.app/',
+		description: 'A random guy on the internet, a software engineer'
+	},
+	{
+		name: 'SkyWT',
+		link: 'https://skywt.cn/',
+		avatar: 'https://img.skywt.net/avatar.jpg',
+		description: 'Big Tech employee by day, freelance developer by night.'
+	},
+	{
+		name: 'Sepush',
+		avatar: 'https://sepush.github.io/avatar.svg',
+		link: 'https://sepush.github.io/',
+		description: 'AKA 卡比 @Naive-UI'
+	},
+	{
+		name: 'Soon',
+		avatar: 'https://avatars.githubusercontent.com/u/79413249?s=400',
+		link: 'https://sooniter.site',
+		description: 'Hello world! Today I will make you even better.'
+	}
+];
 ---
 
 <HomeLayout>
-	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
-		<Title title="这个空间似乎仍然在施工当中 👷" />
+	<BlurFade client:load className="w-full mx-auto px-8 xl:w-[70%]">
+		<Title title="Nice to meet you!" className="text-xl md:text-2xl lg:text-3xl" />
+		<FriendsCollection friends={friends} />
 	</BlurFade>
 </HomeLayout>
