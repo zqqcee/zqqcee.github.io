@@ -34,7 +34,7 @@ const title = frontmatter.title;
 					prose-headings:text-white
 					prose-a:prose-a:px-1 prose-a:underline-offset-4
 					prose-p:text-justify
-					prose-img:rounded-xl
+					prose-img:rounded-xl prose-img:cursor-zoom-in
 					prose-blockquote:not-italic prose-blockquote:text-gray-300
 					prose-code:font-mono"
 				>
@@ -47,3 +47,52 @@ const title = frontmatter.title;
 		<Comments client:load pageId={url} pageTitle={title} />
 	</BlurFade>
 </HomeLayout>
+
+<script>
+	import mediumZoom from 'medium-zoom';
+
+	const zoom = mediumZoom('.prose img', {
+		margin: 24,
+		background: 'rgba(0, 0, 0, 0.9)',
+		scrollOffset: 0
+	});
+
+	// 修复移动端图片显示问题，保持宽高比
+	zoom.on('opened', () => {
+		const img = document.querySelector('.medium-zoom-image--opened') as any;
+		if (img && window.innerWidth <= 768) {
+			const currentZoom = parseFloat(getComputedStyle(img).zoom) || 1;
+			const scale = 1 / currentZoom;
+
+			// 获取图片的原始尺寸
+			const imgWidth = img.naturalWidth;
+			const imgHeight = img.naturalHeight;
+			const aspectRatio = imgWidth / imgHeight;
+
+			// 计算适配屏幕的最大尺寸（保持宽高比）
+			const maxWidth = window.innerWidth - 32;
+			const maxHeight = window.innerHeight - 32;
+
+			let finalWidth, finalHeight;
+			if (imgWidth / maxWidth > imgHeight / maxHeight) {
+				// 宽度受限
+				finalWidth = maxWidth;
+				finalHeight = maxWidth / aspectRatio;
+			} else {
+				// 高度受限
+				finalHeight = maxHeight;
+				finalWidth = maxHeight * aspectRatio;
+			}
+
+			img.style.setProperty('width', `${finalWidth}px`, 'important');
+			img.style.setProperty('height', `${finalHeight}px`, 'important');
+			img.style.setProperty('max-width', 'none', 'important');
+			img.style.setProperty('max-height', 'none', 'important');
+			img.style.setProperty('object-fit', 'contain', 'important');
+			img.style.setProperty('transform', `translate(-50%, -50%) scale(${scale})`, 'important');
+			img.style.setProperty('left', '50%', 'important');
+			img.style.setProperty('top', '50%', 'important');
+			img.style.setProperty('position', 'fixed', 'important');
+		}
+	});
+</script>
