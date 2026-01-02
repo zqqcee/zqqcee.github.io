@@ -134,6 +134,7 @@ export const MenuConfig = {
 		),
 		href: baseURL + '/friends',
 	},
+
 	bookmark: {
 		title: '书签',
 		icon: (props) => (
