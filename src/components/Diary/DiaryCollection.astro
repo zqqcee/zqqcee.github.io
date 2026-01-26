@@ -1,0 +1,21 @@
+---
+import type { IDiary } from '@/types/diary';
+import BlurFade from '@/components/ui/BlurFadeIn';
+import DiaryCard from './DiaryCard.astro';
+
+interface Props {
+	diaries: IDiary[];
+}
+
+const { diaries } = Astro.props;
+---
+
+<div class="flex flex-col justify-start gap-4 w-full">
+	{
+		diaries.map((diary, i) => (
+			<BlurFade className="w-full" client:load delay={0.1 * i}>
+				<DiaryCard diary={diary} />
+			</BlurFade>
+		))
+	}
+</div>
