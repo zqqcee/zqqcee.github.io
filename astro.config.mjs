@@ -3,10 +3,18 @@ import { loadEnv } from 'vite';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import remarkToc from 'remark-toc';
+import path from 'path';
 // import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 
 export default defineConfig({
 	integrations: [tailwind(), react()],
+	vite: {
+		resolve: {
+			alias: {
+				'@': path.resolve('./src'),
+			},
+		},
+	},
 	markdown: {
 		shikiConfig: {
 			theme: 'dracula',

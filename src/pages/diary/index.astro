@@ -1,0 +1,16 @@
+---
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import DiaryList from '@/components/Diary/DiaryList.tsx';
+import Title from '@/components/Title.astro';
+import { getDiaries } from '@/data/diary';
+
+// 服务端获取初始数据
+const initialData = await getDiaries(1, 5);
+---
+
+<HomeLayout title="日记">
+	<div class="mx-auto max-w-4xl px-8 lg:px-20 text-white">
+		<Title title="日记 📔" />
+		<DiaryList client:load pageSize={5} />
+	</div>
+</HomeLayout>
