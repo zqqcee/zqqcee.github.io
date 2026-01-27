@@ -7,6 +7,9 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		extend: {
+			fontFamily: {
+				serif: ['"Noto Serif SC"', 'ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+			},
 			typography: (theme) => ({
 				DEFAULT: {
 					css: {
