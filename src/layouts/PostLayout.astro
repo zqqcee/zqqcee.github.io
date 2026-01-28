@@ -34,7 +34,7 @@ const title = frontmatter.title;
 					prose-headings:text-white
 					prose-a:prose-a:px-1 prose-a:underline-offset-4
 					prose-p:text-justify
-					prose-img:rounded-xl
+					prose-img:rounded-xl prose-img:cursor-zoom-in
 					prose-blockquote:not-italic prose-blockquote:text-gray-300
 					prose-code:font-mono"
 				>
@@ -47,3 +47,101 @@ const title = frontmatter.title;
 		<Comments client:load pageId={url} pageTitle={title} />
 	</BlurFade>
 </HomeLayout>
+
+<script>
+	import mediumZoom from 'medium-zoom';
+
+	// 检测是否为 iOS 设备
+	const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+	const zoom = mediumZoom('.prose img', {
+		margin: 24,
+		background: 'rgba(0, 0, 0, 0.9)',
+		scrollOffset: 0
+	});
+
+	// iOS Safari 需要特殊处理，使用 open 事件（动画开始前）而不是 opened
+	if (isIOS) {
+		// 添加全局样式修复 iOS 上的定位问题
+		const style = document.createElement('style');
+		style.textContent = `
+			.medium-zoom-image--opened {
+				transform-origin: center center !important;
+				zoom: 1 !important;
+			}
+			.medium-zoom-overlay {
+				position: fixed !important;
+			}
+		`;
+		document.head.appendChild(style);
+
+		// 保存原始样式和图片引用
+		let originalStyles: Record<string, string> = {};
+		let currentImg: HTMLImageElement | null = null;
+
+		zoom.on('open', () => {
+			const img = zoom.getZoomedImage() as HTMLImageElement | null;
+			if (img) {
+				currentImg = img;
+
+				// 保存原始样式以便恢复（包括 zoom 属性）
+				originalStyles = {
+					width: img.style.width,
+					height: img.style.height,
+					maxWidth: img.style.maxWidth,
+					maxHeight: img.style.maxHeight,
+					left: img.style.left,
+					top: img.style.top,
+					transform: img.style.transform,
+					zoom: img.style.zoom
+				};
+
+				// 移除 zoom 样式，避免干扰 medium-zoom 的计算
+				img.style.setProperty('zoom', '1', 'important');
+
+				// 获取图片的原始尺寸
+				const imgWidth = img.naturalWidth;
+				const imgHeight = img.naturalHeight;
+				const aspectRatio = imgWidth / imgHeight;
+
+				// 计算适配屏幕的最大尺寸（保持宽高比）
+				const maxWidth = window.innerWidth - 48;
+				const maxHeight = window.innerHeight - 48;
+
+				let finalWidth, finalHeight;
+				if (imgWidth / maxWidth > imgHeight / maxHeight) {
+					finalWidth = maxWidth;
+					finalHeight = maxWidth / aspectRatio;
+				} else {
+					finalHeight = maxHeight;
+					finalWidth = maxHeight * aspectRatio;
+				}
+
+				// 使用 requestAnimationFrame 确保在下一帧应用样式
+				requestAnimationFrame(() => {
+					img.style.setProperty('width', `${finalWidth}px`, 'important');
+					img.style.setProperty('height', `${finalHeight}px`, 'important');
+					img.style.setProperty('max-width', 'none', 'important');
+					img.style.setProperty('max-height', 'none', 'important');
+					img.style.setProperty('left', `${(window.innerWidth - finalWidth) / 2}px`, 'important');
+					img.style.setProperty('top', `${(window.innerHeight - finalHeight) / 2}px`, 'important');
+					img.style.setProperty('transform', 'none', 'important');
+				});
+			}
+		});
+		zoom.on('closed', () => {
+			if (currentImg) {
+				// 恢复原始样式（包括 zoom 属性）
+				currentImg.style.width = originalStyles.width || '';
+				currentImg.style.height = originalStyles.height || '';
+				currentImg.style.maxWidth = originalStyles.maxWidth || '';
+				currentImg.style.maxHeight = originalStyles.maxHeight || '';
+				currentImg.style.left = originalStyles.left || '';
+				currentImg.style.top = originalStyles.top || '';
+				currentImg.style.transform = originalStyles.transform || '';
+				currentImg.style.zoom = originalStyles.zoom || '';
+				currentImg = null;
+			}
+		});
+	}
+</script>

@@ -41,10 +41,37 @@
 }
 
 .sm-menu-item {
-	@apply text-white px-4 mt-10 text-xl font-bold font-serif w-full mx-auto flex justify-center gap-2 items-center;
+	@apply mx-auto mt-10 flex w-full items-center justify-center gap-2 px-4 font-serif text-xl font-bold text-white;
 }
 
 * {
 	scrollbar-width: thin;
 	scrollbar-color: #2e2e34 #161e31;
+}
+
+/* medium-zoom 自定义样式 */
+.medium-zoom-overlay {
+	z-index: 110;
+	background: rgba(0, 0, 0, 0.9);
+	backdrop-filter: blur(4px);
+}
+
+.medium-zoom-image {
+	z-index: 112;
+}
+
+.medium-zoom-image--opened {
+	z-index: 113;
+	cursor: zoom-out;
+	border-radius: 0.75rem;
+	zoom: 1 !important;
+}
+
+/* prose 图片的过渡效果 */
+.prose img {
+	transition: opacity 0.3s ease;
+}
+
+.prose img:hover {
+	opacity: 0.9;
 }
