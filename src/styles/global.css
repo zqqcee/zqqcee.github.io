@@ -5,7 +5,9 @@
 	font-weight: 400;
 	font-display: swap;
 	src: url('/fonts/noto-serif-sc-latin-400-normal.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+		U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+		U+FFFD;
 }
 
 @font-face {
@@ -14,7 +16,9 @@
 	font-weight: 700;
 	font-display: swap;
 	src: url('/fonts/noto-serif-sc-latin-700-normal.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+		U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+		U+FFFD;
 }
 
 /* Noto Serif SC - Chinese Simplified subset */
@@ -24,7 +28,9 @@
 	font-weight: 400;
 	font-display: swap;
 	src: url('/fonts/noto-serif-sc-chinese-simplified-400-normal.woff2') format('woff2');
-	unicode-range: U+1F1E0-1F1FF, U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+2A700-2B73F, U+2B740-2B81F, U+2B820-2CEAF, U+2CEB0-2EBEF, U+30000-3134F, U+31350-323AF, U+FE00-FE0F, U+FE10-FE1F, U+FE30-FE4F, U+2F00-2FDF, U+3000-303F, U+3100-312F, U+31A0-31BF, U+FF00-FFEF;
+	unicode-range: U+1F1E0-1F1FF, U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+2A700-2B73F,
+		U+2B740-2B81F, U+2B820-2CEAF, U+2CEB0-2EBEF, U+30000-3134F, U+31350-323AF, U+FE00-FE0F,
+		U+FE10-FE1F, U+FE30-FE4F, U+2F00-2FDF, U+3000-303F, U+3100-312F, U+31A0-31BF, U+FF00-FFEF;
 }
 
 @font-face {
@@ -33,7 +39,9 @@
 	font-weight: 700;
 	font-display: swap;
 	src: url('/fonts/noto-serif-sc-chinese-simplified-700-normal.woff2') format('woff2');
-	unicode-range: U+1F1E0-1F1FF, U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+2A700-2B73F, U+2B740-2B81F, U+2B820-2CEAF, U+2CEB0-2EBEF, U+30000-3134F, U+31350-323AF, U+FE00-FE0F, U+FE10-FE1F, U+FE30-FE4F, U+2F00-2FDF, U+3000-303F, U+3100-312F, U+31A0-31BF, U+FF00-FFEF;
+	unicode-range: U+1F1E0-1F1FF, U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+2A700-2B73F,
+		U+2B740-2B81F, U+2B820-2CEAF, U+2CEB0-2EBEF, U+30000-3134F, U+31350-323AF, U+FE00-FE0F,
+		U+FE10-FE1F, U+FE30-FE4F, U+2F00-2FDF, U+3000-303F, U+3100-312F, U+31A0-31BF, U+FF00-FFEF;
 }
 
 .serif {
@@ -74,4 +82,67 @@
 
 .prose img:hover {
 	opacity: 0.9;
+}
+
+/* Moments Timeline 样式 */
+.moments-timeline {
+	position: relative;
+	padding-left: 2rem;
+}
+
+.moments-timeline::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: linear-gradient(
+		to bottom,
+		transparent,
+		rgb(59 130 246 / 0.3) 10%,
+		rgb(59 130 246 / 0.3) 90%,
+		transparent
+	);
+}
+
+.moment-date-marker {
+	position: relative;
+}
+
+.moment-date-marker::before {
+	content: '';
+	position: absolute;
+	left: -2rem;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: rgb(59 130 246);
+	box-shadow: 0 0 10px rgb(59 130 246 / 0.5);
+}
+
+.moment-card {
+	position: relative;
+	background: rgb(30 41 59 / 0.5);
+	border: 1px solid rgb(71 85 105 / 0.3);
+	border-radius: 0.75rem;
+	padding: 0.5rem 1rem;
+	transition: all 0.3s ease;
+}
+
+.moment-card:hover {
+	border-color: rgb(71 85 105 / 0.5);
+	background: rgb(30 41 59 / 0.7);
+}
+
+.moment-card::before {
+	content: '';
+	position: absolute;
+	left: -1.5rem;
+	top: 1.5rem;
+	width: 1rem;
+	height: 2px;
+	background: rgb(71 85 105 / 0.3);
 }
