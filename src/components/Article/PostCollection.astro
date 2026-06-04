@@ -22,7 +22,7 @@ const { posts } = Astro.props;
 			})
 			.map((article, i) => {
 				return (
-					<BlurFade className="flex justify-start gap-2 items-center" client:load delay={0.1 * i}>
+					<BlurFade className="flex justify-start gap-2 items-center" client:visible delay={0.1 * i}>
 						<PostItem
 							title={article.frontmatter.title}
 							href={article.url}

@@ -8,6 +8,7 @@ import path from 'path';
 
 export default defineConfig({
 	integrations: [tailwind(), react()],
+	trailingSlash: 'always',
 	vite: {
 		resolve: {
 			alias: {
@@ -29,7 +30,7 @@ export default defineConfig({
 	},
 	site: 'https://luckycc.cc',
 	redirects: {
-		'/posts': '/posts/1',
-		'/thoughts': '/thoughts/1',
+		'/posts': '/posts/1/',
+		'/thoughts': '/thoughts/1/',
 	},
 });

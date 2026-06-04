@@ -37,7 +37,6 @@ export const postComments = async (comment: z.infer<typeof formSchema>) => {
         },
         // credentials: "include",
         body: JSON.stringify(comment),
-    }).catch(e => {
     });
     const resObject = await response.json();
     return resObject.data;

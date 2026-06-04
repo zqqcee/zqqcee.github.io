@@ -37,7 +37,7 @@ const friends: IFriend[] = [
 ---
 
 <HomeLayout>
-	<BlurFade client:load className="w-full mx-auto px-8 xl:w-[70%]">
+	<BlurFade client:idle className="w-full mx-auto px-8 xl:w-[70%]">
 		<Title title="Nice to meet you!" className="text-xl md:text-2xl lg:text-3xl" />
 		<FriendsCollection friends={friends} />
 	</BlurFade>

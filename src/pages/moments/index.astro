@@ -7,6 +7,6 @@ import Title from '@/components/Title.astro';
 <HomeLayout title="Moments">
 	<div class="mx-auto max-w-2xl px-6 lg:px-8 text-white font-serif">
 		<Title title="Moments" />
-		<MomentTimeline client:load limit={3} />
+		<MomentTimeline client:visible limit={3} />
 	</div>
 </HomeLayout>

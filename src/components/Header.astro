@@ -17,7 +17,7 @@ import SMNavigation from './Nav/SMNavigation';
 		>
 	</div>
 	<div class="grow flex justify-center">
-		<Navigation client:load />
+		<Navigation client:idle />
 	</div>
 	<div class="flex flex-1 row-end-1 justify-center gap-4">
 		<SignatureLogo />
@@ -33,24 +33,25 @@ import SMNavigation from './Nav/SMNavigation';
 			><img src={avatar.src} class="rounded-2xl object-fill bg-cover w-11 h-11" /></a
 		>
 	</div>
-	<div class="text-white"><SMNavigation client:load /></div>
+	<div class="text-white"><SMNavigation client:idle /></div>
 </div>
 <script>
 	// 渐变背景
 	const progressiveBorder = () => {
 		const offsetY = window.scrollY;
-		const dom = document.querySelector('#header');
-		if (!dom) return;
-		if (offsetY < 20) {
-			dom.classList.remove('backdrop-blur-3xl');
-		} else if (!dom.classList.contains('backdrop-blur-3xl')) {
-			dom.classList.add('backdrop-blur-3xl');
-		}
-		if (offsetY < 400) {
-			dom.style['border-bottom'] = `1px solid rgb(75,85,99,${offsetY / 400})`;
-		} else {
-			dom.style['border-bottom'] = `1px solid rgb(75,85,99)})`;
-		}
+		const headers = document.querySelectorAll<HTMLElement>('#header');
+		headers.forEach((dom) => {
+			if (offsetY < 20) {
+				dom.classList.remove('backdrop-blur-3xl');
+			} else if (!dom.classList.contains('backdrop-blur-3xl')) {
+				dom.classList.add('backdrop-blur-3xl');
+			}
+			if (offsetY < 400) {
+				dom.style.borderBottom = `1px solid rgb(75,85,99,${offsetY / 400})`;
+			} else {
+				dom.style.borderBottom = '1px solid rgb(75,85,99)';
+			}
+		});
 	};
 	document.addEventListener('astro:page-load', progressiveBorder);
 	document.addEventListener('scroll', progressiveBorder, true);
