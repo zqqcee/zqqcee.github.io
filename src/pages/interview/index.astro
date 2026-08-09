@@ -11,15 +11,15 @@ const posts = await Astro.glob('./*.md');
 ---
 
 <HomeLayout>
-	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
+	<BlurFade client:idle className=`mx-auto max-w-4xl px-8 lg:px-20`>
 		<Title title="算法笔记" />
 		<GridCollection posts={algoPosts} />
 	</BlurFade>
-	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
+	<BlurFade client:idle className=`mx-auto max-w-4xl px-8 lg:px-20`>
 		<Title title="前端面经" className="mt-10" />
 		<GridCollection posts={febasicPosts} />
 	</BlurFade>
-	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20`>
+	<BlurFade client:idle className=`mx-auto max-w-4xl px-8 lg:px-20`>
 		<Title title="文章" className="mt-10" />
 		<PostCollection posts={posts} />
 	</BlurFade>

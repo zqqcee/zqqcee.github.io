@@ -3,7 +3,6 @@ import React from 'react';
 import type { IComment } from '@/types/comments';
 import { getComments } from '@/scripts/api/comments';
 import { cn } from '@/lib/utils';
-import { Player } from '@lottiefiles/react-lottie-player';
 import CommentItem from './CommentItem';
 import { arrToTree } from '@/helper/comment';
 
@@ -22,7 +21,7 @@ const CommentsCollection = ({ pageId, className = '' }) => {
 	}, []);
 	return loading ? (
 		<div className="flex text-neutral-200 items-center">
-			<Player src={'/lottie/loading.json'} loop autoplay className="w-20 h-20" />
+			<div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-600 border-t-gray-300" />
 			<div>评论区载入中</div>
 		</div>
 	) : (

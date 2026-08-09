@@ -17,7 +17,7 @@ const { page } = Astro.props;
 ---
 
 <HomeLayout>
-	<BlurFade client:load className=`mx-auto max-w-4xl px-8 lg:px-20 text-white`>
+	<BlurFade client:idle className=`mx-auto max-w-4xl px-8 lg:px-20 text-white`>
 		<Title title="文章" />
 		<PostCollection posts={page.data} />
 		<Pagination

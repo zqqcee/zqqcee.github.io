@@ -84,6 +84,36 @@
 	opacity: 0.9;
 }
 
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+	.root {
+		filter: blur(72px) !important;
+		opacity: 0.5;
+	}
+
+	.root > section {
+		animation: none !important;
+	}
+
+	.animate-\[signatrue_linear_5s_infinite\],
+	.animate-\[signatruelogo_linear_5s_infinite\] {
+		animation: none !important;
+		fill: #fff !important;
+	}
+
+	.backdrop-blur,
+	.backdrop-blur-md,
+	.backdrop-blur-xl,
+	.backdrop-blur-3xl {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+
+	#container {
+		filter: none !important;
+		will-change: auto !important;
+	}
+}
+
 /* Moments Timeline 样式 */
 .moments-timeline {
 	position: relative;
